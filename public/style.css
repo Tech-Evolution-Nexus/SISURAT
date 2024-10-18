@@ -8,6 +8,7 @@
 body {
   font-family: "Inter", sans-serif;
   font-size: 1rem; /* default untuk body */
+  background-color: rgb(243, 244, 246);
 }
 body:not(.admin) {
   background-color: var(--clr-primary-light);
@@ -54,16 +55,24 @@ section {
   color: white !important;
 }
 .sidebar {
-  width: 250px;
-  min-height: 100vh;
+  width: 280px;
+  height: 100vh;
   position: sticky;
+  overflow: auto;
   top: 0;
   left: 0;
   z-index: 99;
 }
+
 .sidebar i {
   width: 15px;
   height: 15px;
+}
+.sidebar-item {
+  font-size: medium;
+}
+.sidebar-subitem {
+  font-size: medium;
 }
 .profil-img-small {
   width: 50px;
@@ -80,6 +89,12 @@ table th {
   color: rgb(102, 102, 102) !important;
   font-size: 0.8rem;
   text-transform: uppercase;
+}
+table tbody td {
+  font-size: medium;
+}
+.text-small {
+  font-size: small;
 }
 /* Responsif untuk layar sedang (tablet) */
 @media (max-width: 768px) {
@@ -115,4 +130,75 @@ table th {
   .hero .big-brand {
     font-size: 3rem;
   }
+}
+
+.custom-scroll {
+  overflow: auto;
+  scrollbar-width: none; /* Hilangkan scrollbar di Firefox */
+  -ms-overflow-style: none; /* Hilangkan scrollbar di IE dan Edge */
+}
+
+.custom-scroll::-webkit-scrollbar {
+  opacity: 0;
+  transition: all 0.5s;
+  width: 8px;
+}
+
+.custom-scroll:hover {
+  scrollbar-width: thin; /* Atur lebar scrollbar di Firefox */
+}
+
+.custom-scroll:hover::-webkit-scrollbar {
+  opacity: 1;
+}
+
+.custom-scroll:hover::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.custom-scroll:hover::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.custom-scroll:hover::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.dt-type-numeric {
+  text-align: center !important;
+}
+
+.header-layer {
+  height: 300px;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+}
+
+.select2-container--default .select2-selection--single {
+  height: 46px !important;
+  padding: 10px 16px;
+  font-size: 18px;
+  line-height: 1.33;
+  border-radius: 6px;
+}
+.select2-container--default
+  .select2-selection--single
+  .select2-selection__arrow
+  b {
+  top: 85% !important;
+}
+.select2-container--default
+  .select2-selection--single
+  .select2-selection__rendered {
+  line-height: 26px !important;
+}
+.select2-container--default .select2-selection--single {
+  border: 1px solid #ccc !important;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset;
+  transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace services;
+namespace app\services;
 
 use PDO;
 use PDOException;
@@ -18,10 +18,10 @@ class Database
         // $password =  getenv("DB_PASSWORD");       // Kata sandi pengguna database
         // $dbName =  getenv("DB_NAME");       // Nama database
 
-        $servername = "10.242.131.69";
-        $username = "nautilus";
-        $password = "Nautilus33-";
-        $dbName = "sikamdis";
+        $servername = "localhost";
+        $username = "admin";
+        $password = "101010";
+        $dbName = "badean_post";
         try {
             // Mencoba membuat koneksi ke database menggunakan PDO
             $this->conn = new PDO("mysql:host=$servername;dbname=$dbName", $username, $password);

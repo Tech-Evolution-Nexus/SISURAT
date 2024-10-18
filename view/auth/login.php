@@ -20,8 +20,8 @@
 
 <body>
     <div class="row " style="height: 100vh;">
-        <div class="col-md-8" style="background-image: url(<?= assets('assets/bg-desa.png') ?>);">
 
+        <div class="col-md-8" style="background-image: url(<?= assets('assets/bg-desa.png') ?>);">
         </div>
         <div class="col-md-4 p-0">
             <div class="bg-white p-4 d-flex flex-column items-center justify-content-center h-100">

@@ -16,6 +16,6 @@ function autoload($class)
 spl_autoload_register('autoload');
 
 // memanggil file lainnya
-include __DIR__ . "/../services/Helpers.php";
+include __DIR__ . "/../app/services/Helpers.php";
 include __DIR__ . "/../route/route.php";
 loadEnv();
