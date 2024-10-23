@@ -12,10 +12,23 @@ abstract class Model
     {
         $this->db = (new Database())->getConnection();
     }
+
     public function query($query)
     {
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+    public function insert($query, $data)
+    {
+        $stmt = $this->db->prepare($query);
+        return   $stmt->execute($data);
+    }
+
+    public function singleQuery($query)
+    {
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ);
     }
 }

@@ -23,14 +23,45 @@
 
             // Cek apakah href sesuai dengan pathname
             if (pathname.includes(href)) {
-                $(this).addClass("bg-info");
+                $(this).addClass("bg-primary");
+                $(this).attr("style", "color: white !important;");
             }
         });
 
+        // phone format
+        // Format nomor telepon saat pengguna mengetik
+        $('.phone-format').on('input', function() {
+            let formattedPhone = $(this).val().replace(/\D/g, ""); // Hapus semua karakter non-digit
+            if (formattedPhone.length > 3 && formattedPhone.length <= 7) {
+                formattedPhone = formattedPhone.replace(/(\d{3})(\d+)/, "$1-$2");
+            } else if (formattedPhone.length > 7) {
+                formattedPhone = formattedPhone.replace(/(\d{3})(\d{4})(\d+)/, "$1-$2-$3");
+            }
+            if (formattedPhone.length <= 13) {
 
-        $('.data-table').DataTable();
+                $(this).val(formattedPhone);
+            }
+        });
+
+        // Toggle visibility of the password field
+        $('.toggle-password').on('click', function() {
+            const passwordInput = $(this).siblings('input[type="password"], input[type="text"]');
+            const type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+            passwordInput.attr('type', type);
+            $(this).html(type === 'password' ? '<i class="fa fa-eye"></i>' : '<i class="fa fa-eye-slash"></i>');
+        });
+
+
+        $('.data-table').DataTable({
+            responsive: true
+        });
         $('.select2').select2({
-            // theme: "bootstrap"
+            placeholder: $(".select2").attr("data-placeholder"),
+        });
+        $('.select2-modal').select2({
+            dropdownParent: $('.modal'),
+            placeholder: $(".select2-modal").attr("data-placeholder"),
+            allowClear: true
         });
 
     })

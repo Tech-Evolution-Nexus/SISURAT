@@ -41,12 +41,28 @@ if (!function_exists("includeFile")) {
 }
 
 if (!function_exists("request")) {
-    function request($key)
+    function request($key = null)
     {
-        $data = [...$_GET, $_POST, ...$_FILES];
-        return $data[$key] || null;
+        $data = [...$_GET, ...$_POST, ...$_FILES];
+        return isset($key) ? (isset($data[$key]) ?  $data[$key] : null) : $data;
     }
 }
+if (!function_exists("redirect")) {
+    function redirect($url)
+    {
+        header("location:$url");
+    }
+}
+if (!function_exists("response")) {
+    function response($data, $status = 200)
+    {
+        http_response_code($status); // Set status code
+        header('Content-Type: application/json'); // Set content type
+        echo json_encode($data); // Output JSON
+        exit(); // Terminate script to prevent further output
+    }
+}
+
 
 
 

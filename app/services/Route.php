@@ -24,17 +24,19 @@ class Route
         }
 
         // Simpan aksi rute
-        self::$routes[$method][$url] = $action;
+        self::$routes[$method][rtrim($url, "/")] = $action;
         return new self;
     }
 
     public static function run()
     {
         $method = $_SERVER['REQUEST_METHOD'];
-        $url = $_SERVER['REQUEST_URI'];
+        $url = rtrim($_SERVER['REQUEST_URI'], "/");
         if (isset(self::$routes[$method])) {
             foreach (self::$routes[$method] as $routeUrl => $target) {
-                $pattern = preg_replace('/\/:([^\/]+)/', '/(?P<$1>[^/]+)', $routeUrl);
+                // $pattern = preg_replace('/\/:([^\/]+)/', '/(?P<$1>[^/]+)', $routeUrl);
+                $pattern = preg_replace('/\/:(\w+)/', '/(?P<$1>[^/]+)', $routeUrl);
+
                 if (preg_match('#^' . $pattern . '$#', $url, $matches)) {
                     $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
                     if (is_array($target)) {

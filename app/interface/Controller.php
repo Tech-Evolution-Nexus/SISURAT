@@ -4,7 +4,7 @@ namespace app\interface;
 
 abstract class Controller
 {
-    protected function view($path, $data)
+    protected function view($path, $data = [])
     {
         return view($path, $data);
     }
