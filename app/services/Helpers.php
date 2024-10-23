@@ -28,6 +28,9 @@ if (!function_exists("baseUrl")) {
 if (!function_exists("view")) {
     function view($path, $data = [])
     {
+        $path = str_replace('.', '/', $path);
+        
+        // Ekstrak data yang dikirim ke view
         extract($data);
         include __DIR__ . "/../../view/$path.php";
     }
@@ -62,14 +65,23 @@ if (!function_exists("response")) {
         exit(); // Terminate script to prevent further output
     }
 }
-
+if (!function_exists("dd")) {
+    function dd($data,)
+    {
+        echo '<pre>';
+        var_dump($data);
+        echo '</pre>';
+        die();
+    }
+}
 
 
 
 if (!function_exists("loadEnv")) {
     function loadEnv()
     {
-        $file = __DIR__ . ".env";
+        $file = __DIR__ . "/../../.env";
+      
         if (!file_exists($file)) {
             // throw new Exception("The .env file does not exist.");
             return;

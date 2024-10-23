@@ -27,7 +27,7 @@ class RT_RWModel extends Model
         return  $this->singleQuery("SELECT nama_lengkap,masyarakat.id,kartu_keluarga.rw as rw,kartu_keluarga.rt as rt,nik FROM masyarakat 
         JOIN kartu_keluarga ON masyarakat.id_kk = kartu_keluarga.id 
         JOIN users ON masyarakat.id = users.id_masyarakat 
-        WHERE role='$role' AND  kartu_keluarga.rw = '$rw' AND  kartu_keluarga.rt = '$rt' AND nik = $nik
+        WHERE role='$role' AND  kartu_keluarga.rw = '$rw' AND  kartu_keluarga.rt = '$rt' AND nik = '$nik' 
         ORDER BY masyarakat.id DESC");
     }
 
