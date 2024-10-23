@@ -176,7 +176,7 @@
                 url: "/admin/master-rw/ajax-masyarakat/" + data.id,
                 success: (data) => {
                     const formData = data;
-
+                    console.log(formData)
                     setFormData(formData)
 
                 }

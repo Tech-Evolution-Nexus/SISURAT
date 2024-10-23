@@ -2,13 +2,15 @@
 
 namespace app\controllers;
 
-use PHPUnit\Framework\TestCase;
-
-class AuthController extends TestCase
-{
+use app\interface\Controller;
+use app\services\Database;
+use app\models\KartuKeluargaModel;
+use app\models\MasyarakatModel;
+class AuthController extends Controller
+{ 
     public  function index()
     {
 
-        return view("/login");
+        return view("auth.login");
     }
 }

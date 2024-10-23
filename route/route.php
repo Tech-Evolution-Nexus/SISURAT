@@ -28,5 +28,4 @@ Route::addRoute("POST", "/admin/master-rt/:rw-id/:id", [RT_RWController::class, 
 Route::addRoute("GET", "/login", [AuthController::class, "index"]);
 Route::addRoute("POST", "/login", [AuthController::class, "authentic"]);
 
-
 Route::run();

@@ -29,7 +29,7 @@
                 <img src="<?= assets("assets/logo-badean.png") ?>" alt="Medical Cross Logo" width="300" height="100">
                 <h1>Login</h1>
                 <p>Silahkan masukkan informasi akun untuk masuk ke aplikasi</p>
-                <form action="/login" method="post">
+                <form action="login" method="post">
                     <div class="form-group mb-2">
                         <label for="username" class="mb-2">Username</label>
                         <input type="text" class="form-control" placeholder="Masukkan username" name="username" id="username">
