@@ -7,6 +7,7 @@ session_start();
 function autoload($class)
 {
     $filePath = str_replace('\\', '/', $class) . '.php';
+   
     $filePath = "../" . $filePath;
     if (file_exists($filePath)) {
         include_once($filePath);
@@ -16,6 +17,7 @@ function autoload($class)
 spl_autoload_register('autoload');
 
 // memanggil file lainnya
-include __DIR__ . "/../services/Helpers.php";
-include __DIR__ . "/../route/route.php";
+include __DIR__ . "/../app/services/Helpers.php";
+include __DIR__ . "/../app/services/httpstatusview/statuscollection.php";
 loadEnv();
+include __DIR__ . "/../route/route.php";

@@ -38,7 +38,7 @@
                 <img src="<?= assets("assets/logo-badean.png") ?>" alt="Medical Cross Logo" width="300" height="100">
                 <h1>Login</h1>
                 <p>Silahkan masukkan informasi akun untuk masuk ke aplikasi</p>
-                <form action="/login" method="post">
+                <form action="login" method="post">
                     <div class="form-group mb-2">
                         <label for="Email" class="mb-2">Email</label>
                         <input type="text" class="form-control" placeholder="Masukkan email" name="email" id="email">
