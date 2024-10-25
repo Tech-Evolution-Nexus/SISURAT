@@ -25,6 +25,12 @@ abstract class Model
         return   $stmt->execute($data);
     }
 
+    public function update($query, $data)
+    {
+        $stmt = $this->db->prepare($query);
+        return   $stmt->execute($data);
+    }
+
     public function singleQuery($query)
     {
         $stmt = $this->db->prepare($query);

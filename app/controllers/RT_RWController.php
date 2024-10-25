@@ -68,8 +68,40 @@ class RT_RWController extends Controller
             $model2->create($data);
             return redirect("/admin/master-rw");
         } catch (\Throwable $th) {
+            // var_dump($th);;
+            die();
         }
+    }
+    public  function updateRW($idmasyarakat)
+    {
+        try {
+            $model  = new RT_RWModel();
+            $nik = request("nik");
+            $idMasyarakat = request("id_masyarakat");
+            $alamat = request("alamat");
+            $rt = request("rt");
+            $rw = request("rw");
+            $noHp = request("no_hp");
+            $password = request("password");
+            $cekResult =  $model->cek("rw", $rw, $rt, $nik);
+            if ($cekResult) {
+                return;
+            }
+            $model2  = new UserModel();
+            $data = [
+                // "email" => null,
+                // "password" => password_hash($password, PASSWORD_BCRYPT),
+                "no_hp" => $noHp,
+                // "role" => "rw",
+            ];
+            $user = $model2->getByIdMasyarakat($idmasyarakat);
 
-        // return redirect("/admin/kartu-keluarga");
+            if ($password !== null) $data["password"] = password_hash($password, PASSWORD_BCRYPT);
+            $model2->update($user->id, $data);
+            return redirect("/admin/master-rw");
+        } catch (\Throwable $th) {
+            // var_dump($th);;
+            die();
+        }
     }
 }

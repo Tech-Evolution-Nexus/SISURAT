@@ -18,6 +18,7 @@ Route::addRoute("GET", "/admin/master-rw/ajax-masyarakat/:id", [RT_RWController:
 Route::addRoute("GET", "/admin/master-rw/create", [RT_RWController::class, "createRW"]);
 Route::addRoute("POST", "/admin/master-rw", [RT_RWController::class, "storeRW"]);
 Route::addRoute("POST", "/admin/master-rw/:id", [RT_RWController::class, "editRW"]);
+
 // RW
 Route::addRoute("GET", "/admin/master-rt/:rw-id", [RT_RWController::class, "indexRT"]);
 Route::addRoute("GET", "/admin/master-rt/:rw-id/create", [RT_RWController::class, "createRT"]);

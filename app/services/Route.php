@@ -32,6 +32,7 @@ class Route
     {
         $method = $_SERVER['REQUEST_METHOD'];
         $url = rtrim($_SERVER['REQUEST_URI'], "/");
+
         if (isset(self::$routes[$method])) {
             foreach (self::$routes[$method] as $routeUrl => $target) {
                 // $pattern = preg_replace('/\/:([^\/]+)/', '/(?P<$1>[^/]+)', $routeUrl);
