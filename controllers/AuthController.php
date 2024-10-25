@@ -1,7 +1,8 @@
 <?php
 
 namespace controllers;
-
+use services\Database;
+use PDO;
 class AuthController
 {
     public  function index()
@@ -11,15 +12,16 @@ class AuthController
 
     public function authentic()
     {
-        
-        $username = $_POST['username'];
+        // var_dump(password_hash("admin",PASSWORD_BCRYPT));
+        // die();
+        $email = $_POST['email'];
         $password = $_POST['password'];
         $hasError = false;
-        if (empty($username)) {
-            $_SESSION["usenameErr"] = 'Username tidak boleh kosong';
+        if (empty($email)) {
+            $_SESSION["usenameErr"] = 'email tidak boleh kosong';
             $hasError = true;
         }
-
+        
         if (empty($password)) {
             $_SESSION["passwordErr"] = 'Kata sandi tidak boleh kosong';
             $hasError = true;
@@ -28,15 +30,24 @@ class AuthController
             $hasError = true;
         }
         //Cek inputan ke database
-        $user = "SELECT * FROM user where user = $username";
-        if ($user) { //kondisi jika Username terdaftar
-            if (md5($password) === $user) {
-                $_SESSION["user"] = $user;
-                header("Location:/login");
-                //Mengirim user ke Dashboard
-            } else { //kondisi jika password salah
-                $_SESSION["usernameErr"] = 'Password salah';
-            }
+        $user = "SELECT * FROM users where email = '$email'";
+      $conn = (new Database())->getConnection(); 
+      $result= $conn-> prepare ($user);
+      $result->execute ();
+      //var_dump ($result->fetch());
+     // die ();
+        if ($result->rowCount()>0) { 
+           $data=$result->fetch(PDO::FETCH_ASSOC);
+           if (password_verify ($password,$data['password'])){
+            header("Location:/admin");
+            return;
+        }else  { 
+
+$_SESSION["passwordErr"] = 'Password salah';
+$hasError = true;
+//die();
+           }
+    
         } else { //kondisi jika E-mail tidak terdaftar
             $_SESSION["usernameErr"] = 'Username tidak terdaftar';
         }
@@ -46,5 +57,7 @@ class AuthController
         } else {
             header("Location:/login");
         }
+   
     }
+
 }

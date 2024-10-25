@@ -17,11 +17,11 @@ class Database
         // $username =  getenv("DB_USERNAME");        // Nama pengguna database
         // $password =  getenv("DB_PASSWORD");       // Kata sandi pengguna database
         // $dbName =  getenv("DB_NAME");       // Nama database
-
-        $servername = "10.242.131.69";
-        $username = "nautilus";
-        $password = "Nautilus33-";
-        $dbName = "sikamdis";
+     
+        $servername = "localhost";
+        $username = "root";
+        $password = "";
+        $dbName = "BADEANSURAT";
         try {
             // Mencoba membuat koneksi ke database menggunakan PDO
             $this->conn = new PDO("mysql:host=$servername;dbname=$dbName", $username, $password);

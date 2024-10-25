@@ -16,25 +16,35 @@
         * {
             box-sizing: border-box;
         }
+        img{
+
+        }
     </style>
+
 </head>
 
 <body>
     <div class="row " style="height: 100vh;">
-        <div class="col-md-8" style="background-image: url(<?= assets('assets/bg-desa.png') ?>);">
-
+        <div class="col-md-7 justify-content-center d-flex flex-column align-items-center" style="background-color:#052158" > 
+            <img class ="img-fluid"src="<?= assets("assets/logosurat.png") ?>" width="450">
+            <h2 style="max-width:500px; text-align:center; color:white; font-size:20px;" class="mt-4">
+            Kelurahan Terkoneksi, Surat Menyurat Jadi Lebih Cepat dan Mudah
+    </h2>
+        
         </div>
-        <div class="col-md-4 p-0">
+        <div class="col-md-5 p-0"> 
+
             <div class="bg-white p-4 d-flex flex-column items-center justify-content-center h-100">
                 <img src="<?= assets("assets/logo-badean.png") ?>" alt="Medical Cross Logo" width="300" height="100">
                 <h1>Login</h1>
                 <p>Silahkan masukkan informasi akun untuk masuk ke aplikasi</p>
                 <form action="/login" method="post">
                     <div class="form-group mb-2">
-                        <label for="username" class="mb-2">Username</label>
-                        <input type="text" class="form-control" placeholder="Masukkan username" name="username" id="username">
+                        <label for="Email" class="mb-2">Email</label>
+                        <input type="text" class="form-control" placeholder="Masukkan email" name="email" id="email">
                         <?php if (isset($_SESSION["usernameErr"])): ?>
                             <small><?= $_SESSION["usernameErr"] ?></small>
+                        <?php unset($_SESSION["usernameErr"]); ?>
                         <?php endif; ?>
                     </div>
                     <div class="form-group mb-4">
@@ -42,9 +52,12 @@
                         <input type="password" class="form-control" placeholder="Masukkan kata sandi" name="password" id="password">
                         <?php if (isset($_SESSION["passwordErr"])): ?>
                             <small><?= $_SESSION["passwordErr"] ?></small>
+                            <?php unset($_SESSION["passwordErr"]); ?>
                         <?php endif; ?>
                     </div>
                     <button class="btn btn-primary w-100" type="submit">Login</button>
+                    <a href="">Lupa Password</a>
+                    
                 </form>
             </div>
         </div>
