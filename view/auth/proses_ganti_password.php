@@ -40,5 +40,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         $stmt->close();
     }
+    // Ambil input dari form
+$password = $_POST['password'] ?? '';
+$confirm_password = $_POST['confirm_password'] ?? '';
+
+// Panggil fungsi ubahPassword di AuthController
+require_once __DIR__ . '/../controllers/AuthController.php';
+$authController = new AuthController();
+$authController->ubahPassword($password, $confirm_password);
+
 }
 ?>

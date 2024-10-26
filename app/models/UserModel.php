@@ -17,4 +17,7 @@ class UserModel extends Model
     public function updatetokenreset($data){
         return $this->execute("UPDATE users SET token_reset = :token WHERE email = :email",$data);
     }
+    public function cekresettoken($token){
+        return $this->singleQuery("SELECT * FROM users WHERE token_reset = '$token'")??false;
+    }
 }

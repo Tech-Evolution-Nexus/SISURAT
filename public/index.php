@@ -1,6 +1,6 @@
 <?php
 // ini merupakan main file yang memanggil file lainnya
-
+use app\services\Router;
 session_start();
 
 //untuk otomatis inlcude file yg pemanggilannya menggunakan use
@@ -22,4 +22,7 @@ require '../lib/PHPMailer/Exception.php';
 include __DIR__ . "/../app/services/Helpers.php";
 include __DIR__ . "/../app/services/httpstatusview/statuscollection.php";
 loadEnv();
-include __DIR__ . "/../route/route.php";
+Router::$prefix = '/api'; // Menambahkan prefix untuk API
+require_once '../route/api.php'; // Memuat rute API
+Router::$prefix = ''; // Reset prefix untuk rute web
+require_once '../route/web.php'; // Memuat rute web
