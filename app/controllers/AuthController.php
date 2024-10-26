@@ -45,9 +45,9 @@ class AuthController
             return;
         }else  { 
 
-$_SESSION["passwordErr"] = 'Password salah';
-$hasError = true;
-//die();
+            $_SESSION["passwordErr"] = 'Password salah';
+            $hasError = true;
+            //die();
            }
     
         } else { //kondisi jika E-mail tidak terdaftar
@@ -68,6 +68,17 @@ $hasError = true;
 
 
         }
+        public function gantiPassword()
+        {dd('sembarang');
+            return view("auth/proses_ganti_password");
+
+
+        }
+        public function gantiPasswordStore()
+        {
+
+
+        }
 
         public function kirimLinkReset()
         {
@@ -82,44 +93,52 @@ $hasError = true;
             $result = $model->cekuserbyemail($email);
             if ($result) {
                 // Buat token
-                $token = bin2hex(random_bytes(50));
-                $expire = date("Y-m-d H:i:s", strtotime('+1 hour'));
-        
+                $token = bin2hex(random_bytes(50)); // Generate random token
+                $expiry = time() + 3600; // 1 jam ke depan
+                $payload = json_encode(['email' => $email, 'token' => $token, 'exp' => $expiry]);
+                $encodedToken = base64_encode($payload);
+                $data = [
+                    "token"=>$payload,
+                    "email"=>$email
+                ];
                 // Simpan token dan tanggal kedaluwarsa di database
-                $model->updatetokenreset($token,$expire,$email);
-        
-                // Mengirim email
-                $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+                $model->updatetokenreset($data);
+                
+                $resetLink = "http://localhost/ganti-password?token=" . $encodedToken;
+                $mail = new PHPMailer(true);
                 try {
-                    // Pengaturan server
+                    // Pengaturan server SMTP
                     $mail->isSMTP();
-                    $mail->Host = 'smtp.example.com'; // Ganti dengan server SMTP yang kamu gunakan
+                    $mail->Host = 'smtp.gmail.com'; // Ganti dengan server SMTP Anda
                     $mail->SMTPAuth = true;
-                    $mail->Username = 'your_email@example.com'; // Alamat email pengirim
-                    $mail->Password = 'your_password'; // Password email pengirim
-                    $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS; // Atau PHPMailer::ENCRYPTION_SMTPS
-                    $mail->Port = 587; // Port SMTP
-        
+                    $mail->Username = 'mnorkholit7@gmail.com'; // Ganti dengan email Anda
+                    $mail->Password = 'fcoyzvnhpodahuoh'; // Ganti dengan password email Anda
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // atau PHPMailer::ENCRYPTION_SMTPS
+                    $mail->Port = 587; // Ganti dengan port yang sesuai
+
                     // Penerima
-                    $mail->setFrom('your_email@example.com', 'Nama Pengirim');
-                    $mail->addAddress($email);
-        
+                    $mail->setFrom('Badean@gmail.com', 'Admin Badean');
+                    $mail->addAddress($email); // Tambahkan alamat email penerima
+
                     // Konten email
                     $mail->isHTML(true);
                     $mail->Subject = 'Reset Password';
-                    $mail->Body = "Klik link berikut untuk reset password: <a href='https://yourdomain.com/reset_password.php?token=$token'>Reset Password</a>";
-        
-                    // Mengirim email
+                    $mail->Body = "Klik tautan ini untuk reset password Anda:
+                    <br><br>
+                    <a href='{$resetLink}' style='display: inline-block; padding: 10px 20px; font-size: 16px; color: white; background-color: #007BFF; text-decoration: none; border-radius: 5px;'>Reset Password</a>
+                    ";
+
+                    // Kirim email
                     $mail->send();
-                    echo "Link reset password telah dikirim ke email Anda.";
+                    echo 'Tautan reset password telah dikirim ke email Anda.';
                 } catch (Exception $e) {
-                    echo "Email tidak dapat dikirim. Kesalahan: {$mail->ErrorInfo}";
+                    echo "Pesan tidak dapat dikirim. Mailer Error: {$mail->ErrorInfo}";
                 }
-            } else {
-                echo "Email tidak ditemukan.";
             }
         }
-}
+    }
+
+
 
    
 

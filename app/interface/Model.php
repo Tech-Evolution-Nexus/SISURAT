@@ -19,12 +19,13 @@ abstract class Model
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
-    public function insert($query, $data)
+    public function execute($query, $data)
     {
         $stmt = $this->db->prepare($query);
         return   $stmt->execute($data);
     }
 
+  
     public function singleQuery($query)
     {
         $stmt = $this->db->prepare($query);

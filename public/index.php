@@ -15,7 +15,9 @@ function autoload($class)
 }
 
 spl_autoload_register('autoload');
-
+require '../lib/PHPMailer/PHPMailer.php';
+require '../lib/PHPMailer/SMTP.php';
+require '../lib/PHPMailer/Exception.php';
 // memanggil file lainnya
 include __DIR__ . "/../app/services/Helpers.php";
 include __DIR__ . "/../app/services/httpstatusview/statuscollection.php";

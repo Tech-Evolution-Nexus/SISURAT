@@ -28,8 +28,12 @@ Route::addRoute("POST", "/admin/master-rt/:rw-id/:id", [RT_RWController::class, 
 Route::addRoute("GET", "/login", [AuthController::class, "index"]);
 Route::addRoute("POST", "/login", [AuthController::class, "authentic"]);
 Route::addRoute("GET", "/dashbord", [AuthController::class, "authentic"]);
-Route::addRoute("GET", "/lupa-password", [AuthController::class, 'lupaPassword']);
-Route::addRoute("POST", "/lupa-password", [AuthController::class, 'kirimLinkReset']);
+Route::addRoute("GET", "/lupapassword", [AuthController::class, 'lupaPassword']);
+Route::addRoute("POST", "/lupapassword", [AuthController::class, 'kirimLinkReset']);
 Route::addRoute("POST", "/sendemail", [AuthController::class, 'sendemail']);
+
+//ganti password
+Route::addRoute("GET", "/ganti-password", [AuthController::class, "gantiPassword"]);
+Route::addRoute("POST", "/ganti-password", [AuthController::class, "gantiPasswordStore"]);
 
 Route::run();
