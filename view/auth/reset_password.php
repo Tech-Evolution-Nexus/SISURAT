@@ -30,23 +30,24 @@
                 <img src="<?= assets("assets/logo-badean.png") ?>" alt="Logo Badean" width="300" height="100">
                 <h1>Ganti Password</h1>
                 <p>Masukkan password baru untuk akun Anda!</p>
-                <form action="proses_ganti_password.php" method="post">
-                    <div class="form-group mb-2">
-                        <label for="password" class="mb-2">Password Baru</label>
-                        <input type="password" class="form-control" placeholder="Masukkan Password Baru" name="password" id="password">
-                        <?php if (isset($_SESSION["passwordErr"])): ?>
-                            <small class="text-danger"><?= $_SESSION["passwordErr"] ?></small>
-                        <?php unset($_SESSION["passwordErr"]); ?>
-                        <?php endif; ?>
-                    </div>
-                    <div class="form-group mb-2">
-                        <label for="confirm_password" class="mb-2">Konfirmasi Password Baru</label>
-                        <input type="password" class="form-control" placeholder="Konfirmasi Password Baru" name="confirm_password" id="confirm_password">
-                        <?php if (isset($_SESSION["confirmPasswordErr"])): ?>
-                            <small class="text-danger"><?= $_SESSION["confirmPasswordErr"] ?></small>
-                        <?php unset($_SESSION["confirmPasswordErr"]); ?>
-                        <?php endif; ?>
-                    </div>
+                <form action="ganti-password" method="post">
+                <div class="form-group mb-2">
+    <label for="password" class="mb-2">Password Baru</label>
+    <input type="password" class="form-control" placeholder="Masukkan Password Baru" name="password" id="password">
+    <?php if (isset($_SESSION["passwordErr"])): ?>
+        <small class="text-danger"><?= $_SESSION["passwordErr"] ?></small>
+        <?php unset($_SESSION["passwordErr"]); ?>
+    <?php endif; ?>
+</div>
+<div class="form-group mb-2">
+    <label for="confirm_password" class="mb-2">Konfirmasi Password Baru</label>
+    <input type="password" class="form-control" placeholder="Konfirmasi Password Baru" name="confirm_password" id="confirm_password">
+    <?php if (isset($_SESSION["confirmPasswordErr"])): ?>
+        <small class="text-danger"><?= $_SESSION["confirmPasswordErr"] ?></small>
+        <?php unset($_SESSION["confirmPasswordErr"]); ?>
+    <?php endif; ?>
+</div>
+
                     <button class="btn btn-primary w-100" type="submit">Ganti Password</button>
                 </form>
             </div>

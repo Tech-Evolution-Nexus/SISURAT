@@ -56,7 +56,7 @@
                         <?php endif; ?>
                     </div>
                     <button class="btn btn-primary w-100" type="submit">Login</button>
-                    <a href="">Lupa Password</a>
+                    <a href="lupapassword">Lupa Password</a>
                     
                 </form>
             </div>
