@@ -13,15 +13,15 @@ class Database
     public function __construct()
     {
         // Parameter koneksi database
-        // $servername = getenv("DB_HOST"); // Nama server database
-        // $username =  getenv("DB_USERNAME");        // Nama pengguna database
-        // $password =  getenv("DB_PASSWORD");       // Kata sandi pengguna database
-        // $dbName =  getenv("DB_NAME");       // Nama database
+        $servername = $_ENV["DB_HOST"]; // Nama server database
+        $username =   $_ENV["DB_USERNAME"];        // Nama pengguna database
+        $password =   $_ENV["DB_PASSWORD"];       // Kata sandi pengguna database
+        $dbName =   $_ENV["DB_NAME"];       // Nama database
 
-        $servername = "localhost";
-        $username = "admin";
-        $password = "101010";
-        $dbName = "badean_post";
+        // $servername = "localhost";
+        // $username = "admin";
+        // $password = "101010";
+        // $dbName = "badean_post";
         try {
             // Mencoba membuat koneksi ke database menggunakan PDO
             $this->conn = new PDO("mysql:host=$servername;dbname=$dbName", $username, $password);

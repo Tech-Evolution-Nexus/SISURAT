@@ -44,18 +44,23 @@ class RT_RWController extends Controller
     public  function storeRW()
     {
         try {
+
             $model  = new RT_RWModel();
             $nik = request("nik");
             $idMasyarakat = request("id_masyarakat");
+
             $alamat = request("alamat");
             $rt = request("rt");
             $rw = request("rw");
             $noHp = request("no_hp");
             $password = request("password");
+
             $cekResult =  $model->cek("rw", $rw, $rt, $nik);
+
             if ($cekResult) {
                 return;
             }
+
             $model2  = new UserModel();
             $data = [
                 "email" => null,
@@ -68,8 +73,7 @@ class RT_RWController extends Controller
             $model2->create($data);
             return redirect("/admin/master-rw");
         } catch (\Throwable $th) {
-            // var_dump($th);;
-            die();
+            throw new \InvalidArgumentException($th);
         }
     }
     public  function updateRW($idmasyarakat)
@@ -89,10 +93,7 @@ class RT_RWController extends Controller
             }
             $model2  = new UserModel();
             $data = [
-                // "email" => null,
-                // "password" => password_hash($password, PASSWORD_BCRYPT),
                 "no_hp" => $noHp,
-                // "role" => "rw",
             ];
             $user = $model2->getByIdMasyarakat($idmasyarakat);
 

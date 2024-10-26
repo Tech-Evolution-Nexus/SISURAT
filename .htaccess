@@ -1,11 +1,7 @@
-<IfModule mod_rewrite.c>
-    # Enable the rewrite engine
-    RewriteEngine On
+RewriteEngine On
+RewriteBase /SISURAT/
 
-    # Check if the request is not for a file or directory that exists
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{THE_REQUEST} /public/([^\s?]*) [NC]
+RewriteRule ^ %1 [L,NE,R=302]
 
-    # Redirect all requests to the /public folder
-    RewriteRule ^(.*)$ public/$1 [L]
-</IfModule>
+RewriteRule ^((?!public/).*)$ public/$1 [L,NC]
