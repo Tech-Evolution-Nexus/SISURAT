@@ -1,5 +1,7 @@
 <?php
 
+use App\services\Request;
+
 if (!function_exists("assets")) {
     function assets($path)
     {
@@ -29,7 +31,7 @@ if (!function_exists("view")) {
     function view($path, $data = [])
     {
         $path = str_replace('.', '/', $path);
-        
+
         // Ekstrak data yang dikirim ke view
         extract($data);
         include __DIR__ . "/../../view/$path.php";
@@ -46,8 +48,9 @@ if (!function_exists("includeFile")) {
 if (!function_exists("request")) {
     function request($key = null)
     {
-        $data = [...$_GET, ...$_POST, ...$_FILES];
-        return isset($key) ? (isset($data[$key]) ?  $data[$key] : null) : $data;
+        $request = new Request();
+        if (!$key) return $request;
+        return $request->get($key);
     }
 }
 if (!function_exists("redirect")) {
@@ -81,7 +84,7 @@ if (!function_exists("loadEnv")) {
     function loadEnv()
     {
         $file = __DIR__ . "/../../.env";
-      
+
         if (!file_exists($file)) {
             // throw new Exception("The .env file does not exist.");
             return;

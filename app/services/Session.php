@@ -1,36 +1,42 @@
 <?php
 
-/**
- * Function to create and display error and success messages
- * @access public
- * @param string session name
- * @param string message
- * @param string display class
- * @return string message
- */
-function flash($name = '', $message = '', $class = 'alert-success')
+class Session
 {
-    //We can only do something if the name isn't empty
-    if (!empty($name)) {
-        //No message, create it
-        if (!empty($message) && empty($_SESSION[$name])) {
-            if (!empty($_SESSION[$name])) {
-                unset($_SESSION[$name]);
-            }
-            if (!empty($_SESSION[$name . '_class'])) {
-                unset($_SESSION[$name . '_class']);
-            }
+    public function __construct()
+    {
+        session_start(); // Start the session in the constructor
+    }
 
-            $_SESSION[$name] = $message;
-            $_SESSION[$name . '_class'] = $class;
+    public function flash($key, $data = null)
+    {
+        // Assuming get data
+        if ($data) {
+            $val = $_SESSION["flash"][$key] ?? null; // Use null coalescing operator to avoid undefined index notice
+            unset($_SESSION["flash"][$key]);
+            return $val;
         }
-        //Message exists, display it
-        elseif (!empty($_SESSION[$name]) && empty($message)) {
-            $class = !empty($_SESSION[$name . '_class']) ? $_SESSION[$name . '_class'] : 'alert-success';
-            echo '<div class="alert ' . $class . '">' . $_SESSION[$name] . '</div>';
 
-            unset($_SESSION[$name]);
-            unset($_SESSION[$name . '_class']);
-        }
+        $_SESSION["flash"][$key] = $data;
+    }
+
+    public function set($key, $data)
+    {
+        $_SESSION[$key] = $data;
+    }
+
+    public function get($key)
+    {
+        return $_SESSION[$key] ?? null; // Use null coalescing operator for safety
+    }
+
+    public function remove($key)
+    {
+        unset($_SESSION[$key]);
+    }
+
+    public function removeAll()
+    {
+        session_reset();
+        session_destroy();
     }
 }

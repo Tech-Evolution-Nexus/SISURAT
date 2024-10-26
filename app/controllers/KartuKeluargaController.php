@@ -8,12 +8,17 @@ use app\models\MasyarakatModel;
 
 class KartuKeluargaController extends Controller
 {
-
+    private $model;
+    public function __construct()
+    {
+        dd(request()->getAll());
+        $this->model =  (object)[];
+        $this->model->kartuKeluarga = new KartuKeluargaModel();
+        $this->model->masyarakat = new MasyarakatModel();
+    }
     public  function index()
     {
-        $model  = new KartuKeluargaModel();
-
-        $data = $model->all();
+        $data = $this->model->kartuKeluarga->all();
         $params["data"] = (object)[
             "title" => "Kartu Keluarga",
             "description" => "Kelola Kartu Keluarga dengan mudah",
@@ -26,8 +31,9 @@ class KartuKeluargaController extends Controller
     }
     public  function create()
     {
-        $model  = new MasyarakatModel();
-        $kepalaKeluarga = $model->getUnconnectedMasyarakatToKepalaKeluarga();
+
+        $kepalaKeluarga = $this->model->masyarakat->getUnconnectedMasyarakatToKepalaKeluarga();
+        // default value
         $data = (object)[
             "no_kk" => "",
             "kepala_keluarga" => "",
@@ -49,6 +55,7 @@ class KartuKeluargaController extends Controller
     }
     public  function store()
     {
+
         $noKK = request("no_kk");
         $kepalaKeluarga = request("kepala_keluarga");
         $alamat = request("alamat");
@@ -62,10 +69,8 @@ class KartuKeluargaController extends Controller
 
     public  function edit($id)
     {
-        $model  = new MasyarakatModel();
-        $model2  = new KartuKeluargaModel();
-        $kepalaKeluarga = $model->getUnconnectedMasyarakatToKepalaKeluarga();
-        $kartuKeluarga = $model2->getById($id);
+        $kepalaKeluarga = $this->model->masyarakat->getUnconnectedMasyarakatToKepalaKeluarga();
+        $kartuKeluarga = $this->model->kartuKeluarga->getById($id);
         $data = (object)[
             "no_kk" => $kartuKeluarga->no_kk,
             "kepala_keluarga" => $kartuKeluarga->id_masyarakat,
