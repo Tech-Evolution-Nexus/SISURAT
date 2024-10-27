@@ -5,10 +5,12 @@ use app\controllers\KartuKeluargaController;
 use app\controllers\RT_RWController;
 use app\services\Router;
 
+//Kartu Keluarga
 Router::addRoute("GET", "/admin/kartu-keluarga", [KartuKeluargaController::class, "index"]);
 Router::addRoute("GET", "/admin/kartu-keluarga/create", [KartuKeluargaController::class, "create"]);
 Router::addRoute("POST", "/admin/kartu-keluarga", [KartuKeluargaController::class, "store"]);
-Router::addRoute("GET", "/admin/kartu-keluarga/:id", [KartuKeluargaController::class, "edit"]);
+Router::addRoute("GET", "/admin/kartu-keluarga/:id/edit", [KartuKeluargaController::class, "edit"]);
+Router::addRoute("POST", "/admin/kartu-keluarga/:id", [KartuKeluargaController::class, "update"]);
 
 // RT DAN RW 
 // RW

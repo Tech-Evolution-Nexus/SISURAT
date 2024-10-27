@@ -72,6 +72,23 @@ if (!function_exists("redirect")) {
         exit;
     }
 }
+if (!function_exists("old")) {
+    function old($key, $default)
+    {
+        $session = new Session();
+        return $session->flash($key) ?? $default;
+    }
+}
+
+if (!function_exists("session")) {
+    function session()
+    {
+        return  new Session();
+    }
+}
+
+
+
 if (!function_exists("response")) {
     function response($data, $status = 200)
     {
