@@ -29,4 +29,12 @@ class UserModel extends Model
         WHERE masyarakat.id = $idMasyarakat
         ORDER BY masyarakat.id DESC");
     }
+    public function cekuserbyemail($email)
+    {
+        return $this->singleQuery("SELECT * FROM users WHERE email = '$email'") ?? false;
+    }
+    public function updatetokenreset($token, $expire, $email)
+    {
+        return $this->update("UPDATE users SET reset_token = '$token', token_expire = '$expire' WHERE email = '$email'");
+    }
 }

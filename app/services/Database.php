@@ -18,6 +18,7 @@ class Database
         $password =   $_ENV["DB_PASSWORD"];       // Kata sandi pengguna database
         $dbName =   $_ENV["DB_NAME"];       // Nama database
 
+        // var_dump($_ENV);
         // $servername = "localhost";
         // $username = "admin";
         // $password = "101010";
