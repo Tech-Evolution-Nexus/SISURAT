@@ -1,6 +1,7 @@
 <?php
 
 use App\services\Request;
+use app\services\Session;
 
 if (!function_exists("assets")) {
     function assets($path)
@@ -9,7 +10,18 @@ if (!function_exists("assets")) {
         return baseUrl() . "/" . $path;
     }
 }
-
+if (!function_exists("session")) {
+    function session()
+    {
+        return new Session();
+    }
+}
+if (!function_exists("old")) {
+    function old($key, $default)
+    {
+        return session()->flash($key) ?? $default;
+    }
+}
 if (!function_exists("baseUrl")) {
     function baseUrl()
     {
@@ -56,7 +68,8 @@ if (!function_exists("request")) {
 if (!function_exists("redirect")) {
     function redirect($url)
     {
-        header("location:$url");
+        header('Location: ' . $_ENV['APP_URL'] . $url);
+        exit;
     }
 }
 if (!function_exists("response")) {

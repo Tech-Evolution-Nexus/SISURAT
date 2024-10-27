@@ -105,7 +105,8 @@ Akbar Maulidi Riskiawan (E41232095)
 <br>
 Ahmad Ja'far Shodiq (E41232055)
 <br>
-Ilham Nur Isnaini Baskara Jaya (E41232121)
+<a href="https://github.com/chuzXII" target="_blank">Ilham Nur Isnaini Baskara Jaya (E41232121)</a>
+
 <br>
 <a href="https://github.com/NebulaCircle" target="_blank">Muhammad Nor Kholit (E41231973)</a>
 <br>
