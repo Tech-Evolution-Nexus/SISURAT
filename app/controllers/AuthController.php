@@ -1,10 +1,13 @@
 <?php
 
 namespace app\controllers;
+
 use app\services\Database;
 use PDO;
 use PHPMailer\PHPMailer\PHPMailer;
 use app\models\UserModel;
+use Exception;
+
 class AuthController
 {
     public  function index()
@@ -23,7 +26,7 @@ class AuthController
             $_SESSION["usenameErr"] = 'email tidak boleh kosong';
             $hasError = true;
         }
-        
+
         if (empty($password)) {
             $_SESSION["passwordErr"] = 'Kata sandi tidak boleh kosong';
             $hasError = true;
@@ -33,226 +36,191 @@ class AuthController
         }
         //Cek inputan ke database
         $user = "SELECT * FROM users where email = '$email'";
-      $conn = (new Database())->getConnection(); 
-      $result= $conn-> prepare ($user);
-      $result->execute ();
-      //var_dump ($result->fetch());
-     // die ();
-        if ($result->rowCount()>0) { 
-           $data=$result->fetch(PDO::FETCH_ASSOC);
-           if (password_verify ($password,$data['password'])){
-            header("Location:/admin");
-            return;
-        }else  { 
+        $conn = (new Database())->getConnection();
+        $result = $conn->prepare($user);
+        $result->execute();
+        //var_dump ($result->fetch());
+        // die ();
+        if ($result->rowCount() > 0) {
+            $data = $result->fetch(PDO::FETCH_ASSOC);
+            if (password_verify($password, $data['password'])) {
+                return redirect("/admin");
+            } else {
 
-            $_SESSION["passwordErr"] = 'Password salah';
-            $hasError = true;
-            //die();
-           }
-    
+                $_SESSION["passwordErr"] = 'Password salah';
+                $hasError = true;
+                return redirect("/login");
+
+                //die();
+
+            }
         } else { //kondisi jika E-mail tidak terdaftar
             $_SESSION["usernameErr"] = 'Username tidak terdaftar';
+            return redirect("/login");
+
         }
 
-        if (!$hasError) {
-            // Login logic here      
-        } else {
-            header("Location:/login");
-        }
-   
+        // if (!$hasError) {
+        //     // Login logic here      
+        // } else {
+        //     return redirect("/login");
+        // }
     }
 
-        public function lupaPassword()
-        {
-            return view("auth/lupapassword");
+    public function lupaPassword()
+    {
+        return view("auth/lupapassword");
+    }
 
-
-        }
-
-
-
+    public function gantiPassword($token = null)
+    {
+        $model = new UserModel();
         
-        public function gantiPassword($token = null) {
-            $model = new UserModel();
-            // Simpan token ke sesi jika diperlukan untuk verifikasi nanti
-            if ($token) {
-                $data = base64_decode($token);
-                var_dump($data);
-
-                $datas = json_decode($data);
-
-                $email = $datas->email;
-                $reset_token =  $datas->token;
-                $exp =  $datas->exp;
-                if ($model->cekresettoken($reset_token)) { 
-                    return view("auth/reset_password");
-                }else {
-                    return view("auth/login");
-                }
-                // return view("auth/reset_password");
-
-            }else  {
-            return view("auth/login");
-            }
-            // Tampilkan halaman reset password
-            
+        // Check if the token is provided and is valid format
+        if (is_null($token) || !$this->isValidTokenFormat($token) || !$model->cekresettoken($token)) {
+            // Flash message for invalid token
+            session()->set('error', 'Token tidak valid atau telah kadaluarsa.');
+            return redirect("/login");
         }
     
-        public function ubahPassword($password, $confirm_password)
-{
-    // Validasi input password
-    $errors = [];
-
-    if (empty($password)) {
-        $errors['passwordErr'] = "Password baru tidak boleh kosong.";
+        // Decode the token and extract user details safely
+        $data = base64_decode($token);
+        $datas = json_decode($data);
+    
+        // Ensure that decoding was successful and user exists
+        if (json_last_error() !== JSON_ERROR_NONE || !isset($datas->email, $datas->token, $datas->exp)) {
+            session()->set('error', 'Token tidak valid.');
+            return redirect("/login");
+        }
+    
+        $email = filter_var($datas->email, FILTER_SANITIZE_EMAIL);
+        $reset_token = $datas->token;
+        $exp = (int) $datas->exp;
+    
+        // Check if the token is expired
+        if (time() > $exp) {
+            session()->set('error', 'Token telah kadaluarsa.');
+            return redirect("/login");
+        }
+    
+        // Optional: Verify user existence
+        if (!$model->cekuserbyemail($email)) {
+            session()->set('error', 'Pengguna tidak ditemukan.');
+            return redirect("/login");
+        }
+    
+        // Render the reset password view if all checks pass
+        return view("auth/reset_password", ['token' =>$token]);
     }
-
-    if ($password !== $confirm_password) {
-        $errors['confirmPasswordErr'] = "Konfirmasi password tidak sesuai.";
-    }
-
-    // Jika ada error, simpan ke sesi untuk ditampilkan di form
-    if (!empty($errors)) {
-        $_SESSION = array_merge($_SESSION, $errors);
-        header("Location: /reset-password"); // Redirect kembali ke halaman form
-        exit;
-    }
-
-    // Hash password baru jika validasi berhasil
-    $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-
-    // Simpan password baru ke database
-    $user_id = $_SESSION['user_id']; // Pastikan `user_id` sudah disimpan di sesi sebelumnya
-    $db = badeansurat::getConnection(); // Pastikan kamu punya koneksi ke database
-
-    $stmt = $db->prepare("UPDATE users SET password = ? WHERE id = ?");
-    if ($stmt->execute([$hashed_password, $user_id])) {
-        // Password berhasil diubah, redirect ke halaman sukses
-        $_SESSION['successMessage'] = "Password berhasil diubah.";
-        header("Location: /login"); // Redirect ke halaman login atau halaman lain yang sesuai
-        exit;
-    } else {
-        // Jika gagal menyimpan, tampilkan pesan error
-        $_SESSION['errorMessage'] = "Terjadi kesalahan, silakan coba lagi.";
-        header("Location: /reset-password");
-        exit;
-    }
-}
-
-        public function gantiPasswordStore()
-        {
-            $password = $_POST["password"];
-            $confirm_password = $_POST["confirm_password"];
-            
-            // Validasi password dan konfirmasi password
-            if (empty($password)) {
-                $_SESSION["passwordErr"] = "Password baru tidak boleh kosong.";
-                header("Location: reset_password.php");
-                exit();
-            } elseif ($password !== $confirm_password) {
-                $_SESSION["confirmPasswordErr"] = "Konfirmasi password tidak cocok.";
-                header("Location: reset_password.php");
-                exit();
-            } else {
-                // Encrypt password
-                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    
+    // Function to validate token format
+    private function isValidTokenFormat($token)
+    {
         
-                // Ambil email pengguna dari session atau URL reset token
-                $email = $_SESSION["reset_email"]; // Misalnya, email disimpan di session
-        
-                // Update password ke database
-                $sql = "UPDATE users SET password = ? WHERE email = ?";
-                // if ($stmt = $conn->prepare($sql)) {
-                //     $stmt->bind_param("ss", $hashed_password, $email);
-                //     if ($stmt->execute()) {
-                //         // Password berhasil diubah
-                //         $_SESSION["success"] = "Password berhasil diubah.";
-                //         header("Location: login.php");
-                //         exit();
-                //     } else {
-                //         // Jika terjadi kesalahan saat update
-                //         $_SESSION["error"] = "Terjadi kesalahan, coba lagi.";
-                //         header("Location: reset_password.php");
-                //         exit();
-                //     }
-                // }
-                // $stmt->close();
-            }
-            
+        // Check for expected format of token, e.g., length, character set
+        return preg_match('/^[A-Za-z0-9+\/=]+$/', $token);
+    }
+    
+
+
+    public function gantiPasswordStore()
+    {
+        $model = new UserModel();
+        $token = $_POST["token"] ?? '';
+        $password = $_POST["password"] ?? '';
+        $confirm_password = $_POST["confirm_password"] ?? '';
+        // Validate password and confirm password
+        if (empty($password)) {
+            $_SESSION["passwordErr"] = "Password baru tidak boleh kosong.";
+            return redirect("/ganti-password?token=".$token);
+
+        } elseif ($password !== $confirm_password) {
+            $_SESSION["confirmPasswordErr"] = "Konfirmasi password tidak cocok.";
+            return redirect("/ganti-password?token=".$token);
+
         }
 
-        public function kirimLinkReset()
-        {
-            // Tangani pengiriman link reset password
-            $email = $_POST['email'];
-            // Logika pengiriman email reset password
+        // Encrypt password
+        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+        if (!$token) {
+            $_SESSION["error"] = "Token Tidak Ditemmukan. Silakan coba lagi.";
+            return redirect("/ganti-password?token=".$token);
+
         }
-        public function sendemail(){
-            $model  = new UserModel();
-            $email = $_POST['email'];
-        
-            $result = $model->cekuserbyemail($email);
-            if ($result) {
-                // Buat token
-                $token = bin2hex(random_bytes(50)); // Generate random token
-                $expiry = time() + 3600; // 1 jam ke depan
-                $payload = json_encode(['email' => $email, 'token' => $token, 'exp' => $expiry]);
-                $encodedToken = base64_encode($payload);
-                $data = [
-                    "token"=>$payload,
-                    "email"=>$email
-                ];
-                // Simpan token dan tanggal kedaluwarsa di database
-                $model->updatetokenreset($data);
-                
-                $resetLink = "http://localhost/SISURAT/ganti-password?token=" . $encodedToken;
-                $mail = new PHPMailer(true);
-                try {
-                    // Pengaturan server SMTP
-                    $mail->isSMTP();
-                    $mail->Host = 'smtp.gmail.com'; // Ganti dengan server SMTP Anda
-                    $mail->SMTPAuth = true;
-                    $mail->Username = 'mnorkholit7@gmail.com'; // Ganti dengan email Anda
-                    $mail->Password = 'fcoyzvnhpodahuoh'; // Ganti dengan password email Anda
-                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // atau PHPMailer::ENCRYPTION_SMTPS
-                    $mail->Port = 587; // Ganti dengan port yang sesuai
+        $data = [
+            "password" => $hashed_password,
+            "token_reset" => $token
+        ];
+        // Update password in the database
 
-                    // Penerima
-                    $mail->setFrom('Badean@gmail.com', 'Admin Badean');
-                    $mail->addAddress($email); // Tambahkan alamat email penerima
+        if ($model->updatepassword($data)) {
 
-                    // Konten email
-                    $mail->isHTML(true);
-                    $mail->Subject = 'Reset Password';
-                    $mail->Body = "Klik tautan ini untuk reset password Anda:
+            // Password successfully updated
+            $_SESSION["success"] = "Password berhasil diubah.";
+            return redirect("/login");
+        } else {
+            // Error during update
+            $_SESSION["error"] = "Terjadi kesalahan, coba lagi.";
+            return redirect("/ganti-password?token=".$token);
+        }
+    }
+
+
+    public function kirimLinkReset()
+    {
+        // Tangani pengiriman link reset password
+        $email = $_POST['email'];
+        // Logika pengiriman email reset password
+    }
+    public function sendemail()
+    {
+        $model  = new UserModel();
+        $email = $_POST['email'];
+
+        $result = $model->cekuserbyemail($email);
+        if ($result) {
+            // Buat token
+            $token = bin2hex(random_bytes(50)); // Generate random token
+            $expiry = time() + 3600; // 1 jam ke depan
+            $payload = json_encode(['email' => $email, 'token' => $token, 'exp' => $expiry]);
+            $encodedToken = base64_encode($payload);
+            $data = [
+                "token" => $encodedToken,
+                "email" => $email
+            ];
+            // Simpan token dan tanggal kedaluwarsa di database
+            $model->updatetokenreset($data);
+
+            $resetLink = "http://localhost/SISURAT/ganti-password?token=" . $encodedToken;
+            $mail = new PHPMailer(true);
+            try {
+                // Pengaturan server SMTP
+                $mail->isSMTP();
+                $mail->Host = $_ENV['MAIL_HOST']; // Ganti dengan server SMTP Anda
+                $mail->SMTPAuth = true;
+                $mail->Username = $_ENV['MAIL_USERNAME']; // Ganti dengan email Anda
+                $mail->Password = $_ENV['MAIL_PASSWORD']; // Ganti dengan password email Anda
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // atau PHPMailer::ENCRYPTION_SMTPS
+                $mail->Port = 587; // Ganti dengan port yang sesuai
+
+                // Penerima
+                $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'], $_ENV['MAIL_FROM_NAME']);
+                $mail->addAddress($email); // Tambahkan alamat email penerima
+
+                // Konten email
+                $mail->isHTML(true);
+                $mail->Subject = 'Reset Password';
+                $mail->Body = "Klik tautan ini untuk reset password Anda:
                     <br><br>
                     <a href='{$resetLink}' style='display: inline-block; padding: 10px 20px; font-size: 16px; color: white; background-color: #007BFF; text-decoration: none; border-radius: 5px;'>Reset Password</a>
                     ";
 
-                    // Kirim email
-                    $mail->send();
-                    echo 'Tautan reset password telah dikirim ke email Anda.';
-                } catch (Exception $e) {
-                    echo "Pesan tidak dapat dikirim. Mailer Error: {$mail->ErrorInfo}";
-                }
-                
+                // Kirim email
+                $mail->send();
+                return redirect("/lupapassword");
+            } catch (Exception $e) {
+                echo "Pesan tidak dapat dikirim. Mailer Error: {$mail->ErrorInfo}";
             }
         }
-          
-        }
-
-
-                    
-                
-        
-
-           
-
-    
-
-
-
-   
-
-
-    
+    }
+}

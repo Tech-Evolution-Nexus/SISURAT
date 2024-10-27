@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\interface\Controller;
+use app\abstract\Controller;
 use app\models\KartuKeluargaModel;
 use app\models\MasyarakatModel;
 use app\models\RT_RWModel;
