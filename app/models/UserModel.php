@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\interface\Model;
+use app\abstract\Model;
 
 class UserModel extends Model
 {
@@ -19,5 +19,8 @@ class UserModel extends Model
     }
     public function cekresettoken($token){
         return $this->singleQuery("SELECT * FROM users WHERE token_reset = '$token'")??false;
+    }
+    public function updatepassword($data){
+        return $this->execute("UPDATE users SET password = :password WHERE token_reset = :token_reset",$data);
     }
 }

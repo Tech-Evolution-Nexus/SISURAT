@@ -18,3 +18,9 @@ if (!function_exists("show500")) {
         include_once __DIR__ . '/500.html';
     }
 }
+if (!function_exists("show405")) {
+    function show405()
+    {
+        include_once __DIR__ . '/405.html';
+    }
+}
