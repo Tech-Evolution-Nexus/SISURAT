@@ -9,7 +9,7 @@ class UserModel extends Model
 
     public function create($data)
     {
-        return  $this->insert("INSERT INTO users (email,password,no_hp,role,id_masyarakat,created_at) VALUES(:email,:password,:no_hp,:role,:id_masyarakat,:created_at)", $data);
+        return  $this->execute("INSERT INTO users (email,password,no_hp,role,id_masyarakat,created_at) VALUES(:email,:password,:no_hp,:role,:id_masyarakat,:created_at)", $data);
     }
     public function update($id, $data)
     {
@@ -17,7 +17,7 @@ class UserModel extends Model
             SET email = :email, password = :password, no_hp = :no_hp, role = :role, id_masyarakat = :id_masyarakat, created_at = :created_at 
             WHERE id = :id";
         $data['id'] = $id;
-        return parent::update($sql, $data);
+        return parent::execute($sql, $data);
     }
 
     public function getById() {}
@@ -33,8 +33,13 @@ class UserModel extends Model
     {
         return $this->singleQuery("SELECT * FROM users WHERE email = '$email'") ?? false;
     }
-    public function updatetokenreset($token, $expire, $email)
+
+    public function updatetokenreset($data)
     {
-        return $this->update("UPDATE users SET reset_token = '$token', token_expire = '$expire' WHERE email = '$email'");
+        return $this->execute("UPDATE users SET token_reset = :token WHERE email = :email", $data);
+    }
+    public function cekresettoken($token)
+    {
+        return $this->singleQuery("SELECT * FROM users WHERE token_reset = '$token'") ?? false;
     }
 }
