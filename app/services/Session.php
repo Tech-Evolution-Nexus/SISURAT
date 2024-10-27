@@ -1,5 +1,7 @@
 <?php
 
+namespace app\services;
+
 class Session
 {
     public function __construct()

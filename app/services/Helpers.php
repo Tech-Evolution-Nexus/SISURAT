@@ -1,6 +1,7 @@
 <?php
 
 use App\services\Request;
+use app\services\Session;
 
 if (!function_exists("assets")) {
     function assets($path)
@@ -59,6 +60,23 @@ if (!function_exists("redirect")) {
         header("location:$url");
     }
 }
+if (!function_exists("old")) {
+    function old($key, $default)
+    {
+        $session = new Session();
+        return $session->flash($key) ?? $default;
+    }
+}
+
+if (!function_exists("session")) {
+    function session()
+    {
+        return  new Session();
+    }
+}
+
+
+
 if (!function_exists("response")) {
     function response($data, $status = 200)
     {
