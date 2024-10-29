@@ -3,8 +3,15 @@
 use app\controllers\AuthController;
 use app\controllers\KartuKeluargaController;
 use app\controllers\RT_RWController;
+use app\controllers\SuratController;
 use app\services\Router;
 
+//surat
+Router::addRoute("GET", "/admin/surat", [SuratController::class, "index"]);
+Router::addRoute("POST", "/admin/surat", [SuratController::class, "add"]);
+
+
+//kk
 Router::addRoute("GET", "/admin/kartu-keluarga", [KartuKeluargaController::class, "index"]);
 Router::addRoute("GET", "/admin/kartu-keluarga/create", [KartuKeluargaController::class, "create"]);
 Router::addRoute("POST", "/admin/kartu-keluarga", [KartuKeluargaController::class, "store"]);

@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\interface\Model;
+use app\abstract\Model;
 
 class MasyarakatModel extends Model
 {
