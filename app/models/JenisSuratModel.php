@@ -6,8 +6,11 @@ use app\abstract\Model;
 
 class JenisSuratModel extends Model
 {
-    public function all()
-    {
-        return  $this->query("SELECT * FROM surat ");
-    }
+    protected $primaryKey  = "id";
+    protected $table  = "surat";
+    protected $fillable = ["nama_surat","image"];
+    // public function all()
+    // {
+    //     return  $this->query("SELECT * FROM surat ");
+    // }
 }

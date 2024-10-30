@@ -32,40 +32,32 @@ class SuratController extends Controller
         if (empty($namasur)) {
             session()->flash("namasur","Nama surat tidak boleh kosong.");
         }
-        
-        // Validasi opsi adalah array
+
         if (empty($opsi) || !is_array($opsi)) {
             session()->flash("fields","Tidak ada data yang diterima.");
         }
-        
-        // Validasi file yang diunggah
+
         if (empty($ficon['name'])) {
             session()->flash("file_icon","File icon tidak boleh kosong.");
         }
-        
-        // Validasi ukuran file maksimal (contoh: 2MB)
-        $maxFileSize = 2 * 1024 * 1024; // 2MB
+
+        $maxFileSize = 2 * 1024 * 1024; 
         if ($ficon['size'] > $maxFileSize) {
             session()->flash("file_icon","Ukuran file terlalu besar. Maksimal 2MB.");
         }
         
-        // Set tipe file yang diizinkan
+
         $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
         $uploader = new FileUploader($ficon, "../upload/", $allowedFileTypes);
-        
-        // Unggah file jika validasi berhasil
+        $idsur = $this->model->create(
+            [
+                "nama_surat"=>$namasur,
+                "image"=>$ficon['name']]);
+                
         $uploadStatus = $uploader->upload();
         if ($uploadStatus !== true) {
             session()->flash("file_icon",$uploadStatus);
         }
         
-        // Tampilkan nama surat dan opsi yang diterima
-        echo "Nama Surat: " . htmlspecialchars($namasur) . "<br>";
-        echo "File Icon berhasil diunggah.<br>";
-        echo "<ul>";
-        foreach ($opsi as $field) {
-            echo "<li>" . htmlspecialchars($field) . "</li>";
-        }
-        echo "</ul>";
     }
 }
