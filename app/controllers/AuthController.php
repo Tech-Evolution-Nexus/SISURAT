@@ -23,7 +23,7 @@ class AuthController
         $password = $_POST['password'];
         $hasError = false;
         if (empty($email)) {
-            $_SESSION["usenameErr"] = 'email tidak boleh kosong';
+            $_SESSION["usernameErr"] = 'email tidak boleh kosong';
             $hasError = true;
         }
 
@@ -34,6 +34,11 @@ class AuthController
             $_SESSION["passwordErr"] = 'Kata sandi minimal 8 karakter';
             $hasError = true;
         }
+        if ($hasError) { 
+            return redirect("/login");
+        }
+
+
         //Cek inputan ke database
         $user = "SELECT * FROM users where email = '$email'";
         $conn = (new Database())->getConnection();
@@ -77,7 +82,7 @@ class AuthController
         $model = new UserModel();
         
         // Check if the token is provided and is valid format
-        if (is_null($token) || !$this->isValidTokenFormat($token) || !$model->cekresettoken($token)) {
+        if (is_null($token) || !$this->isValidTokenFormat($token) || !$model->where("token_reset","=",$token)->first()) {
             // Flash message for invalid token
             session()->set('error', 'Token tidak valid atau telah kadaluarsa.');
             return redirect("/login");
@@ -104,7 +109,7 @@ class AuthController
         }
     
         // Optional: Verify user existence
-        if (!$model->cekuserbyemail($email)) {
+        if (!$model->where("email","=",$email)->first()) {
             session()->set('error', 'Pengguna tidak ditemukan.');
             return redirect("/login");
         }
@@ -152,8 +157,9 @@ class AuthController
             "token_reset" => $token
         ];
         // Update password in the database
-
-        if ($model->updatepassword($data)) {
+        $result = $model->where("token_reset","=",$token)->first();
+    
+        if ($model->update($result-> id, $data)) {
 
             // Password successfully updated
             $_SESSION["success"] = "Password berhasil diubah.";
@@ -177,7 +183,8 @@ class AuthController
         $model  = new UserModel();
         $email = $_POST['email'];
 
-        $result = $model->cekuserbyemail($email);
+        $result = $model->where("email","=",$email)->first();
+       
         if ($result) {
             // Buat token
             $token = bin2hex(random_bytes(50)); // Generate random token
@@ -185,12 +192,12 @@ class AuthController
             $payload = json_encode(['email' => $email, 'token' => $token, 'exp' => $expiry]);
             $encodedToken = base64_encode($payload);
             $data = [
-                "token" => $encodedToken,
+                "token_reset" => $encodedToken,
                 "email" => $email
             ];
             // Simpan token dan tanggal kedaluwarsa di database
-            $model->updatetokenreset($data);
-
+            $model->update($result->id,$data);
+           
             $resetLink = "http://localhost/SISURAT/ganti-password?token=" . $encodedToken;
             $mail = new PHPMailer(true);
             try {

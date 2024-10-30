@@ -168,7 +168,7 @@ class Model
 
             $stmt->execute($bindings);
         } catch (\Throwable $th) {
-            dd($this->bindings);
+            dd($th);
         }
         $this->bindings = [];
         return $stmt;
