@@ -7,7 +7,7 @@ session_start();
 function autoload($class)
 {
     $filePath = str_replace('\\', '/', $class) . '.php';
-   
+
     $filePath = "../" . $filePath;
     if (file_exists($filePath)) {
         include_once($filePath);

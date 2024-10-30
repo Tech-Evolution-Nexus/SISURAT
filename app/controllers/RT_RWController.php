@@ -44,11 +44,11 @@ class RT_RWController extends Controller
     public  function storeRW()
     {
         try {
-          
+
             $model  = new RT_RWModel();
             $nik = request("nik");
             $idMasyarakat = request("id_masyarakat");
-      
+
             $alamat = request("alamat");
             $rt = request("rt");
             $rw = request("rw");
@@ -56,7 +56,7 @@ class RT_RWController extends Controller
             $password = request("password");
 
             $cekResult =  $model->cek("rw", $rw, $rt, $nik);
-       
+
             if ($cekResult) {
                 return;
             }
@@ -75,7 +75,34 @@ class RT_RWController extends Controller
         } catch (\Throwable $th) {
             throw new \InvalidArgumentException($th);
         }
+    }
+    public  function updateRW($idmasyarakat)
+    {
+        try {
+            $model  = new RT_RWModel();
+            $nik = request("nik");
+            $idMasyarakat = request("id_masyarakat");
+            $alamat = request("alamat");
+            $rt = request("rt");
+            $rw = request("rw");
+            $noHp = request("no_hp");
+            $password = request("password");
+            $cekResult =  $model->cek("rw", $rw, $rt, $nik);
+            if ($cekResult) {
+                return;
+            }
+            $model2  = new UserModel();
+            $data = [
+                "no_hp" => $noHp,
+            ];
+            $user = $model2->getByIdMasyarakat($idmasyarakat);
 
-        // return redirect("/admin/kartu-keluarga");
+            if ($password !== null) $data["password"] = password_hash($password, PASSWORD_BCRYPT);
+            $model2->update($user->id, $data);
+            return redirect("/admin/master-rw");
+        } catch (\Throwable $th) {
+            // var_dump($th);;
+            die();
+        }
     }
 }

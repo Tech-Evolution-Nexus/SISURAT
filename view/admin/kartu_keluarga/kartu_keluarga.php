@@ -21,119 +21,14 @@
                     <p class="text-white text-small"><?= $data->description ?> </p>
                 </div>
                 <div class="ms-auto">
-                    <button type="button" class="btn btn-warning" id="add-btn" data-bs-toggle="modal" data-bs-target="#modal">
+                    <a href="/admin/kartu-keluarga/create" class="btn btn-warning">
                         Tambah KK
-                    </button>
+                    </a>
                 </div>
             </div>
 
 
-            <!-- FORM MODAL -->
-            <div id="modal" class="modal hide fade " role="dialog" aria-labelledby="modal" aria-hidden="true">
-                <div class="modal-dialog  modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="titleForm">Tambah KK</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <form action="/admin/master-rw" method="post">
-                            <div class="modal-body">
-                                <div class="row">
 
-                                    <div class="col-12 row personal-information" style="transition: all .5s;">
-                                        <h6 class="mb-2  fw-bold">Informasi Kartu Keluarga</h6>
-                                        <input type="hidden" name="id_masyarakat">
-                                        <div class="col-md-6 col-12">
-                                            <div class="form-group mb-2 ms-3">
-                                                <label for="no_kk">Nomor Kartu Keluarga<span class="text-danger required-password">*</span></label>
-                                                <input type="text" class="  form-control" placeholder="Nomor Kartu Keluarga" name="no_kk" id="no_kk" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-12 mb-2">
-                                            <div class="form-group mb-2 ">
-                                                <label for="tanggal_kk">Tanggal KK<span class="text-danger required-password">*</span></label>
-                                                <input type="date" class="  form-control" placeholder="tanggal_kk" name="tanggal_kk" id="tanggal_kk" required>
-                                            </div>
-                                        </div>
-                                        <h6 class="mb-2  fw-bold">Informasi Kepala Keluarga</h6>
-                                        <div class="col-12">
-                                            <div class="form-group mb-2 ms-3">
-                                                <label for="no_kk">NIK Kepala Keluarga<span class="text-danger required-password">*</span></label>
-                                                <input type="text" class="  form-control" placeholder="NIK Kepala Keluarga" name="nik" id="nik" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="form-group mb-2 ms-3">
-                                                <label for="nama_lengkap">Nama Lengkap<span class="text-danger required-password">*</span></label>
-                                                <input type="text" class="  form-control" placeholder="Nama Lengkap" name="nama_lengkap" id="nama_lengkap" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="form-group mb-2 ms-3">
-                                                <label for="alamat">Alamat<span class="text-danger required-password">*</span></label>
-                                                <input type="text" class="  form-control" placeholder="Alamat Lengkap" name="alamat" id="alamat" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-12">
-                                            <div class="form-group mb-2 ms-3">
-                                                <label for="rt">RT<span class="text-danger required-password">*</span></label>
-                                                <input type="text" class="  form-control" placeholder="Nomor RT" name="rt" id="rt" required>
-
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-12">
-                                            <div class="form-group mb-2">
-                                                <label for="rw">RW<span class="text-danger required-password">*</span></label>
-                                                <input type="text" class="  form-control" placeholder="Nomor RW" name="rw" id="rw" required>
-                                            </div>
-                                        </div>
-                                        <h6 class="mb-2  fw-bold">Informasi Wilayah</h6>
-                                        <div class="col-md-6 col-12">
-                                            <div class="form-group mb-2 ms-3">
-                                                <label for="kelurahan">Kelurahan</label>
-                                                <input disabled type="text" class="  form-control" placeholder="Kelurahan" name="kelurahan" id="kelurahan" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-12">
-                                            <div class="form-group mb-2 ">
-                                                <label for="kode_pos">Kode Pos</label>
-                                                <input disabled type="text" class="  form-control" placeholder="kode_pos" name="kode_pos" id="kode_pos" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-12">
-                                            <div class="form-group mb-2 ms-3">
-                                                <label for="kabupaten">Kabupaten</label>
-                                                <input disabled type="text" class="  form-control" placeholder="kabupaten" name="kabupaten" id="kabupaten" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-12">
-                                            <div class="form-group mb-2 ">
-                                                <label for="kecamatan">Kecamatan</label>
-                                                <input disabled type="text" class="  form-control" placeholder="kecamatan" name="kecamatan" id="kecamatan" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-12">
-                                            <div class="form-group mb-2 ms-3">
-                                                <label for="provinsi">Provinsi</label>
-                                                <input disabled type="text" class="  form-control" placeholder="provinsi" name="provinsi" id="provinsi" required>
-                                            </div>
-                                        </div>
-
-
-
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">Simpan</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
             <div class="card">
                 <div class="card-body ">
                     <table class="table data-table ">
@@ -159,9 +54,9 @@
                                     <td><?= $kk->rt ?></td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Action buttons">
-                                            <button data-id="<?= $kk->id ?>" title="Edit" class="btn editBtn text-white btn-warning btn-sm">
+                                            <a href="/admin/kartu-keluarga/<?= $kk->id ?>/edit" title="Edit" class="btn  text-white btn-warning btn-sm">
                                                 <i class="fa fa-pencil"></i>
-                                            </button>
+                                            </a>
                                             <a href="" title="Hapus" class="btn  text-white btn-danger btn-sm">
                                                 <i class="fa fa-trash"></i>
                                             </a>

@@ -1,5 +1,6 @@
 <?php
 
+use App\services\Request;
 use app\services\Session;
 
 if (!function_exists("assets")) {
@@ -42,7 +43,7 @@ if (!function_exists("view")) {
     function view($path, $data = [])
     {
         $path = str_replace('.', '/', $path);
-        
+
         // Ekstrak data yang dikirim ke view
         extract($data);
         include __DIR__ . "/../../view/$path.php";
@@ -59,17 +60,35 @@ if (!function_exists("includeFile")) {
 if (!function_exists("request")) {
     function request($key = null)
     {
-        $data = [...$_GET, ...$_POST, ...$_FILES];
-        return isset($key) ? (isset($data[$key]) ?  $data[$key] : null) : $data;
+        $request = new Request();
+        if (!$key) return $request;
+        return $request->get($key);
     }
 }
 if (!function_exists("redirect")) {
     function redirect($url)
     {
-        header('Location: '.$_ENV['APP_URL'].$url);
+        header('Location: ' . $_ENV['APP_URL'] . $url);
         exit;
     }
 }
+if (!function_exists("old")) {
+    function old($key, $default)
+    {
+        $session = new Session();
+        return $session->flash($key) ?? $default;
+    }
+}
+
+if (!function_exists("session")) {
+    function session()
+    {
+        return  new Session();
+    }
+}
+
+
+
 if (!function_exists("response")) {
     function response($data, $status = 200)
     {
@@ -95,7 +114,7 @@ if (!function_exists("loadEnv")) {
     function loadEnv()
     {
         $file = __DIR__ . "/../../.env";
-      
+
         if (!file_exists($file)) {
             // throw new Exception("The .env file does not exist.");
             return;
