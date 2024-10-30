@@ -19,8 +19,10 @@ require '../lib/PHPMailer/PHPMailer.php';
 require '../lib/PHPMailer/SMTP.php';
 require '../lib/PHPMailer/Exception.php';
 // memanggil file lainnya
+include __DIR__ . "/../app/services/FileUploader.php";
 include __DIR__ . "/../app/services/Helpers.php";
 include __DIR__ . "/../app/services/httpstatusview/statuscollection.php";
+
 loadEnv();
 Router::$prefix = '/api'; // Menambahkan prefix untuk API
 require_once '../route/api.php'; // Memuat rute API
