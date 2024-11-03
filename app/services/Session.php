@@ -5,7 +5,6 @@ namespace app\services;
 class Session
 {
 
-
     public function flash($key, $data = null)
     {
         // Assuming get data

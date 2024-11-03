@@ -75,12 +75,12 @@ class Model
         $this->execute($this->query, $this->bindings);
         return $data;
     }
-    public function delete($id)
-    {
-        $this->query = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = :id";
-        $this->bindings = ['id' => $id];
-        return $this->execute($this->query, $this->bindings);
-    }
+    // public function delete($id)
+    // {
+    //     $this->query = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = :id";
+    //     $this->bindings = ['id' => $id];
+    //     return $this->execute($this->query, $this->bindings);
+    // }
 
     public function where($column, $operator = '=', $value = null)
     {
@@ -139,12 +139,17 @@ class Model
     public function first()
     {
         $this->buildQuery();
+
         return $this->execute($this->query, $this->bindings)->fetch($this->fetchMode);
     }
 
-    private function buildQuery()
+    private function buildQuery($type = 'SELECT')
     {
-        $this->query = "SELECT {$this->fields} FROM {$this->table}";
+        if ($type === 'DELETE') {
+            $this->query = "DELETE FROM {$this->table}";
+        } else {
+            $this->query = "{$type} {$this->fields} FROM {$this->table}";
+        }
 
         if (!empty($this->joins)) {
             foreach ($this->joins as $join) {
@@ -156,7 +161,11 @@ class Model
             $whereClauses = [];
             foreach ($this->wheres as $index => $where) {
                 $prefix = $index === 0 ? "WHERE" : $where['type'];
-                $whereClauses[] = "$prefix {$where['column']} {$where['operator']} '{$where['value']}'";
+                $placeholder = ":{$where['column']}";
+                // Make sure to use the placeholder for the value in the query
+                $whereClauses[] = "$prefix {$where['column']} {$where['operator']} '{$where['value']}' ";
+                // Now bind the value properly
+                $this->bindings[$placeholder] = $where['value'];
             }
 
             $this->query .= ' ' . implode(' ', $whereClauses);
@@ -169,6 +178,7 @@ class Model
             }
             $this->query .= ' ORDER BY ' . implode(', ', $orderClauses);
         }
+
         if (isset($this->limit)) { // Add limit if it's set
             $this->query .= " LIMIT {$this->limit}";
         }
@@ -207,6 +217,14 @@ class Model
     {
         $this->limit = (int) $value; // Ensure the limit is an integer
         return $this;
+    }
+
+
+    public function delete()
+    {
+        // Build the DELETE query based on the current conditions
+        $this->buildQuery('DELETE');
+        return $this->execute($this->query, $this->bindings);
     }
 
     private function resetQuery()
