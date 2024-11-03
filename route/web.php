@@ -4,11 +4,22 @@ use app\controllers\AuthController;
 use app\controllers\KartuKeluargaController;
 use app\controllers\RT_RWController;
 use app\controllers\SuratController;
+use app\controllers\SuratMasukSelesaiController;
 use app\services\Router;
 
 //surat
 Router::addRoute("GET", "/admin/surat", [SuratController::class, "index"]);
 Router::addRoute("POST", "/admin/surat", [SuratController::class, "add"]);
+Router::addRoute("GET", "/admin/esurat/{id}", [SuratController::class, "getedit"]);
+Router::addRoute("GET", "/admin/dsurat/{id}", [SuratController::class, "deletedata"]);
+Router::addRoute("POST", "/admin/editsurat/{id}", [SuratController::class, "edit"]);
+
+Router::addRoute("GET", "/admin/surat-selesai", [SuratMasukSelesaiController::class, "index"]);
+Router::addRoute("GET", "/admin/surat-selesai/{id}", [SuratMasukSelesaiController::class, "getdata"]);
+
+
+
+
 
 
 //kk
@@ -44,4 +55,3 @@ Router::addRoute("POST", "/sendemail", [AuthController::class, 'sendemail']);
 Router::addRoute("GET", "/ganti-password", [AuthController::class, "gantiPassword"]);
 Router::addRoute("POST", "/ganti-password", [AuthController::class, "gantiPasswordStore"]);
 
-Router::run();

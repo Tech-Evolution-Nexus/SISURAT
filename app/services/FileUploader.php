@@ -50,5 +50,18 @@ class FileUploader
     {
         return move_uploaded_file($this->file["tmp_name"], $this->targetFile);
     }
+    public function delete($fileName)
+    {
+        $filePath = $this->targetDir . basename($fileName);
+        if (file_exists($filePath)) {
+            if (unlink($filePath)) {
+                return "File $fileName telah berhasil dihapus.";
+            } else {
+                return "Maaf, terjadi kesalahan saat menghapus file.";
+            }
+        } else {
+            return "Maaf, file tidak ditemukan.";
+        }
+    }
 }
 ?>

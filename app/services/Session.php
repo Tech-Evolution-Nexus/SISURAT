@@ -4,10 +4,6 @@ namespace app\services;
 
 class Session
 {
-    public function __construct()
-    {
-        session_start(); // Start the session in the constructor
-    }
 
     public function flash($key, $data = null)
     {

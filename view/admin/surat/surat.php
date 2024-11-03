@@ -26,60 +26,6 @@
                     </button>
                 </div>
             </div>
-
-
-            <!-- FORM MODAL -->
-            <div id="modal" class="modal hide fade " role="dialog" aria-labelledby="modal" aria-hidden="true">
-                <div class="modal-dialog  modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="titleForm">Tambah Jenis Surat</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-
-
-                            <form action="surat" method="POST" enctype="multipart/form-data">
-                                <h5>Jenis Surat :</h5>
-                                <div class="form-group mt-3 ms-3">
-                                    <label>Nama Surat</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Nama Surat" name="nama_surat">
-                                    </div>
-                                    <label class="mt-3">Upoload Icon</label>
-                                    <div class="input-group ">
-                                        <input type="file" class="form-control-file" name="file_icon" accept="image/*">
-                                    </div>
-                                </div>
-                                <hr>
-                                <div id="dynamic-fields">
-                                    <!-- Select box pertama tanpa tombol "Hapus" -->
-                                    <div class="d-flex justify-content-between">
-                                        <h5>Detail Surat :</h5>
-                                        <button type="button" id="add-field" class="btn btn-warning"><i class="fa-solid fa-plus"></i></button>
-                                    </div>
-
-
-                                    <div class="form-group ms-3">
-                                        <label>Upoload Icon</label>
-                                        <select name="fields[]" class="form-select" required>
-                                            <option value="">Pilih Opsi</option>
-                                            <option value="Opsi 1">Opsi 1</option>
-                                            <option value="Opsi 2">Opsi 2</option>
-                                            <option value="Opsi 3">Opsi 3</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <br><br>
-                                <button type="submit" class="btn btn-success">Kirim</button>
-                            </form>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
             <div class="card">
                 <div class="card-body ">
                     <table class="table data-table ">
@@ -92,7 +38,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($data->data  as $index => $kk) : ?>
+                            <?php foreach ($data->datasurat  as $index => $kk) : ?>
                                 <tr>
                                     <td><?= $index + 1 ?></td>
                                     <td><?= $kk->nama_surat ?></td>
@@ -102,7 +48,7 @@
                                             <button data-id="<?= $kk->id ?>" title="Edit" class="btn editBtn text-white btn-warning btn-sm">
                                                 <i class="fa fa-pencil"></i>
                                             </button>
-                                            <a href="" title="Hapus" class="btn  text-white btn-danger btn-sm">
+                                            <a href="dsurat/<?= $kk->id ?>" title="Hapus" class="btn  text-white btn-danger btn-sm">
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                             <a href="" title="Detail" class="btn  text-white btn-success btn-sm">
@@ -119,23 +65,139 @@
             </div>
 
         </div>
+        <!-- FORM MODAL -->
+        <div id="modal" class="modal hide fade " role="dialog" aria-labelledby="modal" aria-hidden="true">
+            <div class="modal-dialog  modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="titleForm">Tambah Jenis Surat</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+
+                        <form action="" method="POST" enctype="multipart/form-data">
+                            <h5>Jenis Surat :</h5>
+                            <div class="form-group mt-3 ms-3">
+                                <label>Nama Surat</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Nama Surat" name="nama_surat" id="nama_surat">
+                                </div>
+                                <label class="mt-3">Upoload Icon</label>
+                                <div class="input-group ">
+                                    <input type="file" class="form-control-file" name="file_icon" accept="image/*" id="file_icon">
+                                </div>
+                            </div>
+                            <hr>
+                            <div id="dynamic-fields">
+                                <!-- Select box pertama tanpa tombol "Hapus" -->
+                                <div class="d-flex justify-content-between">
+                                    <h5>Detail Surat :</h5>
+                                    <button type="button" id="add-field" class="btn btn-warning"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+
+
+                                <div class="form-group ms-3" id="fselect">
+                                    <label>Upoload Icon</label>
+                                    <select name="fields[]" class="form-select" required>
+
+                                        <option value="">Pilih Opsi</option>
+                                        <?php foreach ($data->datalampiran  as $index => $datas) : ?>
+                                            <option value="<?= $datas->id ?>"><?= $datas->nama_lampiran ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <br><br>
+                            <button type="submit" class="btn btn-success">Kirim</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </main>
     <!--end yang perlu diubah -->
 
     <?php includeFile("layout/script") ?>
     <script>
+        $("#add-btn").on("click", function() {
+            setupForm("Tambah Jenis Surat", "surat")
+            $("[name=nama_surat]").attr('required');
+            $('#fselect').show();
+            $('.fselected').remove();
+            $(".modal form").trigger("reset");
+            $(".personal-information, .modal-footer").css({
+                height: 0,
+                opacity: 0
+            })
+        })
+        $(".editBtn").on("click", function() {
+            const id = $(this).attr("data-id")
+
+            setupForm("Ubah Jenis Surat", "editsurat/" + id)
+
+            $(".modal").modal("show")
+            $.ajax({
+                url: "/SISURAT/admin/esurat/" + id,
+                success: (data) => {
+                    $('#fselect').remove();
+                    $('.fselected').remove();
+                    data.datalampiran.forEach((element, index) => {
+                        const dynamicFields = document.getElementById("dynamic-fields");
+                        const formGroup = document.createElement("div");
+                        formGroup.className = "form-group";
+                        formGroup.innerHTML = `
+                        <div class="d-flex ms-3 mt-3 fselected">
+                            <select name="fields[]" class="form-select" required>
+
+                                <option value="">Pilih Opsi</option>
+                                <?php foreach ($data->datalampiran  as $index => $datas) : ?>
+                                <option ${element.id==<?= $datas->id ?>?"selected":""} value="<?= $datas->id ?>"><?= $datas->nama_lampiran ?></option>
+                                <?php endforeach; ?>
+                                </select>
+                                ${index!=0?'<button type="button" class="btn btn-danger ms-2" onclick="removeField(this)"><i class="fa-solid fa-trash"></i></button>':''}
+                        
+                            </div>
+                        `;
+                        dynamicFields.appendChild(formGroup);
+                    });
+                    setFormData(data.datasurat)
+                }
+            })
+        })
+
+
+        const setupForm = (title, action) => {
+            $("#titleForm").text(title)
+            $(".modal form").attr("action", action)
+        }
+
+        const setFormData = ({
+            id_surat,
+            nama_surat,
+            lampiran,
+        }) => {
+
+            $("[name=nama_surat]").val(nama_surat)
+            $("[name=file_icon]").val(lampiran)
+
+        }
+
         function addField() {
             const dynamicFields = document.getElementById("dynamic-fields");
             const formGroup = document.createElement("div");
             formGroup.className = "form-group";
             formGroup.innerHTML = `
             <div class="d-flex ms-3 mt-3">
-                <select name="fields[]" class="form-select" required>
-                    <option value="">Pilih Opsi</option>
-                    <option value="Opsi 1">Opsi 1</option>
-                    <option value="Opsi 2">Opsi 2</option>
-                    <option value="Opsi 3">Opsi 3</option>
-                </select>
+                 <select name="fields[]" class="form-select" required>
+
+                                            <option value="">Pilih Opsi</option>
+                                            <?php foreach ($data->datalampiran  as $index => $datas) : ?>
+                                            <option value="<?= $datas->id ?>"><?= $datas->nama_lampiran ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
                 <button type="button" class="btn btn-danger ms-2" onclick="removeField(this)"><i class="fa-solid fa-trash"></i></button>
                 </div>
             `;
