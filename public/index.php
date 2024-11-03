@@ -1,7 +1,11 @@
 <?php
 // ini merupakan main file yang memanggil file lainnya
 use app\services\Router;
+
+// ob_get_clean();
 session_start();
+// session_reset();
+// session_destroy();
 
 //untuk otomatis inlcude file yg pemanggilannya menggunakan use
 function autoload($class)
@@ -13,6 +17,7 @@ function autoload($class)
         include_once($filePath);
     }
 }
+require __DIR__ . '/../vendor/autoload.php';
 
 spl_autoload_register('autoload');
 require '../lib/PHPMailer/PHPMailer.php';

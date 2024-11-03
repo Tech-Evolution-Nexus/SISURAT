@@ -50,7 +50,7 @@
                             <h1 class="modal-title fs-5" id="titleForm">Tambah RW</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form action="/admin/master-rw" method="post">
+                        <form action="/admin/master-rt" method="post">
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-12 search-section mb-4">
@@ -184,16 +184,13 @@
                 height: "auto",
                 opacity: 1
             })
-
-
             $.ajax({
-                url: "/admin/master-rw/ajax-masyarakat/" + data.id,
+                url: "/admin/master-rt/ajax-masyarakat/<?= $data->rw ?>" + data.id,
                 success: (data) => {
                     setFormData(data)
                 },
                 error: (error) => {
                     console.log(error);
-
                 }
             })
         });
@@ -206,7 +203,7 @@
 
         // handle add data
         $("#add-btn").on("click", function() {
-            setupForm("Tambah RW", "/admin/master-rw")
+            setupForm("Tambah RW", "/admin/master-rt/<?= $data->rw ?>")
             $(".search-section").show();
             $(".required-password").show();
             $("[name=password]").attr('required');
@@ -221,7 +218,7 @@
         $(".editBtn").on("click", function() {
             const nik = $(this).attr("data-nik")
 
-            setupForm("Ubah RW", "/admin/master-rw/" + nik)
+            setupForm("Ubah RW", "/admin/master-rt/<?= $data->rw ?>/" + nik)
             $(".search-section").hide();
             $(".required-password").hide();
             $("[name=password]").removeAttr('required');
@@ -232,7 +229,7 @@
 
             $(".modal").modal("show")
             $.ajax({
-                url: "/admin/master-rw/ajax-rw/" + nik,
+                url: "/admin/master-rt/ajax-rt/<?= $data->rw ?>/" + nik,
                 success: (data) => {
                     const formData = data;
                     console.log(formData);

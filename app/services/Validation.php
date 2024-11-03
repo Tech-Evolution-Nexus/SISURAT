@@ -1,7 +1,5 @@
 <?php
 
-namespace app\services;
-
 class Validator
 {
     protected $data;
@@ -65,35 +63,35 @@ class Validator
     protected function validateRequired($field)
     {
         if (empty($this->data[$field])) {
-            $this->errors[$field][] = "$field wajib diisi.";
+            $this->errors[$field][] = "$field is required.";
         }
     }
 
     protected function validateEmail($field)
     {
         if (!filter_var($this->data[$field], FILTER_VALIDATE_EMAIL)) {
-            $this->errors[$field][] = "$field harus berupa alamat email yang valid.";
+            $this->errors[$field][] = "$field must be a valid email address.";
         }
     }
 
     protected function validateMin($field, $parameter)
     {
         if (strlen($this->data[$field]) < $parameter) {
-            $this->errors[$field][] = "$field harus terdiri dari minimal $parameter karakter.";
+            $this->errors[$field][] = "$field must be at least $parameter characters long.";
         }
     }
 
     protected function validateMax($field, $parameter)
     {
         if (strlen($this->data[$field]) > $parameter) {
-            $this->errors[$field][] = "$field tidak boleh lebih dari $parameter karakter.";
+            $this->errors[$field][] = "$field must be no more than $parameter characters long.";
         }
     }
 
     protected function validateNumeric($field)
     {
         if (!is_numeric($this->data[$field])) {
-            $this->errors[$field][] = "$field harus berupa angka.";
+            $this->errors[$field][] = "$field must be a numeric value.";
         }
     }
 }

@@ -10,14 +10,24 @@ use app\models\UserModel;
 
 class RT_RWController extends Controller
 {
-
+    private $model;
+    public function __construct()
+    {
+        $this->model = (object)[];
+        $this->model->masyarakat  = new MasyarakatModel();
+        $this->model->users  = new UserModel();
+    }
     public  function indexRW()
     {
-        $model  = new RT_RWModel();
-        $model2  = new MasyarakatModel();
 
-        $data = $model->all('rw');
-        $masyarakat = $model2->masyarakatActive();
+
+        $data = $this->model->masyarakat
+            ->select("masyarakat.nik,nama_lengkap,alamat,rw,rt")
+            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+            ->join("users", "masyarakat.nik", "users.nik")
+            ->where("role", "=", "rw")->get();
+        $masyarakat = $this->model->masyarakat
+            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")->get();
         $params["data"] = (object)[
             "title" => "RW",
             "description" => "Kelola Data ketua RW dengan mudah",
@@ -27,16 +37,24 @@ class RT_RWController extends Controller
 
         return $this->view("admin/rt-rw/rw", $params);
     }
-    public  function ajaxMasyarakat($id)
+    public  function ajaxMasyarakat($nik)
     {
-        $model  = new MasyarakatModel();
-        $data  = $model->getMasyarakatId($id);
+        $data = $this->model->masyarakat
+            ->select("nik,nama_lengkap,alamat,rw,rt")
+            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+            ->where("nik", "=", $nik)
+            ->first();
         return response($data, 200);
     }
-    public  function ajaxRw($id)
+    public  function ajaxRw($nik)
     {
-        $model  = new RT_RWModel();
-        $data  = $model->getById($id, "rw");
+        $data = $this->model->masyarakat
+            ->select("masyarakat.nik,nama_lengkap,alamat,rw,rt")
+            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+            ->join("users", "masyarakat.nik", "users.nik")
+            ->where("role", "=", "rw")
+            ->where("masyarakat.nik", "=", $nik)
+            ->first();
         return response($data, 200);
     }
 
@@ -45,64 +63,160 @@ class RT_RWController extends Controller
     {
         try {
 
-            $model  = new RT_RWModel();
             $nik = request("nik");
-            $idMasyarakat = request("id_masyarakat");
-
-            $alamat = request("alamat");
-            $rt = request("rt");
             $rw = request("rw");
-            $noHp = request("no_hp");
-            $password = request("password");
-
-            $cekResult =  $model->cek("rw", $rw, $rt, $nik);
-
-            if ($cekResult) {
-                return;
+            $user = $this->model->users->where("nik", "=", $nik)->first();
+            if (!$user) {
+                return redirect()->with("error", "Data user belum melakukan aktivasi. Harap lakukan aktivasi terlebih dahulu untuk mendaftarkan ketua RW")->back();
             }
 
-            $model2  = new UserModel();
-            $data = [
-                "email" => null,
-                "password" => password_hash($password, PASSWORD_BCRYPT),
-                "no_hp" => $noHp,
-                "role" => "rw",
-                "id_masyarakat" => $idMasyarakat,
-                "created_at" => date("Y-m-d H:i")
-            ];
-            $model2->create($data);
-            return redirect("/admin/master-rw");
+            $rwExist =  $this->model->masyarakat
+                ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+                ->join("users", "masyarakat.nik", "users.nik")
+                ->where("role", "=", "rw")
+                ->where("rw", "=", $rw)
+                ->get();
+
+            if ($rwExist) {
+                return redirect()->with("error", "RW $rw sudah memiliki Ketua RW terdaftar. Harap periksa data dan coba lagi.")->back();
+            }
+            $this->model->users->update($user->id, [
+                "role" => "rw"
+            ]);
+            return redirect()->with("success", "Berhasil menambahkan ketua RW $rw")->back();
         } catch (\Throwable $th) {
             throw new \InvalidArgumentException($th);
         }
     }
-    public  function updateRW($idmasyarakat)
+    public  function updateRW($nik)
     {
         try {
-            $model  = new RT_RWModel();
-            $nik = request("nik");
-            $idMasyarakat = request("id_masyarakat");
-            $alamat = request("alamat");
-            $rt = request("rt");
-            $rw = request("rw");
-            $noHp = request("no_hp");
-            $password = request("password");
-            $cekResult =  $model->cek("rw", $rw, $rt, $nik);
-            if ($cekResult) {
-                return;
-            }
-            $model2  = new UserModel();
-            $data = [
-                "no_hp" => $noHp,
-            ];
-            $user = $model2->getByIdMasyarakat($idmasyarakat);
 
-            if ($password !== null) $data["password"] = password_hash($password, PASSWORD_BCRYPT);
-            $model2->update($user->id, $data);
-            return redirect("/admin/master-rw");
+            $rw = request("rw");
+            $user = $this->model->users->where("nik", "=", $nik)->first();
+            if (!$user) {
+                return redirect()->with("error", "Data user belum melakukan aktivasi. Harap lakukan aktivasi terlebih dahulu untuk mendaftarkan ketua RW")->back();
+            }
+
+            $rwExist =  $this->model->masyarakat
+                ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+                ->join("users", "masyarakat.nik", "users.nik")
+                ->where("role", "=", "rw")
+                ->where("rw", "=", $rw)
+                ->where("masyarakat.nik", "<>", $nik)
+                ->get();
+
+            if ($rwExist) {
+                return redirect()->with("error", "RW $rw sudah memiliki Ketua RW terdaftar. Harap periksa data dan coba lagi.")->back();
+            }
+            $this->model->users->update($user->id, [
+                "role" => "masyarakat"
+            ]);
+            return redirect()->with("success", "Berhasil mengubah ketua RW $rw")->back();
         } catch (\Throwable $th) {
-            // var_dump($th);;
-            die();
+            throw new \InvalidArgumentException($th);
+        }
+    }
+
+    public  function indexRT($rw)
+    {
+
+
+        $data = $this->model->masyarakat
+            ->select("masyarakat.nik,nama_lengkap,alamat,rw,rt")
+            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+            ->join("users", "masyarakat.nik", "users.nik")
+            ->where("role", "=", "rt")
+            ->where("rw", "=", $rw)
+            ->get();
+
+        $masyarakat = $this->model->masyarakat
+            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")->get();
+
+        $params["data"] = (object)[
+            "title" => "RT",
+            "description" => "Kelola Data ketua RT dengan mudah",
+            "masyarakat" => $masyarakat,
+            "data" => $data,
+            "rw" => $rw
+        ];
+
+        return $this->view("admin/rt-rw/rw", $params);
+    }
+
+    public  function ajaxRT($rw, $nik)
+    {
+        $data = $this->model->masyarakat
+            ->select("masyarakat.nik,nama_lengkap,alamat,rw,rt")
+            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+            ->join("users", "masyarakat.nik", "users.nik")
+            ->where("role", "=", "rt")
+            ->where("rw", "=", $rw)
+            ->where("masyarakat.nik", "=", $nik)
+            ->first();
+        return response($data, 200);
+    }
+
+
+    public  function storeRT($rw)
+    {
+        try {
+
+            $nik = request("nik");
+            $rt = request("rt");
+            $user = $this->model->users->where("nik", "=", $nik)->first();
+            if (!$user) {
+                return redirect()->with("error", "Data user belum melakukan aktivasi. Harap lakukan aktivasi terlebih dahulu untuk mendaftarkan ketua RW")->back();
+            }
+
+            $rwExist =  $this->model->masyarakat
+                ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+                ->join("users", "masyarakat.nik", "users.nik")
+                ->where("role", "=", "rt")
+                ->where("rw", "=", $rw)
+                ->where("rt", "=", $rt)
+                ->get();
+
+            if ($rwExist) {
+                return redirect()->with("error", "RW $rw sudah memiliki Ketua RW terdaftar. Harap periksa data dan coba lagi.")->back();
+            }
+            $this->model->users->update($user->id, [
+                "role" => "rt"
+            ]);
+            return redirect()->with("success", "Berhasil menambahkan ketua RW $rw")->back();
+        } catch (\Throwable $th) {
+            throw new \InvalidArgumentException($th);
+        }
+    }
+    public  function updateRT($rw, $nik)
+    {
+        try {
+
+            $rw = request("rw");
+            $rt = request("rt");
+            $user = $this->model->users->where("nik", "=", $nik)->first();
+            if (!$user) {
+                return redirect()->with("error", "Data user belum melakukan aktivasi. Harap lakukan aktivasi terlebih dahulu untuk mendaftarkan ketua RW")->back();
+            }
+
+            $rwExist =  $this->model->masyarakat
+                ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+                ->join("users", "masyarakat.nik", "users.nik")
+                ->where("role", "=", "rt")
+                ->where("rw", "=", $rw)
+                ->where("rt", "=", $rt)
+                ->where("masyarakat.nik", "<>", $nik)
+                ->get();
+
+            if ($rwExist) {
+                return redirect()->with("error", "RW $rw sudah memiliki Ketua RW terdaftar. Harap periksa data dan coba lagi.")->back();
+            }
+            $this->model->users->update($user->id, [
+                "role" => "masyarakat"
+            ]);
+            return redirect()->with("success", "Berhasil mengubah ketua RW $rw")->back();
+        } catch (\Throwable $th) {
+            throw new \InvalidArgumentException($th);
         }
     }
 }
