@@ -28,3 +28,5 @@ Router::$prefix = '/api'; // Menambahkan prefix untuk API
 require_once '../route/api.php'; // Memuat rute API
 Router::$prefix = ''; // Reset prefix untuk rute web
 require_once '../route/web.php'; // Memuat rute web
+
+Router::run();
