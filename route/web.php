@@ -7,6 +7,7 @@ use app\controllers\RT_RWController;
 use app\controllers\SuratController;
 use app\controllers\SuratMasukSelesaiController;
 use app\services\Router;
+use app\controllers\UserController;
 
 //surat
 Router::addRoute("GET", "/admin/surat", [SuratController::class, "index"]);
@@ -20,10 +21,16 @@ Router::addRoute("GET", "/admin/surat-selesai/{id}", [SuratMasukSelesaiControlle
 
 
 
+//USER
+Router::addRoute("GET", "/admin/users", [UserController::class, "index"]);
+Router::addRoute("GET", "/admin/users/create", [UserController::class, "create"]);
+Router::addRoute("POST", "/admin/users/store", [UserController::class, "store"]);
+Router::addRoute("GET", "/admin/users/:id/edit", [UserController::class, "edit"]);
+Router::addRoute("POST", "/admin/users/update/:id", [UserController::class, "update"]);
+Router::addRoute("POST", "/admin/users/delete/:id", [UserController::class, "delete"]);
 
 
-
-//kk
+//Kartu Keluarga
 Router::addRoute("GET", "/admin/kartu-keluarga", [KartuKeluargaController::class, "index"]);
 Router::addRoute("GET", "/admin/kartu-keluarga/create", [KartuKeluargaController::class, "create"]);
 Router::addRoute("POST", "/admin/kartu-keluarga", [KartuKeluargaController::class, "store"]);
