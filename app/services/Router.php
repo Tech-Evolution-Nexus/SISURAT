@@ -49,8 +49,8 @@ class Router
                 if (preg_match('#^' . $pattern . '$#', $url, $matches)) {
                     $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
                     array_shift($matches);
-     
-                // Extract query parameters
+
+                    // Extract query parameters
                     $queryString = $_SERVER['QUERY_STRING'] ?? ''; // Check if QUERY_STRING is set
                     parse_str($queryString, $queryParams); // Use empty string if not set
                     $params = array_merge($params, $queryParams); // Combine route parameters and query parameters
@@ -79,6 +79,7 @@ class Router
         }
         http_response_code(404);
         show404();
+
         return;
     }
 }

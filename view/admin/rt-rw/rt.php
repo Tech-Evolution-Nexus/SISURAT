@@ -36,7 +36,7 @@
                 </div>
                 <div class="ms-auto">
                     <button type="button" class="btn btn-warning" id="add-btn" data-bs-toggle="modal" data-bs-target="#modal">
-                        Tambah RW
+                        Tambah RT
                     </button>
                 </div>
             </div>
@@ -153,12 +153,6 @@
                                             <button data-nik="<?= $kk->nik ?>" title="Edit" class="btn editBtn text-white btn-warning btn-sm">
                                                 <i class="fa fa-pencil"></i>
                                             </button>
-                                            <a href="" title="Hapus" class="btn  text-white btn-danger btn-sm">
-                                                <i class="fa fa-trash"></i>
-                                            </a>
-                                            <a href="" title="Detail" class="btn  text-white btn-success btn-sm">
-                                                <i class="fa fa-users"></i>
-                                            </a>
                                         </div>
                                     </td>
                                 </tr>
@@ -185,7 +179,7 @@
                 opacity: 1
             })
             $.ajax({
-                url: "/admin/master-rt/ajax-masyarakat/<?= $data->rw ?>" + data.id,
+                url: "/admin/master-rw/ajax-masyarakat/" + data.id,
                 success: (data) => {
                     setFormData(data)
                 },
@@ -203,7 +197,7 @@
 
         // handle add data
         $("#add-btn").on("click", function() {
-            setupForm("Tambah RW", "/admin/master-rt/<?= $data->rw ?>")
+            setupForm("Tambah RT", "/admin/master-rw/<?= $data->rw ?>/master-rt")
             $(".search-section").show();
             $(".required-password").show();
             $("[name=password]").attr('required');
@@ -218,7 +212,7 @@
         $(".editBtn").on("click", function() {
             const nik = $(this).attr("data-nik")
 
-            setupForm("Ubah RW", "/admin/master-rt/<?= $data->rw ?>/" + nik)
+            setupForm("Ubah RT", "/admin/master-rw/<?= $data->rw ?>/master-rt/" + nik)
             $(".search-section").hide();
             $(".required-password").hide();
             $("[name=password]").removeAttr('required');
@@ -229,7 +223,7 @@
 
             $(".modal").modal("show")
             $.ajax({
-                url: "/admin/master-rt/ajax-rt/<?= $data->rw ?>/" + nik,
+                url: "/admin/master-rw/<?= $data->rw ?>/master-rt/ajax-rt/" + nik,
                 success: (data) => {
                     const formData = data;
                     console.log(formData);

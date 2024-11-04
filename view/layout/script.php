@@ -64,5 +64,9 @@
             allowClear: true
         });
 
+        setTimeout(() => {
+            $(".alert").removeClass("d-flex").hide();
+        }, 3000);
+
     })
 </script>

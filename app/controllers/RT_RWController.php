@@ -27,7 +27,10 @@ class RT_RWController extends Controller
             ->join("users", "masyarakat.nik", "users.nik")
             ->where("role", "=", "rw")->get();
         $masyarakat = $this->model->masyarakat
-            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")->get();
+            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+            ->join("users", "masyarakat.nik", "users.nik")
+            ->where("role", "=", "masyarakat")
+            ->get();
         $params["data"] = (object)[
             "title" => "RW",
             "description" => "Kelola Data ketua RW dengan mudah",
@@ -131,7 +134,11 @@ class RT_RWController extends Controller
             ->get();
 
         $masyarakat = $this->model->masyarakat
-            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")->get();
+            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+            ->join("users", "masyarakat.nik", "users.nik")
+            ->where("rw", "=", $rw)
+            ->where("role", "=", "masyarakat")
+            ->get();
 
         $params["data"] = (object)[
             "title" => "RT",
@@ -141,7 +148,7 @@ class RT_RWController extends Controller
             "rw" => $rw
         ];
 
-        return $this->view("admin/rt-rw/rw", $params);
+        return $this->view("admin/rt-rw/rt", $params);
     }
 
     public  function ajaxRT($rw, $nik)

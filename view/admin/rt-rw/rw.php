@@ -156,7 +156,7 @@
                                             <a href="" title="Hapus" class="btn  text-white btn-danger btn-sm">
                                                 <i class="fa fa-trash"></i>
                                             </a>
-                                            <a href="" title="Detail" class="btn  text-white btn-success btn-sm">
+                                            <a href="/admin/master-rw/<?= $kk->rw ?>/master-rt" title="Detail" class="btn  text-white btn-success btn-sm">
                                                 <i class="fa fa-users"></i>
                                             </a>
                                         </div>
