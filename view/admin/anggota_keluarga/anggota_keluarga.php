@@ -24,7 +24,7 @@
             <?php endif; ?>
 
             <?php if (session()->has("error")): ?>
-                <div class="alert alert-danger d-flex justify-content-between" role="alert">
+                <div class="alert alert-success d-flex justify-content-between" role="alert">
                     <?= session()->flash("error") ?>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -49,11 +49,10 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>No KK</th>
+                                <th>NIK</th>
                                 <th>Nama Lengkap</th>
-                                <th>Alamat</th>
-                                <th>RW</th>
-                                <th>RT</th>
+                                <th>Status Keluarga</th>
+                                <th>Tempat Tanggal Lahir</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -61,22 +60,21 @@
                             <?php foreach ($data->data  as $index => $kk) : ?>
                                 <tr>
                                     <td><?= $index + 1 ?></td>
-                                    <td><?= $kk->no_kk ?></td>
+                                    <td><?= $kk->nik ?></td>
                                     <td><?= $kk->nama_lengkap ?></td>
-                                    <td><?= $kk->alamat ?></td>
-                                    <td><?= $kk->rw ?></td>
-                                    <td><?= $kk->rt ?></td>
+                                    <td><?= $kk->status_keluarga ?></td>
+                                    <td><?= $kk->tempat_lahir ?><?= $kk->tgl_lahir ?></td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Action buttons">
-                                            <a href="/admin/kartu-keluarga/<?= $kk->no_kk ?>/edit" title="Edit" class="btn  text-white btn-warning btn-sm">
-                                                <i class="fa fa-pencil"></i>
+                                            <a href="/admin/kartu-keluarga/<?= $kk->no_kk ?>/anggota-keluarga/<?= $kk->nik ?>/edit" title="Edit" class="btn  text-white btn-warning btn-sm">
+                                                <i style="width: 15px;height: 15px;" class="fa  fa-pencil"></i>
                                             </a>
 
                                             <a href="/admin/kartu-keluarga/<?= $kk->no_kk ?>/delete" title="Hapus" class="btn  text-white btn-danger btn-sm">
-                                                <i class="fa fa-trash"></i>
+                                                <i style="width: 15px;height: 15px;" class="fa  fa-trash"></i>
                                             </a>
-                                            <a href="/admin/kartu-keluarga/<?= $kk->no_kk ?>/anggota-keluarga" title="Detail" class="btn  text-white btn-success btn-sm">
-                                                <i class="fa fa-users"></i>
+                                            <a href="/admin/kartu-keluarga/<?= $kk->no_kk ?>/anggota-keluarga/<?= $kk->nik ?>" title="Detail" class="btn  text-white btn-success btn-sm">
+                                                <i style="width: 15px;height: 15px;" class="fa  fa-info"></i>
                                             </a>
                                         </div>
                                     </td>

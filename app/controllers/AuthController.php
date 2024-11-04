@@ -6,7 +6,9 @@ use app\services\Database;
 use PDO;
 use PHPMailer\PHPMailer\PHPMailer;
 use app\models\UserModel;
+use app\services\Session;
 use Exception;
+use PHPUnit\Framework\TestCase;
 
 class AuthController
 {
@@ -23,7 +25,8 @@ class AuthController
         $password = $_POST['password'];
         $hasError = false;
         if (empty($email)) {
-            $_SESSION["usenameErr"] = 'email tidak boleh kosong';
+            $_SESSION["usernameErr"] = 'email tidak boleh kosong';
+
             $hasError = true;
         }
 
@@ -32,32 +35,44 @@ class AuthController
             $hasError = true;
         } else if (strlen($password) < 8) {
             $_SESSION["passwordErr"] = 'Kata sandi minimal 8 karakter';
+
             $hasError = true;
         }
+        if ($hasError) {
+            return;
+        }
+        // die();
+
+
         //Cek inputan ke database
         $user = "SELECT * FROM users where email = '$email'";
         $conn = (new Database())->getConnection();
+        // return $conn;
         $result = $conn->prepare($user);
         $result->execute();
         //var_dump ($result->fetch());
         // die ();
         if ($result->rowCount() > 0) {
             $data = $result->fetch(PDO::FETCH_ASSOC);
-            if (password_verify($password, $data['password'])) {
-                return redirect("/admin");
+            // if (password_verify($password, $data['password'])) {
+            if ($password === $data['password']) {
+                $session = new Session();
+                $session->set("user", $data);
+
+                // return redirect("/admin");
+                return;
             } else {
 
                 $_SESSION["passwordErr"] = 'Password salah';
                 $hasError = true;
-                return redirect("/login");
+                // return redirect("/login");
 
                 //die();
 
             }
         } else { //kondisi jika E-mail tidak terdaftar
             $_SESSION["usernameErr"] = 'Username tidak terdaftar';
-            return redirect("/login");
-
+            // return redirect("/login");
         }
 
         // if (!$hasError) {
@@ -75,52 +90,52 @@ class AuthController
     public function gantiPassword($token = null)
     {
         $model = new UserModel();
-        
+
         // Check if the token is provided and is valid format
-        if (is_null($token) || !$this->isValidTokenFormat($token) || !$model->cekresettoken($token)) {
+        if (is_null($token) || !$this->isValidTokenFormat($token) || !$model->where("token_reset", "=", $token)->first()) {
             // Flash message for invalid token
             session()->set('error', 'Token tidak valid atau telah kadaluarsa.');
             return redirect("/login");
         }
-    
+
         // Decode the token and extract user details safely
         $data = base64_decode($token);
         $datas = json_decode($data);
-    
+
         // Ensure that decoding was successful and user exists
         if (json_last_error() !== JSON_ERROR_NONE || !isset($datas->email, $datas->token, $datas->exp)) {
             session()->set('error', 'Token tidak valid.');
             return redirect("/login");
         }
-    
+
         $email = filter_var($datas->email, FILTER_SANITIZE_EMAIL);
         $reset_token = $datas->token;
         $exp = (int) $datas->exp;
-    
+
         // Check if the token is expired
         if (time() > $exp) {
             session()->set('error', 'Token telah kadaluarsa.');
             return redirect("/login");
         }
-    
+
         // Optional: Verify user existence
-        if (!$model->cekuserbyemail($email)) {
+        if (!$model->where("email", "=", $email)->first()) {
             session()->set('error', 'Pengguna tidak ditemukan.');
             return redirect("/login");
         }
-    
+
         // Render the reset password view if all checks pass
-        return view("auth/reset_password", ['token' =>$token]);
+        return view("auth/reset_password", ['token' => $token]);
     }
-    
+
     // Function to validate token format
     private function isValidTokenFormat($token)
     {
-        
+
         // Check for expected format of token, e.g., length, character set
         return preg_match('/^[A-Za-z0-9+\/=]+$/', $token);
     }
-    
+
 
 
     public function gantiPasswordStore()
@@ -132,28 +147,26 @@ class AuthController
         // Validate password and confirm password
         if (empty($password)) {
             $_SESSION["passwordErr"] = "Password baru tidak boleh kosong.";
-            return redirect("/ganti-password?token=".$token);
-
+            return redirect("/ganti-password?token=" . $token);
         } elseif ($password !== $confirm_password) {
             $_SESSION["confirmPasswordErr"] = "Konfirmasi password tidak cocok.";
-            return redirect("/ganti-password?token=".$token);
-
+            return redirect("/ganti-password?token=" . $token);
         }
 
         // Encrypt password
         $hashed_password = password_hash($password, PASSWORD_BCRYPT);
         if (!$token) {
             $_SESSION["error"] = "Token Tidak Ditemmukan. Silakan coba lagi.";
-            return redirect("/ganti-password?token=".$token);
-
+            return redirect("/ganti-password?token=" . $token);
         }
         $data = [
             "password" => $hashed_password,
             "token_reset" => $token
         ];
         // Update password in the database
+        $result = $model->where("token_reset", "=", $token)->first();
 
-        if ($model->updatepassword($data)) {
+        if ($model->update($result->id, $data)) {
 
             // Password successfully updated
             $_SESSION["success"] = "Password berhasil diubah.";
@@ -161,7 +174,7 @@ class AuthController
         } else {
             // Error during update
             $_SESSION["error"] = "Terjadi kesalahan, coba lagi.";
-            return redirect("/ganti-password?token=".$token);
+            return redirect("/ganti-password?token=" . $token);
         }
     }
 
@@ -177,7 +190,8 @@ class AuthController
         $model  = new UserModel();
         $email = $_POST['email'];
 
-        $result = $model->cekuserbyemail($email);
+        $result = $model->where("email", "=", $email)->first();
+
         if ($result) {
             // Buat token
             $token = bin2hex(random_bytes(50)); // Generate random token
@@ -185,11 +199,11 @@ class AuthController
             $payload = json_encode(['email' => $email, 'token' => $token, 'exp' => $expiry]);
             $encodedToken = base64_encode($payload);
             $data = [
-                "token" => $encodedToken,
+                "token_reset" => $encodedToken,
                 "email" => $email
             ];
             // Simpan token dan tanggal kedaluwarsa di database
-            $model->updatetokenreset($data);
+            $model->update($result->id, $data);
 
             $resetLink = "http://localhost/SISURAT/ganti-password?token=" . $encodedToken;
             $mail = new PHPMailer(true);

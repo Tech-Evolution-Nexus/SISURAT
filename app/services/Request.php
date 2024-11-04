@@ -2,6 +2,7 @@
 
 namespace App\services;
 
+
 class Request
 {
     public function get($key)
@@ -33,5 +34,25 @@ class Request
         }
 
         return htmlspecialchars(strip_tags($data), ENT_QUOTES, 'UTF-8'); // Basic sanitization
+    }
+
+    public function validate($rule)
+    {
+        $validate = new Validator(request()->getAll(), $rule);
+        $validate->validate();
+
+        // Check if there are errors
+        if ($errors = $validate->errors()) {
+            // Store each error in the session
+            foreach ($errors as $key => $error) {
+                if (!session()->has($key)) {
+                    session()->error($key, $error[0]);
+                }
+            }
+
+            return redirect()->withInput(request()->getAll())->back();
+        }
+
+        return $errors;
     }
 }

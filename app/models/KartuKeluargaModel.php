@@ -6,7 +6,7 @@ use app\abstract\Model;
 
 class KartuKeluargaModel extends Model
 {
-    protected $primaryKey  = "id";
+    protected $primaryKey  = "no_kk";
     protected $table  = "kartu_keluarga";
     protected $fillable = ["no_kk", "alamat", "rt", "rw", "kode_pos", "kelurahan", "kecamatan", "kabupaten", "provinsi", "kk_tgl"];
 
