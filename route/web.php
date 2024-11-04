@@ -3,7 +3,18 @@
 use app\controllers\AuthController;
 use app\controllers\KartuKeluargaController;
 use app\controllers\RT_RWController;
+use app\controllers\UserController;
 use app\services\Router;
+
+
+//USER
+Router::addRoute("GET", "/admin/users", [UserController::class, "index"]);
+Router::addRoute("GET", "/admin/users/create", [UserController::class, "create"]);
+Router::addRoute("POST", "/admin/users/store", [UserController::class, "store"]);
+Router::addRoute("GET", "/admin/users/:id/edit", [UserController::class, "edit"]);
+Router::addRoute("POST", "/admin/users/update/:id", [UserController::class, "update"]);
+Router::addRoute("POST", "/admin/users/delete/:id", [UserController::class, "delete"]);
+
 
 //Kartu Keluarga
 Router::addRoute("GET", "/admin/kartu-keluarga", [KartuKeluargaController::class, "index"]);

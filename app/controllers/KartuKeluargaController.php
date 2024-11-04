@@ -60,7 +60,7 @@ class KartuKeluargaController extends Controller
     }
     public  function store()
     {
-        $noKK = request("no_kk");
+        $noKK = request(key: "no_kk");
         $tanggalKK = request("tanggal_kk");
         $nama = request("nama");
         $nik = request("nik");
