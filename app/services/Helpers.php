@@ -1,6 +1,7 @@
 <?php
 
-use App\services\Request;
+use app\services\Redirector;
+use app\services\Request;
 use app\services\Session;
 
 if (!function_exists("assets")) {
@@ -16,12 +17,7 @@ if (!function_exists("session")) {
         return new Session();
     }
 }
-if (!function_exists("old")) {
-    function old($key, $default)
-    {
-        return session()->flash($key) ?? $default;
-    }
-}
+
 if (!function_exists("baseUrl")) {
     function baseUrl()
     {
@@ -66,14 +62,17 @@ if (!function_exists("request")) {
     }
 }
 if (!function_exists("redirect")) {
-    function redirect($url)
+    function redirect($url = null)
     {
-        header('Location: ' . $_ENV['APP_URL'] . $url);
+        $redirect = new Redirector();
+        if (is_null($url)) return $redirect;
+        $redirect->to($_ENV['APP_URL'] . $url);
         exit;
     }
 }
+
 if (!function_exists("old")) {
-    function old($key, $default)
+    function old($key, $default = "")
     {
         $session = new Session();
         return $session->flash($key) ?? $default;
@@ -99,11 +98,14 @@ if (!function_exists("response")) {
     }
 }
 if (!function_exists("dd")) {
-    function dd($data,)
+    function dd(...$data)
     {
-        echo '<pre>';
-        var_dump($data);
-        echo '</pre>';
+        foreach ($data as  $d) {
+            echo '<pre>';
+            var_dump($d);
+            echo '</pre>';
+            echo '<br/>';
+        }
         die();
     }
 }

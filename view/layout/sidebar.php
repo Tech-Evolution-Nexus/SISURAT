@@ -7,7 +7,7 @@
     <ul class="list-unstyled d-flex flex-column gap-2 py-4 px-2">
         <!-- Master Data -->
         <li>
-            <a class="text-body-secondary sidebar-item  d-flex align-items-center  rounded py-2 text-decoration-none" href="#">
+            <a class="text-body-secondary sidebar-item  d-flex align-items-center  rounded py-2 text-decoration-none" href="/admin/#">
                 <span class="d-inline-block  text-uppercase fw-bold">Dashboard</span>
             </a>
             <ul class="list-unstyled ps-2">
@@ -21,7 +21,7 @@
         </li>
         <hr class="my-1">
         <li>
-            <a class="text-body-secondary sidebar-item  d-flex align-items-center  rounded py-2 text-decoration-none" href="#">
+            <a class="text-body-secondary sidebar-item  d-flex align-items-center  rounded py-2 text-decoration-none" href="/admin/#">
                 <span class="d-inline-block text-uppercase fw-bold">Pengajuan</span>
             </a>
             <ul class="list-unstyled ps-2">
@@ -41,7 +41,7 @@
         </li>
         <hr class="my-1">
         <li>
-            <a class="text-body-secondary sidebar-item  d-flex align-items-center  rounded py-2 text-decoration-none" href="#">
+            <a class="text-body-secondary sidebar-item  d-flex align-items-center  rounded py-2 text-decoration-none" href="/admin/#">
                 <span class="d-inline-block text-uppercase fw-bold">Master Data</span>
             </a>
             <ul class="list-unstyled ps-2">
@@ -74,7 +74,7 @@
         <hr class="my-1">
 
         <li>
-            <a class="text-body-secondary sidebar-item  d-flex align-items-center  rounded py-2 text-decoration-none" href="#">
+            <a class="text-body-secondary sidebar-item  d-flex align-items-center  rounded py-2 text-decoration-none" href="/admin/#">
                 <span class="d-inline-block text-uppercase fw-bold">PENGATURAN</span>
             </a>
             <ul class="list-unstyled ps-2">
