@@ -24,7 +24,8 @@
 </head>
 
 <body>
-    <div class="row " style="height: 100vh;">
+  <div class="">
+  <div class="row mx-0" style="height: 100vh;">
         <div class="col-md-7 justify-content-center d-flex flex-column align-items-center" style="background-color:#052158" > 
             <img class ="img-fluid"src="<?= assets("assets/logosurat.png") ?>" width="450">
             <h2 style="max-width:500px; text-align:center; color:white; font-size:20px;" class="mt-4">
@@ -56,12 +57,14 @@
                         <?php endif; ?>
                     </div>
                     <button class="btn btn-primary w-100" type="submit">Login</button>
-                    <a href="lupapassword">Lupa Password</a>
-                    
+                   <div class="d-flex">
+                   <a href="lupapassword" class="ms-auto mt-4 d-inline-block">Lupa Password</a>
+                   </div>
                 </form>
             </div>
         </div>
     </div>
+  </div>
 </body>
 
 </html>
