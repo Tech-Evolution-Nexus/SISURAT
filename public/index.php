@@ -17,7 +17,6 @@ function autoload($class)
         include_once($filePath);
     }
 }
-require __DIR__ . '/../vendor/autoload.php';
 
 spl_autoload_register('autoload');
 require '../lib/PHPMailer/PHPMailer.php';
