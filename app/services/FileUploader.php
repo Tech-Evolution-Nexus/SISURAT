@@ -17,13 +17,13 @@ class FileUploader
     // Metode untuk mengunggah file
     public function upload()
     {
-        if (!$this->isAllowedFileType()) {
-            return "Maaf, hanya file " . implode(", ", $this->allowedFileTypes) . " yang diperbolehkan.";
-        }
+        // if (!$this->isAllowedFileType()) {
+        //     return "Maaf, hanya file " . implode(", ", $this->allowedFileTypes) . " yang diperbolehkan.";
+        // }
 
-        if ($this->fileExists()) {
-            return "Maaf, file sudah ada.";
-        }
+        // if ($this->fileExists()) {
+        //     return "Maaf, file sudah ada.";
+        // }
 
         if ($this->moveFile()) {
             return "File " . htmlspecialchars(basename($this->file["name"])) . " telah berhasil diunggah.";
@@ -33,7 +33,7 @@ class FileUploader
     }
 
     // Metode untuk mengecek tipe file
-    private function isAllowedFileType()
+    public function isAllowedFileType()
     {
         $fileType = strtolower(pathinfo($this->targetFile, PATHINFO_EXTENSION));
         return in_array($fileType, $this->allowedFileTypes);
