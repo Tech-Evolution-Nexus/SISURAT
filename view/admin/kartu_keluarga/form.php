@@ -37,9 +37,6 @@
             </div>
 
 
-            <?php
-            // dd(session()->all()  );
-            ?>
             <form action="<?= $data->action_form ?>" method="post" class="card">
                 <div class="card-body">
                     <div class="row">

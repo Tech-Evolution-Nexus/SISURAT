@@ -145,6 +145,7 @@ class KartuKeluargaController extends Controller
 
     public  function edit($id)
     {
+
         $kartuKeluarga = $this->model->kartuKeluarga
             ->select("kartu_keluarga.no_kk,nama_lengkap,kk_tgl,nik,alamat,rt,rw,kode_pos,kelurahan,kecamatan,kabupaten,provinsi")
             ->join("masyarakat", "kartu_keluarga.no_kk", "masyarakat.no_kk")
@@ -166,12 +167,14 @@ class KartuKeluargaController extends Controller
             "kabupaten" => $kartuKeluarga->kabupaten ?? null,
             "provinsi" => $kartuKeluarga->provinsi ?? null,
         ];
+
         $params["data"] = (object)[
             "title" => "Ubah Kartu Keluarga",
             "description" => "Kelola Kartu Keluarga dengan mudah",
             "action_form" => url("/admin/kartu-keluarga/$id"),
             "data" => $data
         ];
+
 
         return $this->view("admin/kartu_keluarga/form", $params);
     }

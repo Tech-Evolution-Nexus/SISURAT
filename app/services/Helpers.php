@@ -112,22 +112,15 @@ if (!function_exists("dd")) {
 if (!function_exists("url")) {
     function url($url)
     {
-        if (!function_exists("url")) {
-            function url($path = '')
-            {
-                // Get the protocol (http or https)
-                $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        $host = $_SERVER['HTTP_HOST'];
+        $path = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
 
-                // Get the host name
-                $host = $_SERVER['HTTP_HOST'];
+        // Menghapus "public" dari path jika ada
+        $path = str_replace('/public', '', $path);
 
-                // Get the current directory (if any) and form the base URL
-                $base_url = $protocol . $host . dirname($_SERVER['SCRIPT_NAME']);
-
-                // Return the full URL by combining base URL with the given path
-                return rtrim($base_url, '/') . '/' . ltrim($path, '/');
-            }
-        }
+        // Menampilkan hasil
+        return $protocol . $host . $path . $url;
     }
 }
 
