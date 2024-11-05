@@ -7,11 +7,13 @@ class Validator
     protected $data;
     protected $errors = [];
     protected $rules = [];
+    protected $messages = [];
 
-    public function __construct(array $data, array $rules)
+    public function __construct(array $data, array $rules, array $messages = [])
     {
         $this->data = $data;
         $this->rules = $rules;
+        $this->messages = $messages;
     }
 
     public function validate()
@@ -40,24 +42,20 @@ class Validator
         return empty($this->errors);
     }
 
-    /**
-     * Check if the data failed validation.
-     *
-     * @return bool
-     */
     public function fails()
     {
         return !$this->passes();
     }
 
-    /**
-     * Get validation errors.
-     *
-     * @return array An array of errors.
-     */
     public function errors()
     {
         return $this->errors;
+    }
+
+    // Helper method to get a custom message or default message
+    protected function getMessage($field, $rule, $default)
+    {
+        return $this->messages["$field.$rule"] ?? $default;
     }
 
     // Validation rule methods
@@ -65,47 +63,48 @@ class Validator
     protected function validateRequired($field)
     {
         if (empty($this->data[$field])) {
-            $fieldText = ucfirst($field);
-            $this->errors[$field][] = "$fieldText wajib diisi.";
+            $defaultMessage = ucfirst($field) . " wajib diisi.";
+            $this->errors[$field][] = $this->getMessage($field, 'required', $defaultMessage);
         }
     }
 
     protected function validateEmail($field)
     {
         if (!filter_var($this->data[$field], FILTER_VALIDATE_EMAIL)) {
-                    $fieldText = ucfirst($field);
-            $this->errors[$field][] = "$fieldText harus berupa alamat email yang valid.";
+            $defaultMessage = ucfirst($field) . " harus berupa alamat email yang valid.";
+            $this->errors[$field][] = $this->getMessage($field, 'email', $defaultMessage);
         }
     }
 
     protected function validateMin($field, $parameter)
     {
         if (strlen($this->data[$field]) < $parameter) {
-                    $fieldText = ucfirst($field);
-            $this->errors[$field][] = "$fieldText minimal $parameter karakter.";
+            $defaultMessage = ucfirst($field) . " minimal $parameter karakter.";
+            $this->errors[$field][] = $this->getMessage($field, 'min', $defaultMessage);
         }
     }
 
     protected function validateMax($field, $parameter)
     {
         if (strlen($this->data[$field]) > $parameter) {
-                    $fieldText = ucfirst($field);
-            $this->errors[$field][] = "$fieldText maksimal $parameter karakter.";
+            $defaultMessage = ucfirst($field) . " maksimal $parameter karakter.";
+            $this->errors[$field][] = $this->getMessage($field, 'max', $defaultMessage);
         }
     }
 
     protected function validateNumeric($field)
     {
         if (!is_numeric($this->data[$field])) {
-                    $fieldText = ucfirst($field);
-            $this->errors[$field][] = "$fieldText harus berupa angka.";
+            $defaultMessage = ucfirst($field) . " harus berupa angka.";
+            $this->errors[$field][] = $this->getMessage($field, 'numeric', $defaultMessage);
         }
     }
-    protected function validateSame($field,$parameter)
+
+    protected function validateSame($field, $parameter)
     {
-        if ($this->data[$field] == $this->data[$parameter]) {
-                    $fieldText = ucfirst($field);
-            $this->errors[$field][] = "$fieldText harus sama dengan $parameter.";
+        if ($this->data[$field] != $this->data[$parameter]) {
+            $defaultMessage = ucfirst($field) . " harus sama dengan " . ucfirst($parameter) . ".";
+            $this->errors[$field][] = $this->getMessage($field, 'same', $defaultMessage);
         }
     }
 }

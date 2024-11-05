@@ -17,12 +17,11 @@
 
         const sidebarItem = $(".side-link");
         const pathname = window.location.pathname;
-
         sidebarItem.each(function() {
-            const href = $(this).attr("href");
-
-            // Cek apakah href sesuai dengan pathname
-            if (pathname.includes(href)) {
+            let href = $(this).attr("href");
+            let protocolHost = window.location.protocol + '//' + window.location.host;
+            href = href.replace(protocolHost, "");
+            if (pathname == href) {
                 $(this).addClass("bg-primary");
                 $(this).attr("style", "color: white !important;");
             }

@@ -35,8 +35,8 @@
                     <p class="text-white text-small"><?= $data->description ?> </p>
                 </div>
                 <div class="ms-auto">
-                    <a href="/admin/kartu-keluarga/create" class="btn btn-warning">
-                        Tambah KK
+                    <a href="<?= url("/admin/kartu-keluarga/$data->no_kk/anggota-keluarga/create") ?>" class="btn btn-warning">
+                        Tambah Anggota Keluarga
                     </a>
                 </div>
             </div>
@@ -66,14 +66,14 @@
                                     <td><?= $kk->tempat_lahir ?><?= $kk->tgl_lahir ?></td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Action buttons">
-                                            <a href="/admin/kartu-keluarga/<?= $kk->no_kk ?>/anggota-keluarga/<?= $kk->nik ?>/edit" title="Edit" class="btn  text-white btn-warning btn-sm">
+                                            <a href="<?= url("/admin/kartu-keluarga/$kk->no_kk/anggota-keluarga/$kk->nik/edit") ?>" title="Edit" class="btn  text-white btn-warning btn-sm">
                                                 <i style="width: 15px;height: 15px;" class="fa  fa-pencil"></i>
                                             </a>
 
-                                            <a href="/admin/kartu-keluarga/<?= $kk->no_kk ?>/delete" title="Hapus" class="btn  text-white btn-danger btn-sm">
+                                            <a href="<?= url("/admin/kartu-keluarga/$kk->no_kk/anggota-keluarga/$kk->nik/delete") ?>" title="Hapus" class="btn  text-white btn-danger btn-sm">
                                                 <i style="width: 15px;height: 15px;" class="fa  fa-trash"></i>
                                             </a>
-                                            <a href="/admin/kartu-keluarga/<?= $kk->no_kk ?>/anggota-keluarga/<?= $kk->nik ?>" title="Detail" class="btn  text-white btn-success btn-sm">
+                                            <a href="<?= url("/admin/kartu-keluarga/$kk->no_kk/anggota-keluarga/$kk->nik") ?>" title="Detail" class="btn  text-white btn-success btn-sm">
                                                 <i style="width: 15px;height: 15px;" class="fa  fa-info"></i>
                                             </a>
                                         </div>

@@ -15,9 +15,9 @@
 </head>
 
 <body>
-    <div class="row" style="height: 100vh;">
+    <div class="row mx-0" style="height: 100vh;">
         <!-- Sisi kiri (ilustrasi) -->
-        <div class="col-md-7 justify-content-center d-flex flex-column align-items-center" style="background-color:#052158;">
+        <div class="col-md-7  justify-content-center d-md-flex d-none flex-column align-items-center" style="background-color:#052158;">
             <img class="img-fluid" src="<?= assets("assets/logosurat.png") ?>" width="450">
             <h2 style="max-width:500px; text-align:center; color:white; font-size:20px;" class="mt-4">
                 Kelurahan Terkoneksi, Surat Menyurat Jadi Lebih Cepat dan Mudah
@@ -30,30 +30,42 @@
                 <img src="<?= assets("assets/logo-badean.png") ?>" alt="Logo Badean" width="300" height="100">
                 <h1>Ganti Password</h1>
                 <p>Masukkan password baru untuk akun Anda!</p>
+                <?php if (session()->has("success")): ?>
+                    <div class="alert alert-success d-flex justify-content-between" role="alert">
+                        <?= session()->flash("success") ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+                <?php if (session()->has("error")): ?>
+                    <div class="alert alert-danger d-flex justify-content-between" role="alert">
+                        <?= session()->flash("error") ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
                 <form action="ganti-password" method="post">
                     <div class="form-group mb-2">
-                        <input type="hidden"name="token" id="token" value='<?= $token?>'>
-                        <label for="password" class="mb-2">Password Baru</label>
+                        <input type="hidden" name="token" id="token" value='<?= $token ?>'>
+                        <label for="password" class="mb-1">Password Baru</label>
                         <input type="password" class="form-control" placeholder="Masukkan Password Baru" name="password" id="password">
-                        <?php if (isset($_SESSION["passwordErr"])): ?>
-                            <small class="text-danger"><?= $_SESSION["passwordErr"] ?></small>
-                            <?php unset($_SESSION["passwordErr"]); ?>
+                        <?php if (session()->has("password")): ?>
+                            <small class="text-danger "><?= session()->error("password") ?></small>
                         <?php endif; ?>
                     </div>
                     <div class="form-group mb-2">
-                        <label for="confirm_password" class="mb-2">Konfirmasi Password Baru</label>
+                        <label for="confirm_password" class="mb-1">Konfirmasi Password Baru</label>
                         <input type="password" class="form-control" placeholder="Konfirmasi Password Baru" name="confirm_password" id="confirm_password">
-                        <?php if (isset($_SESSION["confirmPasswordErr"])): ?>
-                            <small class="text-danger"><?= $_SESSION["confirmPasswordErr"] ?></small>
-                            <?php unset($_SESSION["confirmPasswordErr"]); ?>
+                        <?php if (session()->has("confirm_password")): ?>
+                            <small class="text-danger "><?= session()->error("confirm_password") ?></small>
                         <?php endif; ?>
                     </div>
 
-                    <button class="btn btn-primary w-100" type="submit">Ganti Password</button>
+                    <button class="btn btn-primary w-100 fw-normal" type="submit">Ganti Password</button>
                 </form>
             </div>
         </div>
     </div>
+    <?php includeFile("layout/script") ?>
+
 </body>
 
 </html>

@@ -36,18 +36,15 @@ class Request
         return htmlspecialchars(strip_tags($data), ENT_QUOTES, 'UTF-8'); // Basic sanitization
     }
 
-    public function validate($rule)
+    public function validate($rule, $message = [])
     {
-        $validate = new Validator(request()->getAll(), $rule);
+        $validate = new Validator(request()->getAll(), $rule, $message);
         $validate->validate();
 
-        // Check if there are errors
         if ($errors = $validate->errors()) {
-            // Store each error in the session
             foreach ($errors as $key => $error) {
-                    session()->error($key, $error[0]);
+                session()->error($key, $error[0]);
             }
-
             return redirect()->withInput(request()->getAll())->back();
         }
 

@@ -148,7 +148,7 @@
                     </div>
                     <div class="flex mt-4">
                         <button type="submit" class="btn btn-primary fw-normal">Simpan</button>
-                        <a href="/admin/kartu-keluarga" class="btn btn-secondary">Kembali</a>
+                        <a href="<?= url("/admin/kartu-keluarga") ?>" class="btn btn-secondary">Kembali</a>
                     </div>
                 </div>
 

@@ -100,7 +100,7 @@ if (!function_exists("response")) {
 if (!function_exists("dd")) {
     function dd(...$data)
     {
-        foreach ($data as  $d) {
+        foreach ($data as $d) {
             echo '<pre>';
             var_dump($d);
             echo '</pre>';
@@ -109,6 +109,21 @@ if (!function_exists("dd")) {
         die();
     }
 }
+if (!function_exists("url")) {
+    function url($url = '')
+    {
+
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        $host = $_SERVER['HTTP_HOST'];
+        $path = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
+
+        // Menghapus "public" dari path jika ada
+        $path = str_replace('/public', '', $path);
+        // Menampilkan hasil
+        return $protocol . $host . $path . $url;
+    }
+}
+
 
 
 

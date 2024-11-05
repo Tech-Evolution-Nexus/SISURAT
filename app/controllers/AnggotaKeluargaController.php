@@ -25,7 +25,8 @@ class AnggotaKeluargaController extends Controller
         $params["data"] = (object)[
             "title" => "Anggota Keluarga",
             "description" => "Kelola Anggota Keluarga dengan mudah",
-            "data" => $data
+            "data" => $data,
+            "no_kk" => $nokk
         ];
 
         return $this->view("admin/anggota_keluarga/anggota_keluarga", $params);
@@ -50,7 +51,7 @@ class AnggotaKeluargaController extends Controller
         $params["data"] = (object)[
             "title" => "Tambah Anggota Keluarga",
             "description" => "Kelola Anggota Keluarga dengan mudah",
-            "action_form" => "/admin/kartu-keluarga/$nokk/anggota-keluarga",
+            "action_form" => url("/admin/kartu-keluarga/$nokk/anggota-keluarga"),
             "data" => $data
         ];
 
@@ -145,7 +146,7 @@ class AnggotaKeluargaController extends Controller
         $params["data"] = (object)[
             "title" => "Ubah Anggota Keluarga",
             "description" => "Kelola Anggota Keluarga dengan mudah",
-            "action_form" => "/admin/kartu-keluarga/$nokk/anggota-keluarga/$nik",
+            "action_form" => url("/admin/kartu-keluarga/$nokk/anggota-keluarga/$nik"),
             "data" => $data
         ];
 

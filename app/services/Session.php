@@ -20,16 +20,16 @@ class Session
     {
         // Assuming get data
         if (!$data) {
-            $val = $_SESSION["error"][$key] ?? null; // Use null coalescing operator to avoid undefined index notice
-            unset($_SESSION["error"][$key]);
+            $val = $_SESSION["error_input"][$key] ?? null; // Use null coalescing operator to avoid undefined index notice
+            unset($_SESSION["error_input"][$key]);
             return $val;
         }
 
-        $_SESSION["error"][$key] = $data;
+        $_SESSION["error_input"][$key] = $data;
     }
     public function has($key)
     {
-        return isset($_SESSION["flash"][$key]) || isset($_SESSION["error"][$key]);
+        return isset($_SESSION["flash"][$key]) || isset($_SESSION["error_input"][$key]);
     }
 
     public function set($key, $data)

@@ -52,7 +52,7 @@ class KartuKeluargaController extends Controller
         $params["data"] = (object)[
             "title" => "Tambah Kartu Keluarga",
             "description" => "Kelola Kartu Keluarga dengan mudah",
-            "action_form" => "/admin/kartu-keluarga",
+            "action_form" => url("/admin/kartu-keluarga"),
             "data" => $data
         ];
 
@@ -169,7 +169,7 @@ class KartuKeluargaController extends Controller
         $params["data"] = (object)[
             "title" => "Ubah Kartu Keluarga",
             "description" => "Kelola Kartu Keluarga dengan mudah",
-            "action_form" => "/admin/kartu-keluarga/$id",
+            "action_form" => url("/admin/kartu-keluarga/$id"),
             "data" => $data
         ];
 

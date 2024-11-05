@@ -35,7 +35,7 @@
                     <p class="text-white text-small"><?= $data->description ?> </p>
                 </div>
                 <div class="ms-auto">
-                    <a href="/admin/kartu-keluarga/create" class="btn btn-warning">
+                    <a href="<?= url("/admin/kartu-keluarga/create") ?>" class="btn btn-warning">
                         Tambah KK
                     </a>
                 </div>
@@ -68,14 +68,14 @@
                                     <td><?= $kk->rt ?></td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Action buttons">
-                                            <a href="/admin/kartu-keluarga/<?= $kk->no_kk ?>/edit" title="Edit" class="btn  text-white btn-warning btn-sm">
+                                            <a href="<?= url("/admin/kartu-keluarga/$kk->no_kk/edit") ?>" title="Edit" class="btn  text-white btn-warning btn-sm">
                                                 <i class="fa fa-pencil"></i>
                                             </a>
 
-                                            <a href="/admin/kartu-keluarga/<?= $kk->no_kk ?>/delete" title="Hapus" class="btn  text-white btn-danger btn-sm">
+                                            <a href="<?= url("/admin/kartu-keluarga/$kk->no_kk/delete") ?>" title="Hapus" class="btn  text-white btn-danger btn-sm">
                                                 <i class="fa fa-trash"></i>
                                             </a>
-                                            <a href="/admin/kartu-keluarga/<?= $kk->no_kk ?>/anggota-keluarga" title="Detail" class="btn  text-white btn-success btn-sm">
+                                            <a href="<?= url("/admin/kartu-keluarga/$kk->no_kk/anggota-keluarga") ?>" title="Detail" class="btn  text-white btn-success btn-sm">
                                                 <i class="fa fa-users"></i>
                                             </a>
                                         </div>
