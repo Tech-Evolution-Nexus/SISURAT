@@ -13,7 +13,8 @@ use PHPUnit\Framework\TestCase;
 class AuthController
 {
     private $model;
-    public function __construct() {
+    public function __construct()
+    {
         $this->model = (object)[];
         $this->model->users = new UserModel();
     }
@@ -31,23 +32,21 @@ class AuthController
         ]);
         $email = request("email");
         $password = request("password");
-       
 
-        $user = $this->model->users->where("email","=",$email)->first();
-       
+
+        $user = $this->model->users->where("email", "=", $email)->first();
+
         if ($user) {
-         
+
             if (password_verify($password, $user->password)) {
                 session()->set("user", $user);
                 return redirect("/admin");
             } else {
-                return redirect()->with("error","Password salah")->back();
+                return redirect()->with("error", "Password salah")->back();
             }
-        } else { 
-            return redirect()->with("error","User tidak ditemukan")->back();
+        } else {
+            return redirect()->with("error", "User tidak ditemukan")->back();
         }
-
-       
     }
 
     public function lupaPassword()
@@ -55,52 +54,38 @@ class AuthController
         return view("auth/lupapassword");
     }
 
-    public function gantiPassword($token = null)
+    public function gantiPassword()
     {
+        $token = request("token");
         $model = new UserModel();
-
-        // Check if the token is provided and is valid format
+        // dd("das");
         if (is_null($token) || !$this->isValidTokenFormat($token) || !$model->where("token_reset", "=", $token)->first()) {
-            // Flash message for invalid token
-            session()->set('error', 'Token tidak valid atau telah kadaluarsa.');
-            return redirect("/login");
+            session()->flash('error', 'Token tidak valid atau telah kadaluarsa.');
         }
 
-        // Decode the token and extract user details safely
         $data = base64_decode($token);
         $datas = json_decode($data);
 
-        // Ensure that decoding was successful and user exists
         if (json_last_error() !== JSON_ERROR_NONE || !isset($datas->email, $datas->token, $datas->exp)) {
-            session()->set('error', 'Token tidak valid.');
-            return redirect("/login");
+            session()->flash('error', 'Token tidak valid.');
         }
 
         $email = filter_var($datas->email, FILTER_SANITIZE_EMAIL);
-        $reset_token = $datas->token;
         $exp = (int) $datas->exp;
 
-        // Check if the token is expired
         if (time() > $exp) {
-            session()->set('error', 'Token telah kadaluarsa.');
-            return redirect("/login");
+            session()->flash('error', 'Token telah kadaluarsa.');
         }
 
-        // Optional: Verify user existence
         if (!$model->where("email", "=", $email)->first()) {
-            session()->set('error', 'Pengguna tidak ditemukan.');
-            return redirect("/login");
+            session()->flash('error', 'Pengguna tidak ditemukan.');
         }
 
-        // Render the reset password view if all checks pass
         return view("auth/reset_password", ['token' => $token]);
     }
 
-    // Function to validate token format
     private function isValidTokenFormat($token)
     {
-
-        // Check for expected format of token, e.g., length, character set
         return preg_match('/^[A-Za-z0-9+\/=]+$/', $token);
     }
 
@@ -111,14 +96,20 @@ class AuthController
         request()->validate([
             "password" => "required|min:8",
             "confirm_password" => "required|min:8|same:password",
+        ], [
+            "password.required" => "Password wajib diisi",
+            "confirm_password.required" => "Konfirmasi password wajib diisi",
+            "password.min" => "Password minimal 8 karakter",
+            "confirm_password.min" => "Konfirmasi password  minimal 8 karakter",
+            "confirm_password.same" => "Konfirmasi password  tidak sama",
         ]);
         $token = request("token");
-        $password = request( "password");
+        $password = request("password");
 
         // Encrypt password
         $hashed_password = password_hash($password, PASSWORD_BCRYPT);
         if (!$token) {
-            return redirect()->with("error","Token Tidak Ditemmukan. Silakan coba lagi.")->back();
+            return redirect()->with("error", "Token Tidak Ditemmukan. Silakan coba lagi.")->back();
         }
         $data = [
             "password" => $hashed_password,
@@ -127,9 +118,9 @@ class AuthController
 
         $result = $this->model->users->where("token_reset", "=", $token)->first();
         if ($this->model->users->update($result->id, $data)) {
-            return redirect()->with("success","Berhasil mengubah password")->to("/login");
+            return redirect()->with("success", "Berhasil mengubah password")->to("/login");
         } else {
-            return redirect()->with("success","Gagal mengubah password,Coba lagi")->back();
+            return redirect()->with("success", "Gagal mengubah password,Coba lagi")->back();
         }
     }
 
@@ -184,9 +175,9 @@ class AuthController
 
                 // Kirim email
                 $mail->send();
-                return redirect( )->with("success","Silahkan cek email untuk melihat pesan")->back();
+                return redirect()->with("success", "Silahkan cek email untuk melihat pesan")->back();
             } catch (Exception $e) {
-                return redirect( )->with("error","Terjadi kesalahan ketika mengirimkan pesan ke email anda")->back();
+                return redirect()->with("error", "Terjadi kesalahan ketika mengirimkan pesan ke email anda")->back();
             }
         }
     }

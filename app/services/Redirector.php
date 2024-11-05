@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 namespace app\services;
 
 class Redirector
@@ -19,6 +20,7 @@ class Redirector
         }
         exit();
     }
+
 
     public function withInput($inputs = [])
     {

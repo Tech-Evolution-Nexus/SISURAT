@@ -12,7 +12,7 @@
             </a>
             <ul class="list-unstyled ps-2">
                 <li>
-                    <a class="text-body-secondary sidebar-subitem side-link d-flex align-items-center px-3 rounded py-2 text-decoration-none" href="/admin/rekam-medis">
+                    <a class="text-body-secondary sidebar-subitem side-link d-flex align-items-center px-3 rounded py-2 text-decoration-none" href="<?= url("admin/")?>">
                         <i class="fa fa-table-columns"></i>
                         <span class="d-inline-block ms-3">Dashboard</span>
                     </a>
