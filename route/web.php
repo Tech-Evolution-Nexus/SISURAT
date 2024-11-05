@@ -13,7 +13,7 @@ use app\controllers\UserController;
 Router::addRoute("GET", "/admin/surat", [SuratController::class, "index"]);
 Router::addRoute("POST", "/admin/surat", [SuratController::class, "add"]);
 Router::addRoute("GET", "/admin/esurat/{id}", [SuratController::class, "getedit"]);
-Router::addRoute("GET", "/admin/dsurat/{id}", [SuratController::class, "deletedata"]);
+Router::addRoute("POST", "/admin/dsurat/{id}", [SuratController::class, "deletedata"]);
 Router::addRoute("POST", "/admin/editsurat/{id}", [SuratController::class, "edit"]);
 
 Router::addRoute("GET", "/admin/surat-selesai", [SuratMasukSelesaiController::class, "index"]);

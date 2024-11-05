@@ -66,7 +66,7 @@ if (!function_exists("redirect")) {
     {
         $redirect = new Redirector();
         if (is_null($url)) return $redirect;
-        $redirect->to($_ENV['APP_URL'] . $url);
+        $redirect->to($url);
         exit;
     }
 }
@@ -115,12 +115,8 @@ if (!function_exists("url")) {
         $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
         $host = $_SERVER['HTTP_HOST'];
         $path = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
-
-        // Menghapus "public" dari path jika ada
         $path = str_replace('/public', '', $path);
-
-        // Menampilkan hasil
-        return $protocol . $host . $path . $url;
+        return $protocol . $host . $path . '/' . ltrim($url, '/');
     }
 }
 
