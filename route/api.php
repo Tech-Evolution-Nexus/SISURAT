@@ -1,5 +1,6 @@
 <?php
 
+use app\controllers\api\KkApiController;
 use app\controllers\api\SuratApiController;
 use app\services\Router;
 
@@ -8,4 +9,5 @@ use app\services\Router;
 Router::addRoute("GET", "/jenissurat", [SuratApiController::class, "getdataall"]);
 Router::addRoute("GET", "/jenissurat/{id}/{ids}", [SuratApiController::class, "getform"]);
 Router::addRoute("GET", "/s/{id}", [SuratApiController::class, "getlampiran"]);
+Router::addRoute("GET", "/getlistkk/{id}", [KkApiController::class, "getdatakk"]);
 

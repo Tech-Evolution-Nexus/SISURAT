@@ -30,6 +30,18 @@
                 <img src="<?= assets("assets/logo-badean.png") ?>" alt="Logo Badean" width="300" height="100">
                 <h1>Lupa Password</h1>
                 <p>Atur kembali password anda!</p>
+                <?php if (session()->has("success")): ?>
+                <div class="alert alert-success d-flex justify-content-between" role="alert">
+                    <?= session()->flash("success") ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
+            <?php if (session()->has("error")): ?>
+                <div class="alert alert-danger d-flex justify-content-between" role="alert">
+                    <?= session()->flash("error") ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
                 <form action="sendemail" method="post">
                     <div class="form-group mb-2">
                         <label for="email" class="mb-2">Email</label>

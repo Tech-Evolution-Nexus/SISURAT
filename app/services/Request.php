@@ -45,9 +45,7 @@ class Request
         if ($errors = $validate->errors()) {
             // Store each error in the session
             foreach ($errors as $key => $error) {
-                if (!session()->has($key)) {
                     session()->error($key, $error[0]);
-                }
             }
 
             return redirect()->withInput(request()->getAll())->back();

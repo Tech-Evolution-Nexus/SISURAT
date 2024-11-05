@@ -65,35 +65,47 @@ class Validator
     protected function validateRequired($field)
     {
         if (empty($this->data[$field])) {
-            $this->errors[$field][] = "$field wajib diisi.";
+            $fieldText = ucfirst($field);
+            $this->errors[$field][] = "$fieldText wajib diisi.";
         }
     }
 
     protected function validateEmail($field)
     {
         if (!filter_var($this->data[$field], FILTER_VALIDATE_EMAIL)) {
-            $this->errors[$field][] = "$field harus berupa alamat email yang valid.";
+                    $fieldText = ucfirst($field);
+            $this->errors[$field][] = "$fieldText harus berupa alamat email yang valid.";
         }
     }
 
     protected function validateMin($field, $parameter)
     {
         if (strlen($this->data[$field]) < $parameter) {
-            $this->errors[$field][] = "$field harus terdiri dari minimal $parameter karakter.";
+                    $fieldText = ucfirst($field);
+            $this->errors[$field][] = "$fieldText minimal $parameter karakter.";
         }
     }
 
     protected function validateMax($field, $parameter)
     {
         if (strlen($this->data[$field]) > $parameter) {
-            $this->errors[$field][] = "$field tidak boleh lebih dari $parameter karakter.";
+                    $fieldText = ucfirst($field);
+            $this->errors[$field][] = "$fieldText maksimal $parameter karakter.";
         }
     }
 
     protected function validateNumeric($field)
     {
         if (!is_numeric($this->data[$field])) {
-            $this->errors[$field][] = "$field harus berupa angka.";
+                    $fieldText = ucfirst($field);
+            $this->errors[$field][] = "$fieldText harus berupa angka.";
+        }
+    }
+    protected function validateSame($field,$parameter)
+    {
+        if ($this->data[$field] == $this->data[$parameter]) {
+                    $fieldText = ucfirst($field);
+            $this->errors[$field][] = "$fieldText harus sama dengan $parameter.";
         }
     }
 }
