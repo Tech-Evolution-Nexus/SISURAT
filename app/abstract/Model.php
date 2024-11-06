@@ -63,15 +63,30 @@ class Model
         return $this->db->lastInsertId();
     }
 
-    public function update($id, array $data)
+    public function update(array $data)
     {
         $setClauses = [];
         foreach ($data as $key => $value) {
             $setClauses[] = "{$key} = :{$key}";
         }
         $setString = implode(', ', $setClauses);
-        $this->query = "UPDATE {$this->table} SET {$setString} WHERE {$this->primaryKey} = :id";
-        $this->bindings = array_merge($data, ['id' => $id]);
+        $this->query = "UPDATE {$this->table} SET {$setString} ";
+
+        if (!empty($this->wheres)) {
+            $whereClauses = [];
+            foreach ($this->wheres as $index => $where) {
+                $prefix = $index === 0 ? "WHERE" : $where['type'];
+                $placeholder = ":{$where['column']}";
+                // Make sure to use the placeholder for the value in the query
+                $whereClauses[] = "$prefix {$where['column']} {$where['operator']} '{$where['value']}' ";
+                // Now bind the value properly
+                $this->bindings[$placeholder] = $where['value'];
+            }
+
+            $this->query .= ' ' . implode(' ', $whereClauses);
+        }
+        $this->bindings = $data;
+        // dd($this->query, $this->bindings);
         $this->execute($this->query, $this->bindings);
         return $data;
     }

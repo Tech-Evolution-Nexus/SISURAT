@@ -35,18 +35,23 @@ class AnggotaKeluargaController extends Controller
     {
         // default value
         $data = (object)[
-            "no_kk" => "",
-            "tanggal_kk" => "",
             "nik" => "",
             "nama" => "",
-            "alamat" => "",
-            "rt" => "",
-            "rw" => "",
-            "kode_pos" => "68281",
-            "kelurahan" => "Bataan Bunduh",
-            "kecamatan" => "Tenggarang",
-            "kabupaten" => "Bondowoso",
-            "provinsi" => "Jawa Timur",
+            "jenis_kelamin" => "",
+            "tempat_lahir" => "",
+            "tanggal_lahir" => "",
+            "agama" => "",
+            "pendidikan" => "",
+            "pekerjaan" => "",
+            "gol_darah" => "",
+            "status_perkawinan" => "",
+            "tgl_perkawinan" => "",
+            "status_keluarga" => "",
+            "kewarganegaraan" => "",
+            "no_paspor" => "",
+            "no_kitap" => "",
+            "nama_ayah" => "",
+            "nama_ibu" => "",
         ];
         $params["data"] = (object)[
             "title" => "Tambah Anggota Keluarga",
@@ -60,18 +65,23 @@ class AnggotaKeluargaController extends Controller
     public  function store($nokk)
     {
         request()->validate([
-            "no_kk" => "required",
-            "tanggal_kk" => "required",
-            "nama" => "required|min:3|max:50",
-            "nik" => "required|numeric|min:16",
-            "alamat" => "required|max:255",
-            "rt" => "required|numeric",
-            "rw" => "required|numeric",
-            "kelurahan" => "required|max:100",
-            "kode_pos" => "required|numeric",
-            "kabupaten" => "required|max:100",
-            "provinsi" => "required|max:100",
-            "kecamatan" => "required|max:100"
+            "nik" => "",
+            "nama" => "",
+            "jenis_kelamin" => "",
+            "tempat_lahir" => "",
+            "tanggal_lahir" => "",
+            "agama" => "",
+            "pendidikan" => "",
+            "pekerjaan" => "",
+            "gol_darah" => "",
+            "status_perkawinan" => "",
+            "tgl_perkawinan" => "",
+            "status_keluarga" => "",
+            "kewarganegaraan" => "",
+            "no_paspor" => "",
+            "no_kitap" => "",
+            "nama_ayah" => "",
+            "nama_ibu" => "",
         ]);
         $noKK = request("no_kk");
         $tanggalKK = request("tanggal_kk");
@@ -122,26 +132,30 @@ class AnggotaKeluargaController extends Controller
 
     public  function edit($nokk, $nik)
     {
-        $kartuKeluarga = $this->model->kartuKeluarga
-            ->select("kartu_keluarga.no_kk,nama_lengkap,kk_tgl,nik,alamat,rt,rw,kode_pos,kelurahan,kecamatan,kabupaten,provinsi")
-            ->join("masyarakat", "kartu_keluarga.no_kk", "masyarakat.no_kk")
-            ->where("kartu_keluarga.no_kk", "=", $nokk)
+        $masyarakat = $this->model->masyarakat
+            ->where("nik", "=", $nik)
             ->first();
 
-        if (!$kartuKeluarga) return show404();
+        if (!$masyarakat) return show404();
         $data = (object)[
-            "no_kk" => $kartuKeluarga->no_kk ?? null,
-            "tanggal_kk" => $kartuKeluarga->kk_tgl ?? null,
-            "nik" => $kartuKeluarga->nik ?? null,
-            "nama" => $kartuKeluarga->nama_lengkap ?? null,
-            "alamat" => $kartuKeluarga->alamat ?? null,
-            "rt" => $kartuKeluarga->rt ?? null,
-            "rw" => $kartuKeluarga->rw ?? null,
-            "kode_pos" => $kartuKeluarga->kode_pos ?? null,
-            "kelurahan" => $kartuKeluarga->kelurahan ?? null,
-            "kecamatan" => $kartuKeluarga->kecamatan ?? null,
-            "kabupaten" => $kartuKeluarga->kabupaten ?? null,
-            "provinsi" => $kartuKeluarga->provinsi ?? null,
+            "nik" => $masyarakat->nik,
+            "nama" => $masyarakat->nama_lengkap,
+            "jenis_kelamin" => $masyarakat->jenis_kelamin,
+            "tempat_lahir" => $masyarakat->tempat_lahir,
+            "tanggal_lahir" => $masyarakat->tgl_lahir,
+            "agama" => $masyarakat->agama,
+            "pendidikan" => $masyarakat->pendidikan,
+            "pekerjaan" => $masyarakat->pekerjaan,
+            "gol_darah" => $masyarakat->golongan_darah,
+            "status_perkawinan" => $masyarakat->status_perkawinan,
+            "tgl_perkawinan" => $masyarakat->tgl_perkawinan,
+            "status_keluarga" => $masyarakat->status_keluarga,
+            "kewarganegaraan" => $masyarakat->kewarganegaraan,
+            "no_paspor" => $masyarakat->no_paspor,
+            "no_kitap" => $masyarakat->no_kitap,
+            "nama_ayah" => $masyarakat->nama_ibu,
+            "nama_ibu" => $masyarakat->nama_ayah,
+
         ];
         $params["data"] = (object)[
             "title" => "Ubah Anggota Keluarga",

@@ -239,7 +239,7 @@ class KartuKeluargaController extends Controller
         $idMasyarakat = $this->model->masyarakat->where("no_kk", "=", $id)->first()->nik;
 
 
-        $this->model->kartuKeluarga->update($id, [
+        $this->model->kartuKeluarga->where("no_kk", "=", $id)->update([
             "no_kk" => $noKK,
             "alamat" => $alamat,
             "kk_tgl" => $tanggalKK,
@@ -247,7 +247,7 @@ class KartuKeluargaController extends Controller
             "rw" => $rw
         ]);
 
-        $this->model->masyarakat->update($idMasyarakat, [
+        $this->model->masyarakat->where("nik", "=", $idMasyarakat)->update([
             "nik" => $nik,
             "nama_lengkap" => $nama,
             "jenis_kelamin" => "laki-laki",
