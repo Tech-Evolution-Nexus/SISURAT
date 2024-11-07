@@ -119,9 +119,6 @@ if (!function_exists("url")) {
         return $protocol . $host . $path . '/' . ltrim($url, '/');
     }
 }
-
-
-
 if (!function_exists("loadEnv")) {
     function loadEnv()
     {

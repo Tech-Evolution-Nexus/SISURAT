@@ -7,6 +7,7 @@ class Redirector
 
     public function to($url, $statusCode = 302)
     {
+        $url = url($url);
         header("Location: $url", true, $statusCode);
         exit;
     }
