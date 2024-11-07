@@ -21,7 +21,7 @@ class SuratMasukSelesaiController extends Controller
     }
     public function  index()
     {
-        $data = $this->model->psurat->select("nomor_surat", "nik", "nama_lengkap", "nama_surat", "pengajuan_surat.created_at", "status", "no_hp")->join("masyarakat", "masyarakat.id", "pengajuan_surat.id_masyarakat")->join("surat", "surat.id", "pengajuan_surat.id_surat")->join("users", "users.id_masyarakat", "pengajuan_surat.id_masyarakat")->get();
+        $data = $this->model->psurat->select("nomor_surat", "masyarakat.nik", "nama_lengkap", "nama_surat", "pengajuan_surat.created_at", "status", "no_hp")->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")->join("surat", "surat.id", "pengajuan_surat.id_surat")->join("users", "users.nik", "pengajuan_surat.nik")->get();
 
         $params["data"] = (object)[
             "title" => "Jenis Surat",

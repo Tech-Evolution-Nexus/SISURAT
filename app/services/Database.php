@@ -19,10 +19,10 @@ class Database
         $dbName =   $_ENV["DB_NAME"];       // Nama database
 
         // var_dump($_ENV);
-        // $servername = "localhost";
-        // $username = "admin";
-        // $password = "101010";
-        // $dbName = "badean_post";
+        $servername = "localhost";
+        $username = "root";
+        $password = "";
+        $dbName = "badean_post";
         try {
             // Mencoba membuat koneksi ke database menggunakan PDO
             $this->conn = new PDO("mysql:host=$servername;dbname=$dbName", $username, $password);

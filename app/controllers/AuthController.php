@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 class AuthController
 {
-    private $model;
+    public $model;
     public function __construct()
     {
         $this->model = (object)[];

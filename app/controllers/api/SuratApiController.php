@@ -6,6 +6,7 @@ use app\models\JenisSuratModel;
 use app\models\KartuKeluargaModel;
 use app\models\LampiranSuratModel;
 use app\models\MasyarakatModel;
+use app\models\PengajuanSuratModel;
 use app\services\Database;
 use PDO;
 use Exception;
@@ -20,6 +21,8 @@ class SuratApiController
         $this->model->lampiransurat  = new LampiranSuratModel();
         $this->model->kartuKeluarga = new KartuKeluargaModel();
         $this->model->masyarakat = new MasyarakatModel();
+        $this->model->psurat = new PengajuanSuratModel();
+
 
     }
     public function getdata(){
@@ -37,11 +40,15 @@ class SuratApiController
     }
     public function getform($nik,$idsurat){
         $data = $this->model->kartuKeluarga
-        ->select("kartu_keluarga.id,nama_lengkap,no_kk,kk_tgl,nik,alamat,rt,rw,kode_pos,kelurahan,kecamatan,kabupaten,provinsi")
-        ->join("masyarakat", "kartu_keluarga.id", "masyarakat.id_kk")->where("nik","=",$nik)
+        ->select("kartu_keluarga.no_kk,nama_lengkap,kk_tgl,nik,alamat,rt,rw,kode_pos,kelurahan,kecamatan,kabupaten,provinsi")
+        ->join("masyarakat", "kartu_keluarga.no_kk", "masyarakat.no_kk")->where("nik","=",$nik)
         ->get();
         $data2 =$this->model->lampiransurat->select("id_surat","lampiran.id","nama_lampiran")
         ->join("lampiran","lampiran.id","id_lampiran")->where("id_surat","=",$idsurat)->get();;
         return response(["biodata"=>$data,"data"=>$data2],200);
+    }
+    public function getPengajuan($nik,$status){
+        $data = $this->model->psurat->select()->where("nik","=",$nik)->where("status","=",$status)->get();
+        return response(["datariwayat"=>$data],200);
     }
 }

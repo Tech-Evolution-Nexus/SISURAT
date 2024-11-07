@@ -12,12 +12,20 @@ use Exception;
 
 class KkApiController
 {
-    private $masyarakatModel;
-    public function __construct(){
-$this->masyarakatModel = new MasyarakatModel();
+    private $model;
+    public function __construct()
+    {
+        $this->model =  (object)[];
+        $this->model->masyarakatModel = new MasyarakatModel();
+        $this->model->suratModel = new JenisSuratModel();
+
     }
-    public function getdatakk($nik){
-$data = $this->masyarakatModel->get();
-return response(["data"=> $data],200);
+    public function getdatakk($nokk){
+        $data = $this->model->masyarakatModel->select()->where("no_kk", "=", $nokk)->get();
+        return response(["datakk" => $data], 200);
+    }
+    public function getdatasurat(){
+        $data = $this->model->suratModel->select()->get();
+        return response(["datasurat" => $data], 200);
     }
 }
