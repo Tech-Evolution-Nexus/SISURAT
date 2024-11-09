@@ -15,6 +15,20 @@
     <main class="flex-grow-1 ">
         <?php includeFile("layout/navbar") ?>
         <div class="p-4">
+            <?php if (session()->has("success")): ?>
+                <div class="alert alert-success d-flex justify-content-between" role="alert">
+                    <?= session()->flash("success") ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+                </div>
+            <?php endif; ?>
+
+            <?php if (session()->has("error")): ?>
+                <div class="alert alert-danger d-flex justify-content-between" role="alert">
+                    <?= session()->flash("error") ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
             <div class="d-flex align-items-center">
                 <div class="">
                     <h2 class="mb-0 text-white"><?= $data->title ?></h2>
@@ -48,9 +62,9 @@
                                             <button data-id="<?= $kk->id ?>" title="Edit" class="btn editBtn text-white btn-warning btn-sm">
                                                 <i class="fa fa-pencil"></i>
                                             </button>
-                                            <a href="dsurat/<?= $kk->id ?>" title="Hapus" class="btn  text-white btn-danger btn-sm">
+                                            <button data-id="<?= $kk->id ?>" title="Hapus" class="btn btnDelete text-white btn-danger btn-sm">
                                                 <i class="fa fa-trash"></i>
-                                            </a>
+                                            </button>
                                             <a href="" title="Detail" class="btn  text-white btn-success btn-sm">
                                                 <i class="fa fa-users"></i>
                                             </a>
@@ -123,10 +137,10 @@
     <?php includeFile("layout/script") ?>
     <script>
         $("#add-btn").on("click", function() {
-            setupForm("Tambah Jenis Surat", "surat")
+            setupForm("Tambah Jenis Surat", "<?= url("/admin/surat") ?>")
             $("[name=nama_surat]").attr('required');
-            $('#fselect').show();
-            $('.fselected').remove();
+            $('#fselect').remove();
+            $('.fselected').show();
             $(".modal form").trigger("reset");
             $(".personal-information, .modal-footer").css({
                 height: 0,
@@ -136,7 +150,7 @@
         $(".editBtn").on("click", function() {
             const id = $(this).attr("data-id")
 
-            setupForm("Ubah Jenis Surat", "editsurat/" + id)
+            setupForm("Ubah Jenis Surat", `<?= url("/admin/editsurat/") ?>${id}`);
 
             $(".modal").modal("show")
             $.ajax({
@@ -209,6 +223,54 @@
         }
 
         document.getElementById("add-field").addEventListener("click", addField);
+
+        document.querySelectorAll('.btnDelete').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-id'); 
+              
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: "Data ini akan dihapus dan tidak bisa dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Hapus',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+             
+                        fetch(`<?= url('/admin/dsurat/') ?>${id}`, {
+                            method: 'POST'
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                Swal.fire(
+                                    'Dihapus!',
+                                    'Data telah dihapus.',
+                                    'success'
+                                ).then(() => {
+                                    location.reload(); // Reload halaman setelah dihapus
+                                });
+                            } else {
+                                Swal.fire(
+                                    'Gagal!',
+                                    'Terjadi kesalahan saat menghapus data.',
+                                    'error'
+                                );
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire(
+                                'Gagal!',
+                                'Terjadi kesalahan saat menghapus data.',
+                                'error'
+                            );
+                        });
+                    }
+                });
+            });
+        });
     </script>
 </body>
 

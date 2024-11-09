@@ -66,7 +66,7 @@ if (!function_exists("redirect")) {
     {
         $redirect = new Redirector();
         if (is_null($url)) return $redirect;
-        $redirect->to($_ENV['APP_URL'] . $url);
+        $redirect->to($url);
         exit;
     }
 }
@@ -100,7 +100,7 @@ if (!function_exists("response")) {
 if (!function_exists("dd")) {
     function dd(...$data)
     {
-        foreach ($data as  $d) {
+        foreach ($data as $d) {
             echo '<pre>';
             var_dump($d);
             echo '</pre>';
@@ -109,9 +109,16 @@ if (!function_exists("dd")) {
         die();
     }
 }
-
-
-
+if (!function_exists("url")) {
+    function url($url)
+    {
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        $host = $_SERVER['HTTP_HOST'];
+        $path = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
+        $path = str_replace('/public', '', $path);
+        return $protocol . $host . $path . '/' . ltrim($url, '/');
+    }
+}
 if (!function_exists("loadEnv")) {
     function loadEnv()
     {

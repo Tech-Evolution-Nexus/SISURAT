@@ -3,7 +3,7 @@
 
 <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- code show hide navbar -->
 <script>
     $(document).ready(function() {
@@ -17,12 +17,11 @@
 
         const sidebarItem = $(".side-link");
         const pathname = window.location.pathname;
-
         sidebarItem.each(function() {
-            const href = $(this).attr("href");
-
-            // Cek apakah href sesuai dengan pathname
-            if (pathname.includes(href)) {
+            let href = $(this).attr("href");
+            let protocolHost = window.location.protocol + '//' + window.location.host;
+            href = href.replace(protocolHost, "");
+            if (pathname == href) {
                 $(this).addClass("bg-primary");
                 $(this).attr("style", "color: white !important;");
             }

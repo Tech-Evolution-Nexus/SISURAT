@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 namespace app\services;
 
 class Redirector
@@ -6,6 +7,7 @@ class Redirector
 
     public function to($url, $statusCode = 302)
     {
+        $url = url($url);
         header("Location: $url", true, $statusCode);
         exit;
     }
@@ -19,6 +21,7 @@ class Redirector
         }
         exit();
     }
+
 
     public function withInput($inputs = [])
     {

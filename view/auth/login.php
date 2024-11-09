@@ -16,55 +16,66 @@
         * {
             box-sizing: border-box;
         }
-        img{
 
-        }
+        img {}
     </style>
 
 </head>
 
 <body>
-  <div class="">
-  <div class="row mx-0" style="height: 100vh;">
-        <div class="col-md-7 justify-content-center d-flex flex-column align-items-center" style="background-color:#052158" > 
-            <img class ="img-fluid"src="<?= assets("assets/logosurat.png") ?>" width="450">
-            <h2 style="max-width:500px; text-align:center; color:white; font-size:20px;" class="mt-4">
-            Kelurahan Terkoneksi, Surat Menyurat Jadi Lebih Cepat dan Mudah
-    </h2>
-        
-        </div>
-        <div class="col-md-5 p-0"> 
+    <div class="">
+        <div class="row mx-0" style="height: 100vh;">
+            <div class="col-md-7 justify-content-center d-flex flex-column align-items-center" style="background-color:#052158">
+                <img class="img-fluid" src="<?= assets("assets/logosurat.png") ?>" width="450">
+                <h2 style="max-width:500px; text-align:center; color:white; font-size:20px;" class="mt-4">
+                    Kelurahan Terkoneksi, Surat Menyurat Jadi Lebih Cepat dan Mudah
+                </h2>
 
-            <div class="bg-white p-4 d-flex flex-column items-center justify-content-center h-100">
-                <img src="<?= assets("assets/logo-badean.png") ?>" alt="Medical Cross Logo" width="300" height="100">
-                <h1>Login</h1>
-                <p>Silahkan masukkan informasi akun untuk masuk ke aplikasi</p>
-                <form action="login" method="post">
-                    <div class="form-group mb-2">
-                        <label for="Email" class="mb-2">Email</label>
-                        <input type="text" class="form-control" placeholder="Masukkan email" name="email" id="email">
-                        <?php if (isset($_SESSION["usernameErr"])): ?>
-                            <small><?= $_SESSION["usernameErr"] ?></small>
-                        <?php unset($_SESSION["usernameErr"]); ?>
-                        <?php endif; ?>
-                    </div>
-                    <div class="form-group mb-4">
-                        <label for="password" class="mb-2">Kata sandi</label>
-                        <input type="password" class="form-control" placeholder="Masukkan kata sandi" name="password" id="password">
-                        <?php if (isset($_SESSION["passwordErr"])): ?>
-                            <small><?= $_SESSION["passwordErr"] ?></small>
-                            <?php unset($_SESSION["passwordErr"]); ?>
-                        <?php endif; ?>
-                    </div>
-                    <button class="btn btn-primary w-100" type="submit">Login</button>
-                   <div class="d-flex">
-                   <a href="lupapassword" class="ms-auto mt-4 d-inline-block">Lupa Password</a>
-                   </div>
-                </form>
+            </div>
+            <div class="col-md-5 p-0">
+
+                <div class="bg-white p-4 d-flex flex-column items-center justify-content-center h-100">
+                    <img src="<?= assets("assets/logo-badean.png") ?>" alt="Medical Cross Logo" width="300" height="100">
+                    <h1>Login</h1>
+                    <p>Silahkan masukkan informasi akun untuk masuk ke aplikasi</p>
+                    <?php if (session()->has("success")): ?>
+                        <div class="alert alert-success d-flex justify-content-between" role="alert">
+                            <?= session()->flash("success") ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <?php endif; ?>
+                    <?php if (session()->has("error")): ?>
+                        <div class="alert alert-danger d-flex justify-content-between" role="alert">
+                            <?= session()->flash("error") ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <?php endif; ?>
+                    <form action="login" method="post">
+                        <div class="form-group mb-2">
+                            <label for="Email" class="mb-2">Email</label>
+                            <input type="text" value="<?= old("email") ?>" class="form-control" placeholder="Masukkan email" name="email" id="email">
+                            <?php if (session()->has("email")): ?>
+                                <small class="text-danger "><?= session()->error("email") ?></small>
+                            <?php endif; ?>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label for="password" class="mb-2">Kata sandi</label>
+                            <input type="password" class="form-control" placeholder="Masukkan kata sandi" name="password" id="password">
+                            <?php if (session()->has("password")): ?>
+                                <small class="text-danger "><?= session()->error("password") ?></small>
+                            <?php endif; ?>
+                        </div>
+                        <button class="btn btn-primary w-100" type="submit">Login</button>
+                        <div class="d-flex">
+                            <a href="lupapassword" class="ms-auto mt-4 d-inline-block">Lupa Password</a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-  </div>
+    <?php includeFile("layout/script") ?>
+
 </body>
 
 </html>

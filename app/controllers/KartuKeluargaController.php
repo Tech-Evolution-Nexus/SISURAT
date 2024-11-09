@@ -52,7 +52,7 @@ class KartuKeluargaController extends Controller
         $params["data"] = (object)[
             "title" => "Tambah Kartu Keluarga",
             "description" => "Kelola Kartu Keluarga dengan mudah",
-            "action_form" => "/admin/kartu-keluarga",
+            "action_form" => url("/admin/kartu-keluarga"),
             "data" => $data
         ];
 
@@ -145,6 +145,7 @@ class KartuKeluargaController extends Controller
 
     public  function edit($id)
     {
+
         $kartuKeluarga = $this->model->kartuKeluarga
             ->select("kartu_keluarga.no_kk,nama_lengkap,kk_tgl,nik,alamat,rt,rw,kode_pos,kelurahan,kecamatan,kabupaten,provinsi")
             ->join("masyarakat", "kartu_keluarga.no_kk", "masyarakat.no_kk")
@@ -166,12 +167,14 @@ class KartuKeluargaController extends Controller
             "kabupaten" => $kartuKeluarga->kabupaten ?? null,
             "provinsi" => $kartuKeluarga->provinsi ?? null,
         ];
+
         $params["data"] = (object)[
             "title" => "Ubah Kartu Keluarga",
             "description" => "Kelola Kartu Keluarga dengan mudah",
-            "action_form" => "/admin/kartu-keluarga/$id",
+            "action_form" => url("/admin/kartu-keluarga/$id"),
             "data" => $data
         ];
+
 
         return $this->view("admin/kartu_keluarga/form", $params);
     }
@@ -236,7 +239,7 @@ class KartuKeluargaController extends Controller
         $idMasyarakat = $this->model->masyarakat->where("no_kk", "=", $id)->first()->nik;
 
 
-        $this->model->kartuKeluarga->update($id, [
+        $this->model->kartuKeluarga->where("no_kk", "=", $id)->update([
             "no_kk" => $noKK,
             "alamat" => $alamat,
             "kk_tgl" => $tanggalKK,
@@ -244,7 +247,7 @@ class KartuKeluargaController extends Controller
             "rw" => $rw
         ]);
 
-        $this->model->masyarakat->update($idMasyarakat, [
+        $this->model->masyarakat->where("nik", "=", $idMasyarakat)->update([
             "nik" => $nik,
             "nama_lengkap" => $nama,
             "jenis_kelamin" => "laki-laki",

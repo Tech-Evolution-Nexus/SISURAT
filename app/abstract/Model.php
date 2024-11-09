@@ -63,17 +63,39 @@ class Model
         return $this->db->lastInsertId();
     }
 
-    public function update($id, array $data)
+    public function update(array $data)
     {
         $setClauses = [];
         foreach ($data as $key => $value) {
             $setClauses[] = "{$key} = :{$key}";
         }
         $setString = implode(', ', $setClauses);
-        $this->query = "UPDATE {$this->table} SET {$setString} WHERE {$this->primaryKey} = :id";
-        $this->bindings = array_merge($data, ['id' => $id]);
+        $this->query = "UPDATE {$this->table} SET {$setString} ";
+
+        $query = "SELECT * FROM {$this->table} ";
+        $bindings = [];
+        if (!empty($this->wheres)) {
+            $whereClauses = [];
+
+            foreach ($this->wheres as $index => $where) {
+                $prefix = $index === 0 ? "WHERE" : $where['type'];
+                $placeholder = ":{$where['column']}";
+                // Make sure to use the placeholder for the value in the query
+                $whereClauses[] = "$prefix {$where['column']} {$where['operator']} '{$where['value']}' ";
+                // Now bind the value properly
+                $this->bindings[$placeholder] = $where['value'];
+     
+            }
+
+            $this->query .= ' ' . implode(' ', $whereClauses);
+            $query .= ' ' . implode(' ', $whereClauses);
+        }
+
+        $this->bindings = $data;
+
         $this->execute($this->query, $this->bindings);
-        return $data;
+        // dd($query, $bindings);
+        return $this->execute($query, $bindings)->fetch($this->fetchMode);
     }
     // public function delete($id)
     // {
@@ -191,6 +213,7 @@ class Model
 
         $stmt = $this->db->prepare($query);
         try {
+
             $stmt->execute($bindings);
         } catch (\Throwable $th) {
             // Log the error or handle it as needed
@@ -209,7 +232,6 @@ class Model
             $this->bindings[":{$column}"] = $value;
         }
         $this->query .= " WHERE " . implode(" AND ", $whereClauses);
-
         $stmt = $this->execute($this->query, $this->bindings);
         return $stmt->fetchColumn() > 0; // Mengembalikan true jika data sudah ada
     }
