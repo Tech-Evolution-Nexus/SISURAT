@@ -72,8 +72,11 @@ class Model
         $setString = implode(', ', $setClauses);
         $this->query = "UPDATE {$this->table} SET {$setString} ";
 
+        $query = "SELECT * FROM {$this->table} ";
+        $bindings = [];
         if (!empty($this->wheres)) {
             $whereClauses = [];
+
             foreach ($this->wheres as $index => $where) {
                 $prefix = $index === 0 ? "WHERE" : $where['type'];
                 $placeholder = ":{$where['column']}";
@@ -84,11 +87,13 @@ class Model
             }
 
             $this->query .= ' ' . implode(' ', $whereClauses);
+            $query .= ' ' . implode(' ', $whereClauses);
         }
+
         $this->bindings = $data;
-        // dd($this->query, $this->bindings);
+
         $this->execute($this->query, $this->bindings);
-        return $data;
+        return $this->execute($query, $bindings)->fetch($this->fetchMode);
     }
     // public function delete($id)
     // {
@@ -208,7 +213,7 @@ class Model
         try {
             $stmt->execute($bindings);
         } catch (\Throwable $th) {
-            // Log the error or handle it as needed
+            dd($th);
             throw new \Exception("Database query error: " . $th->getMessage());
         }
         return $stmt;

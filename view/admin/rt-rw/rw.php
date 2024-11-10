@@ -101,6 +101,20 @@
 
                                             </div>
                                         </div>
+                                        <h6 class="mb-2  fw-bold mt-4">Masa Jabatan</h6>
+
+                                        <div class="col-md-6 col-12 ">
+                                            <div class="form-group mb-2 ms-3">
+                                                <label for="masa_jabatan_awal">Masa Jabatan Awal</label>
+                                                <input type="date" class="  form-control" name="masa_jabatan_awal" id="masa_jabatan_awal" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            <div class="form-group mb-2">
+                                                <label for="masa_jabatan_akhir">Masa Jabatan Akhir</label>
+                                                <input type="date" class="  form-control" name="masa_jabatan_akhir" id="masa_jabatan_akhir" required>
+                                            </div>
+                                        </div>
                                         <!-- <div class="col-12">
                                             <div class="form-group mb-2 ms-3">
                                                 <label for="no_hp">Nomor Telepon<span class="text-danger">*</span></label>
