@@ -167,7 +167,7 @@ table tbody td {
 }
 
 .dt-type-numeric {
-  text-align: center !important;
+  text-align: start !important;
 }
 
 .header-layer {

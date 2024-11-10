@@ -25,7 +25,9 @@ class RT_RWController extends Controller
             ->select("masyarakat.nik,nama_lengkap,alamat,rw,rt")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->join("users", "masyarakat.nik", "users.nik")
-            ->where("role", "=", "rw")->get();
+            ->where("role", "=", "rw")
+            ->orderBy("users.updated_at", "desc")
+            ->get();
         $masyarakat = $this->model->masyarakat
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->join("users", "masyarakat.nik", "users.nik")
@@ -83,7 +85,7 @@ class RT_RWController extends Controller
             if ($rwExist) {
                 return redirect()->with("error", "RW $rw sudah memiliki Ketua RW terdaftar. Harap periksa data dan coba lagi.")->back();
             }
-            $this->model->users->update($user->id, [
+            $this->model->users->where("id", "=", $user->id)->update([
                 "role" => "rw"
             ]);
             return redirect()->with("success", "Berhasil menambahkan ketua RW $rw")->back();
@@ -112,7 +114,7 @@ class RT_RWController extends Controller
             if ($rwExist) {
                 return redirect()->with("error", "RW $rw sudah memiliki Ketua RW terdaftar. Harap periksa data dan coba lagi.")->back();
             }
-            $this->model->users->update($user->id, [
+            $this->model->users->where("id", "=", $user->id)->update([
                 "role" => "masyarakat"
             ]);
             return redirect()->with("success", "Berhasil mengubah ketua RW $rw")->back();
@@ -131,6 +133,7 @@ class RT_RWController extends Controller
             ->join("users", "masyarakat.nik", "users.nik")
             ->where("role", "=", "rt")
             ->where("rw", "=", $rw)
+            ->orderBy("users.updated_at", "desc")
             ->get();
 
         $masyarakat = $this->model->masyarakat
@@ -187,7 +190,7 @@ class RT_RWController extends Controller
             if ($rwExist) {
                 return redirect()->with("error", "RW $rw sudah memiliki Ketua RW terdaftar. Harap periksa data dan coba lagi.")->back();
             }
-            $this->model->users->update($user->id, [
+            $this->model->users->where("id", "=", $user->id)->update([
                 "role" => "rt"
             ]);
             return redirect()->with("success", "Berhasil menambahkan ketua RW $rw")->back();
@@ -218,7 +221,8 @@ class RT_RWController extends Controller
             if ($rwExist) {
                 return redirect()->with("error", "RW $rw sudah memiliki Ketua RW terdaftar. Harap periksa data dan coba lagi.")->back();
             }
-            $this->model->users->update($user->id, [
+
+            $this->model->users->where("id", "=", $user->id)->update([
                 "role" => "masyarakat"
             ]);
             return redirect()->with("success", "Berhasil mengubah ketua RW $rw")->back();

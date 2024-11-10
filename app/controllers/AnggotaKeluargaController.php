@@ -19,11 +19,15 @@ class AnggotaKeluargaController extends Controller
     {
         $data = $this->model->masyarakat
             ->where("no_kk", "=", $nokk)
-            ->orderBy("masyarakat.created_at", "desc")
+            ->orderBy("status_keluarga", "asc")
             ->get();
+        $kepalaKeluarga = $this->model->masyarakat
+            ->where("no_kk", "=", $nokk)
+            ->where("status_keluarga", "=", "kk")
+            ->first();
 
         $params["data"] = (object)[
-            "title" => "Anggota Keluarga",
+            "title" => "Anggota Keluarga ",
             "description" => "Kelola Anggota Keluarga dengan mudah",
             "data" => $data,
             "no_kk" => $nokk
@@ -57,77 +61,113 @@ class AnggotaKeluargaController extends Controller
             "title" => "Tambah Anggota Keluarga",
             "description" => "Kelola Anggota Keluarga dengan mudah",
             "action_form" => url("/admin/kartu-keluarga/$nokk/anggota-keluarga"),
-            "data" => $data
+            "data" => $data,
+            "nokk" => $nokk
         ];
 
         return $this->view("admin/anggota_keluarga/form", $params);
     }
     public  function store($nokk)
     {
-        request()->validate([
-            "nik" => "",
-            "nama" => "",
-            "jenis_kelamin" => "",
-            "tempat_lahir" => "",
-            "tanggal_lahir" => "",
-            "agama" => "",
-            "pendidikan" => "",
-            "pekerjaan" => "",
-            "gol_darah" => "",
-            "status_perkawinan" => "",
-            "tgl_perkawinan" => "",
-            "status_keluarga" => "",
-            "kewarganegaraan" => "",
-            "no_paspor" => "",
-            "no_kitap" => "",
-            "nama_ayah" => "",
-            "nama_ibu" => "",
-        ]);
-        $noKK = request("no_kk");
-        $tanggalKK = request("tanggal_kk");
-        $nama = request("nama");
-        $nik = request("nik");
-        $alamat = request("alamat");
-        $rt = request("rt");
-        $rw = request("rw");
-        $kelurahan = request("kelurahan");
-        $kode_pos = request("kode_pos");
-        $kabupaten = request("kabupaten");
-        $provinsi = request("provinsi");
-        $kecamatan = request("kecamatan");
+        try {
+            request()->validate([
+                "nik" => "required|min:16|max:16",
+                "nama" => "required|max:70",
+                "jenis_kelamin" => "required",
+                "tempat_lahir" => "required",
+                "tanggal_lahir" => "required|date",
+                "agama" => "required",
+                "pendidikan" => "required",
+                "pekerjaan" => "required",
+                "gol_darah" => "required",
+                "status_perkawinan" => "required",
+                "status_keluarga" => "required",
+                "kewarganegaraan" => "required",
+                "no_paspor" => "required",
+                "no_kitap" => "required",
+                "nama_ayah" => "required",
+                "nama_ibu" => "required",
+            ], [
+                "nik.required" => "NIK wajib diisi.",
+                "nik.min" => "NIK harus terdiri dari 16 karakter.",
+                "nik.max" => "NIK harus terdiri dari 16 karakter.",
+                "nama.required" => "Nama wajib diisi.",
+                "nama.max" => "Nama tidak boleh lebih dari 70 karakter.",
+                "jenis_kelamin.required" => "Jenis kelamin wajib diisi.",
+                "tempat_lahir.required" => "Tempat lahir wajib diisi.",
+                "tanggal_lahir.required" => "Tanggal lahir wajib diisi.",
+                "tanggal_lahir.date" => "Format tanggal lahir tidak valid.",
+                "agama.required" => "Agama wajib diisi.",
+                "pendidikan.required" => "Pendidikan wajib diisi.",
+                "pekerjaan.required" => "Pekerjaan wajib diisi.",
+                "gol_darah.required" => "Golongan darah wajib diisi.",
+                "status_perkawinan.required" => "Status perkawinan wajib diisi.",
+                "status_keluarga.required" => "Status keluarga wajib diisi.",
+                "kewarganegaraan.required" => "Kewarganegaraan wajib diisi.",
+                "no_paspor.required" => "Nomor paspor wajib diisi.",
+                "no_kitap.required" => "Nomor KITAP wajib diisi.",
+                "nama_ayah.required" => "Nama ayah wajib diisi.",
+                "nama_ibu.required" => "Nama ibu wajib diisi."
+            ]);
+
+            $nama = request("nama");
+            $nik = request("nik");
+            $jk = request("jenis_kelamin");
+            $tempat_lahir = request("tempat_lahir");
+            $tanggal_lahir = request("tanggal_lahir");
+            $agama = request("agama");
+            $pendidikan = request("pendidikan");
+            $pekerjaan = request("pekerjaan");
+            $gol_darah = request("gol_darah");
+            $status_perkawinan = request("status_perkawinan");
+            $tgl_perkawinan = request("tgl_perkawinan");
+            $status_keluarga = request("status_keluarga");
+            $kewarganegaraan = request("kewarganegaraan");
+            $no_paspor = request("no_paspor");
+            $no_kitap = request("no_kitap");
+            $nama_ayah = request("nama_ayah");
+            $nama_ibu = request("nama_ibu");
 
 
-        $check = $this->model->kartuKeluarga
-            ->select("kartu_keluarga.no_kk,nik")
-            ->join("masyarakat", "kartu_keluarga.no_kk", "masyarakat.no_kk")
-            ->where("kartu_keluarga.no_kk", "=", $noKK)
-            ->where("nik", "=", $nik)
-            ->first();
-        if ($check) return redirect()->with("error", "Nik Kepala Keluarga dan No KK $noKK sudah terdaftar")->withInput(request()->getAll())->back();
 
-        $idKK =  $this->model->kartuKeluarga->create(["no_kk" => $noKK, "alamat" => $alamat, "rt" => $rt, "rw" => $rw, "kode_pos" => $kode_pos, "kelurahan" => $kelurahan, "kecamatan" => $kecamatan, "kabupaten" => $kabupaten, "provinsi" => $provinsi, "kk_tgl" => $tanggalKK]);
-        $this->model->masyarakat->create([
-            "nik" => $nik,
-            "nama_lengkap" => $nama,
-            "jenis_kelamin" => "laki-laki",
-            "tempat_lahir" => "-",
-            "tgl_lahir" => date("Y-m-d"),
-            "agama" => "-",
-            "pendidikan" => "-",
-            "pekerjaan" => "-",
-            "golongan_darah" => "-",
-            "status_keluarga" => "KK",
-            "status_perkawinan" => "-",
-            "kewarganegaraan" => "-",
-            "no_paspor" => "-",
-            "no_kitap" => "-",
-            "nama_ayah" => "-",
-            "nama_ibu" => "-",
-            "no_kk" => $noKK
-        ]);
+            $check2 = $this->model->masyarakat
+                ->where("nik", "=", $nik)
+                ->first();
+            if ($check2) {
+                return redirect()
+                    ->with("error", "Nik $nik sudah terdaftar")
+                    ->withInput(request()->getAll())
+                    ->back();
+            }
 
 
-        return redirect()->with("success", "Kartu keluarga berhasil ditambahkan")->to("/admin/kartu-keluarga");
+            $data = [
+                "nik" => $nik,
+                "nama_lengkap" => $nama,
+                "jenis_kelamin" => $jk,
+                "tempat_lahir" => $tempat_lahir,
+                "tgl_lahir" => $tanggal_lahir,
+                "agama" => $agama,
+                "pendidikan" => $pendidikan,
+                "pekerjaan" => $pekerjaan,
+                "golongan_darah" => $gol_darah,
+                "status_perkawinan" => $status_perkawinan,
+                "tgl_perkawinan" => $tgl_perkawinan,
+                "status_keluarga" => $status_keluarga,
+                "kewarganegaraan" => $kewarganegaraan,
+                "no_paspor" => $no_paspor,
+                "no_kitap" => $no_kitap,
+                "nama_ayah" => $nama_ayah,
+                "nama_ibu" => $nama_ibu,
+                "no_kk" => $nokk
+            ];
+            $this->model->masyarakat->create($data);
+
+
+            return redirect()->with("success", "Anggota keluarga berhasil ditambah")->to("/admin/kartu-keluarga/$nokk/anggota-keluarga");
+        } catch (\Throwable $th) {
+            return redirect()->with("error", "Anggota keluarga gagal ditambah")->back();
+        }
     }
 
     public  function edit($nokk, $nik)
@@ -161,83 +201,152 @@ class AnggotaKeluargaController extends Controller
             "title" => "Ubah Anggota Keluarga",
             "description" => "Kelola Anggota Keluarga dengan mudah",
             "action_form" => url("/admin/kartu-keluarga/$nokk/anggota-keluarga/$nik"),
-            "data" => $data
+            "data" => $data,
+            "nokk" => $nokk
         ];
 
         return $this->view("admin/anggota_keluarga/form", $params);
     }
-
-
-    public  function update($nokk)
+    public  function show($nokk, $nik)
     {
-        // request()->validate([
-        //     "kecamatan" => "required|max:100"
-        // ]);
-        $noKK = request("no_kk");
-        $tanggalKK = request("tanggal_kk");
-        $nama = request("nama");
-        $nik = request("nik");
-        $alamat = request("alamat");
-        $rt = request("rt");
-        $rw = request("rw");
-        $kelurahan = request("kelurahan");
-        $kode_pos = request("kode_pos");
-        $kabupaten = request("kabupaten");
-        $provinsi = request("provinsi");
-        $kecamatan = request("kecamatan");
-
-        $check = $this->model->kartuKeluarga
-            ->select("kartu_keluarga.no_kk,nik")
-            ->join("masyarakat", "kartu_keluarga.no_kk", "masyarakat.no_kk")
-            ->where("kartu_keluarga.no_kk", "=", $noKK)
+        $masyarakat = $this->model->masyarakat
             ->where("nik", "=", $nik)
-            ->where("kartu_keluarga.no_kk", "<>", $nokk)
             ->first();
-        if ($check) {
-            return redirect()
-                ->with("error", "Nik Kepala Keluarga dan No KK $noKK sudah terdaftar")
-                ->withInput(request()->getAll())
-                ->back();
+
+        if (!$masyarakat) return show404();
+        $data = (object)[
+            "nik" => $masyarakat->nik,
+            "nama" => $masyarakat->nama_lengkap,
+            "jenis_kelamin" => $masyarakat->jenis_kelamin,
+            "tempat_lahir" => $masyarakat->tempat_lahir,
+            "tanggal_lahir" => $masyarakat->tgl_lahir,
+            "agama" => $masyarakat->agama,
+            "pendidikan" => $masyarakat->pendidikan,
+            "pekerjaan" => $masyarakat->pekerjaan,
+            "gol_darah" => $masyarakat->golongan_darah,
+            "status_perkawinan" => $masyarakat->status_perkawinan,
+            "tgl_perkawinan" => $masyarakat->tgl_perkawinan,
+            "status_keluarga" => $masyarakat->status_keluarga,
+            "kewarganegaraan" => $masyarakat->kewarganegaraan,
+            "no_paspor" => $masyarakat->no_paspor,
+            "no_kitap" => $masyarakat->no_kitap,
+            "nama_ayah" => $masyarakat->nama_ibu,
+            "nama_ibu" => $masyarakat->nama_ayah,
+
+        ];
+        $status = $masyarakat->status_keluarga === "kk" ? "Kepala Keluarga" : $masyarakat->status_keluarga;
+        $params["data"] = (object)[
+            "title" => "$masyarakat->nama_lengkap - $status",
+            "description" => "",
+            "data" => $data,
+            "nokk" => $nokk
+        ];
+
+        return $this->view("admin/anggota_keluarga/detail", $params);
+    }
+
+
+    public  function update($nokk, $nikLama)
+    {
+        try {
+            request()->validate([
+                "nik" => "required|min:16|max:16",
+                "nama" => "required|max:70",
+                "jenis_kelamin" => "required",
+                "tempat_lahir" => "required",
+                "tanggal_lahir" => "required|date",
+                "agama" => "required",
+                "pendidikan" => "required",
+                "pekerjaan" => "required",
+                "gol_darah" => "required",
+                "status_perkawinan" => "required",
+                "status_keluarga" => "required",
+                "kewarganegaraan" => "required",
+                "no_paspor" => "required",
+                "no_kitap" => "required",
+                "nama_ayah" => "required",
+                "nama_ibu" => "required",
+            ], [
+                "nik.required" => "NIK wajib diisi.",
+                "nik.min" => "NIK harus terdiri dari 16 karakter.",
+                "nik.max" => "NIK harus terdiri dari 16 karakter.",
+                "nama.required" => "Nama wajib diisi.",
+                "nama.max" => "Nama tidak boleh lebih dari 70 karakter.",
+                "jenis_kelamin.required" => "Jenis kelamin wajib diisi.",
+                "tempat_lahir.required" => "Tempat lahir wajib diisi.",
+                "tanggal_lahir.required" => "Tanggal lahir wajib diisi.",
+                "tanggal_lahir.date" => "Format tanggal lahir tidak valid.",
+                "agama.required" => "Agama wajib diisi.",
+                "pendidikan.required" => "Pendidikan wajib diisi.",
+                "pekerjaan.required" => "Pekerjaan wajib diisi.",
+                "gol_darah.required" => "Golongan darah wajib diisi.",
+                "status_perkawinan.required" => "Status perkawinan wajib diisi.",
+                "status_keluarga.required" => "Status keluarga wajib diisi.",
+                "kewarganegaraan.required" => "Kewarganegaraan wajib diisi.",
+                "no_paspor.required" => "Nomor paspor wajib diisi.",
+                "no_kitap.required" => "Nomor KITAP wajib diisi.",
+                "nama_ayah.required" => "Nama ayah wajib diisi.",
+                "nama_ibu.required" => "Nama ibu wajib diisi."
+            ]);
+
+            $nama = request("nama");
+            $nik = request("nik");
+            $jk = request("jenis_kelamin");
+            $tempat_lahir = request("tempat_lahir");
+            $tanggal_lahir = request("tanggal_lahir");
+            $agama = request("agama");
+            $pendidikan = request("pendidikan");
+            $pekerjaan = request("pekerjaan");
+            $gol_darah = request("gol_darah");
+            $status_perkawinan = request("status_perkawinan");
+            $tgl_perkawinan = request("tgl_perkawinan");
+            $status_keluarga = request("status_keluarga");
+            $kewarganegaraan = request("kewarganegaraan");
+            $no_paspor = request("no_paspor");
+            $no_kitap = request("no_kitap");
+            $nama_ayah = request("nama_ayah");
+            $nama_ibu = request("nama_ibu");
+
+
+
+            $check2 = $this->model->masyarakat
+                ->where("nik", "<>", $nikLama)
+                ->where("nik", "=", $nik)
+                ->first();
+            if ($check2) {
+                return redirect()
+                    ->with("error", "Nik $nik sudah terdaftar")
+                    ->withInput(request()->getAll())
+                    ->back();
+            }
+
+
+            $data = [
+                "nik" => $nik,
+                "nama_lengkap" => $nama,
+                "jenis_kelamin" => $jk,
+                "tempat_lahir" => $tempat_lahir,
+                "tgl_lahir" => $tanggal_lahir,
+                "agama" => $agama,
+                "pendidikan" => $pendidikan,
+                "pekerjaan" => $pekerjaan,
+                "golongan_darah" => $gol_darah,
+                "status_perkawinan" => $status_perkawinan,
+                "tgl_perkawinan" => $tgl_perkawinan,
+                "status_keluarga" => $status_keluarga,
+                "kewarganegaraan" => $kewarganegaraan,
+                "no_paspor" => $no_paspor,
+                "no_kitap" => $no_kitap,
+                "nama_ayah" => $nama_ayah,
+                "nama_ibu" => $nama_ibu,
+            ];
+            $this->model->masyarakat->where("nik", "=", $nikLama)->update($data);
+
+
+            return redirect()->with("success", "Anggota keluarga berhasil diubah")->to("/admin/kartu-keluarga/$nokk/anggota-keluarga");
+        } catch (\Throwable $th) {
+            return redirect()->with("error", "Anggota keluarga gagal diubah")->back();
         }
-
-        $check2 = $this->model->masyarakat
-            ->where("no_kk", "=", $noKK)
-            ->where("no_kk", "<>", $nokk)
-            ->first();
-        if ($check2) {
-            return redirect()
-                ->with("error", "Nik Kepala Keluarga dan No KK $noKK sudah terdaftar")
-                ->withInput(request()->getAll())
-                ->back();
-        }
-        $idMasyarakat = $this->model->masyarakat->where("no_kk", "=", $nokk)->first()->nik;
-        $this->model->kartuKeluarga->update($nokk, [
-            "no_kk" => $noKK,
-            "alamat" => $alamat,
-            "kk_tgl" => $tanggalKK
-        ]);
-        $this->model->masyarakat->update($idMasyarakat, [
-            "nik" => $nik,
-            "nama_lengkap" => $nama,
-            "jenis_kelamin" => "laki-laki",
-            "tempat_lahir" => "-",
-            "tgl_lahir" => date("Y-m-d"),
-            "agama" => "-",
-            "pendidikan" => "-",
-            "pekerjaan" => "-",
-            "golongan_darah" => "-",
-            "status_keluarga" => "KK",
-            "status_perkawinan" => "-",
-            "kewarganegaraan" => "-",
-            "no_paspor" => "-",
-            "no_kitap" => "-",
-            "nama_ayah" => "-",
-            "nama_ibu" => "-",
-            "no_kk" => $noKK
-        ]);
-
-
-        return redirect()->with("success", "Kartu keluarga berhasil diubah")->to("/admin/kartu-keluarga");
     }
 
 
