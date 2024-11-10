@@ -211,6 +211,7 @@ class Model
 
         $stmt = $this->db->prepare($query);
         try {
+
             $stmt->execute($bindings);
         } catch (\Throwable $th) {
             dd($th);
@@ -229,7 +230,6 @@ class Model
             $this->bindings[":{$column}"] = $value;
         }
         $this->query .= " WHERE " . implode(" AND ", $whereClauses);
-
         $stmt = $this->execute($this->query, $this->bindings);
         return $stmt->fetchColumn() > 0; // Mengembalikan true jika data sudah ada
     }

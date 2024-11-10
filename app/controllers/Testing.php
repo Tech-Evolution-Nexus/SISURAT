@@ -3,8 +3,12 @@
 namespace app\controllers;
 
 use app\models\UserModel;
-use PHPUnit\Framework\TestCase; 
+use PHPUnit\Framework\TestCase; // Adjust based on your namespace
+// Your User model
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use Mockery as m;
+use stdClass;
 
 class Testing extends TestCase
 {
