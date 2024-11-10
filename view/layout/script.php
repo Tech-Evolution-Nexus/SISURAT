@@ -71,5 +71,57 @@
             $(".alert").removeClass("d-flex").hide();
         }, 3000);
 
+
+
+
+
+        const showSwalDelete = () => {
+            const deleteUrl = $(".deleteBtn").attr("data-url");
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data ini akan dihapus dan tidak bisa dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Hapus',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    fetch(`${deleteUrl}`, {
+                            method: 'POST'
+                        })
+                        .then(response => {
+                            console.log(response);
+
+                            if (response.ok) {
+                                Swal.fire(
+                                    'Dihapus!',
+                                    'Data telah dihapus.',
+                                    'success'
+                                ).then(() => {
+                                    location.reload(); // Reload halaman setelah dihapus
+                                });
+                            } else {
+                                Swal.fire(
+                                    'Gagal!',
+                                    'Terjadi kesalahan saat menghapus data.',
+                                    'error'
+                                );
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire(
+                                'Gagal!',
+                                'Terjadi kesalahan saat menghapus data.',
+                                'error'
+                            );
+                        });
+                }
+            });
+        }
+        $(".deleteBtn").on("click", showSwalDelete);
+
     })
 </script>

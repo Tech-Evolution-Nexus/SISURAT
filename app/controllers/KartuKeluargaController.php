@@ -287,10 +287,12 @@ class KartuKeluargaController extends Controller
                 $this->model->masyarakat->delete($msy->nik);
             }
             $this->model->kartuKeluarga->delete($id);
-
-            return redirect()->with("success", "Kartu keluarga berhasil dihapus")->to("/admin/kartu-keluarga");
+            return response("Kartu keluarga berhasil dihapus", 200);
+            // return redirect()->with("success", "Kartu keluarga berhasil dihapus")->to("/admin/kartu-keluarga");
         } catch (\Throwable $th) {
-            return redirect()->with("error", "Kartu keluarga gagal dihapus")->to("/admin/kartu-keluarga");
+            return response("Kartu keluarga gagal dihapus", 500);
+
+            // return redirect()->with("error", "Kartu keluarga gagal dihapus")->to("/admin/kartu-keluarga");
         }
     }
 }
