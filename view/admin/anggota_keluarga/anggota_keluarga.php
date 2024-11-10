@@ -73,10 +73,10 @@
                                             <a href="<?= url("/admin/kartu-keluarga/$kk->no_kk/anggota-keluarga/$kk->nik/edit") ?>" title="Edit" class="btn  text-white btn-warning btn-sm">
                                                 <i style="width: 15px;height: 15px;" class="fa  fa-pencil"></i>
                                             </a>
+                                            <button data-url="<?= url("/admin/kartu-keluarga/$kk->no_kk/anggota-keluarga/$kk->nik/delete") ?>" title="Hapus" class="btn deleteBtn  text-white btn-danger btn-sm">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
 
-                                            <a href="<?= url("/admin/kartu-keluarga/$kk->no_kk/anggota-keluarga/$kk->nik/delete") ?>" title="Hapus" class="btn  text-white btn-danger btn-sm">
-                                                <i style="width: 15px;height: 15px;" class="fa  fa-trash"></i>
-                                            </a>
                                             <a href="<?= url("/admin/kartu-keluarga/$kk->no_kk/anggota-keluarga/$kk->nik") ?>" title="Detail" class="btn  text-white btn-success btn-sm">
                                                 <i style="width: 15px;height: 15px;" class="fa  fa-info"></i>
                                             </a>

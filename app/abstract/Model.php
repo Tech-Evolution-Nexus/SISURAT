@@ -214,7 +214,7 @@ class Model
 
             $stmt->execute($bindings);
         } catch (\Throwable $th) {
-            dd($th);
+            // dd($th);
             throw new \Exception("Database query error: " . $th->getMessage());
         }
         return $stmt;

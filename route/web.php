@@ -35,7 +35,7 @@ Router::addRoute("GET", "/admin/kartu-keluarga/create", [KartuKeluargaController
 Router::addRoute("POST", "/admin/kartu-keluarga", [KartuKeluargaController::class, "store"]);
 Router::addRoute("GET", "/admin/kartu-keluarga/{id}/edit", [KartuKeluargaController::class, "edit"]);
 Router::addRoute("POST", "/admin/kartu-keluarga/{id}", [KartuKeluargaController::class, "update"]);
-Router::addRoute("GET", "/admin/kartu-keluarga/{id}/delete", [KartuKeluargaController::class, "delete"]);
+Router::addRoute("POST", "/admin/kartu-keluarga/{id}/delete", [KartuKeluargaController::class, "delete"]);
 
 //Surat Masuk
 Router::addRoute("GET", "/admin/surat-masuk", [SuratMasukController::class, "index"]);

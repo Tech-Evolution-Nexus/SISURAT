@@ -167,9 +167,9 @@
                                             <button data-nik="<?= $kk->nik ?>" title="Edit" class="btn editBtn text-white btn-warning btn-sm">
                                                 <i class="fa fa-pencil"></i>
                                             </button>
-                                            <a href="" title="Hapus" class="btn  text-white btn-danger btn-sm">
-                                                <i class="fa fa-trash"></i>
-                                            </a>
+
+
+
                                             <a href="/admin/master-rw/<?= $kk->rw ?>/master-rt" title="Detail" class="btn  text-white btn-success btn-sm">
                                                 <i class="fa fa-users"></i>
                                             </a>
@@ -182,9 +182,11 @@
                     </table>
                 </div>
             </div>
-
         </div>
     </main>
+
+
+
 
 
     <!--end yang perlu diubah -->
