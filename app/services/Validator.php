@@ -107,4 +107,11 @@ class Validator
             $this->errors[$field][] = $this->getMessage($field, 'same', $defaultMessage);
         }
     }
+    protected function validateDate($field)
+    {
+        if (strtotime($this->data[$field]) === false) {
+            $defaultMessage = "Format tanggal tidak valid";
+            $this->errors[$field][] = $this->getMessage($field, 'date', $defaultMessage);
+        }
+    }
 }

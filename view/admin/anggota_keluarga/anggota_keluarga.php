@@ -29,6 +29,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             <?php endif; ?>
+            <a href="<?= url("/admin/kartu-keluarga") ?>" class="btn btn-secondary mb-3">
+                <i class="fa fa-arrow-left"></i> Kembali
+            </a>
             <div class="d-flex align-items-center">
                 <div class="">
                     <h2 class="mb-0 text-white"><?= $data->title ?></h2>
@@ -40,7 +43,6 @@
                     </a>
                 </div>
             </div>
-
 
 
             <div class="card">
@@ -62,8 +64,10 @@
                                     <td><?= $index + 1 ?></td>
                                     <td><?= $kk->nik ?></td>
                                     <td><?= $kk->nama_lengkap ?></td>
-                                    <td><?= $kk->status_keluarga ?></td>
-                                    <td><?= $kk->tempat_lahir ?><?= $kk->tgl_lahir ?></td>
+                                    <td class="text-capitalize"><?= $kk->status_keluarga == "kk" ? "Kepala Keluarga" : $kk->status_keluarga ?></td>
+                                    <td>
+                                        <?= $kk->tempat_lahir ? $kk->tempat_lahir . ', ' : '' ?><?= formatDate($kk->tgl_lahir) ?>
+                                    </td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Action buttons">
                                             <a href="<?= url("/admin/kartu-keluarga/$kk->no_kk/anggota-keluarga/$kk->nik/edit") ?>" title="Edit" class="btn  text-white btn-warning btn-sm">
