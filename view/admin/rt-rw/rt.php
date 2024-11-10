@@ -151,8 +151,8 @@
                             <tr>
                                 <th>No</th>
                                 <th>NIK</th>
-                                <th>Nama RW</th>
-                                <th>Ketua RW</th>
+                                <th>Nama RT</th>
+                                <th>Ketua RT</th>
                                 <th></th>
                             </tr>
                         </thead>
