@@ -2,17 +2,17 @@
 
 namespace app\controllers;
 
-use app\services\Database;
-use PDO;
+
 use PHPMailer\PHPMailer\PHPMailer;
 use app\models\UserModel;
-use app\services\Session;
+
 use Exception;
-use PHPUnit\Framework\TestCase;
+
 
 class AuthController
 {
     public $model;
+    // private $model;
     public function __construct()
     {
         $this->model = (object)[];
@@ -39,7 +39,7 @@ class AuthController
         if ($user) {
 
             if (password_verify($password, $user->password)) {
-                session()->set("user", $user);
+                session()->set("user_id", $user->id);
                 return redirect("/admin");
             } else {
                 return redirect()->with("error", "Password salah")->back();

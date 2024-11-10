@@ -29,6 +29,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             <?php endif; ?>
+            <a href="<?= url("/admin/master-rw") ?>" class="btn btn-secondary mb-3">
+                <i class="fa fa-arrow-left"></i> Kembali
+            </a>
             <div class="d-flex align-items-center">
                 <div class="">
                     <h2 class="mb-0 text-white"><?= $data->title ?></h2>
@@ -101,6 +104,18 @@
 
                                             </div>
                                         </div>
+                                        <div class="col-md-6 col-12">
+                                            <div class="form-group mb-2">
+                                                <label for="masa_jabatan_awal">Masa Jabatan Awal</label>
+                                                <input type="date" class="  form-control" name="masa_jabatan_awal" id="masa_jabatan_awal" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            <div class="form-group mb-2">
+                                                <label for="masa_jabatan_akhir">Masa Jabatan Akhir</label>
+                                                <input type="date" class="  form-control" name="masa_jabatan_akhir" id="masa_jabatan_akhir" required>
+                                            </div>
+                                        </div>
                                         <!-- <div class="col-12">
                                             <div class="form-group mb-2 ms-3">
                                                 <label for="no_hp">Nomor Telepon<span class="text-danger">*</span></label>
@@ -136,8 +151,8 @@
                             <tr>
                                 <th>No</th>
                                 <th>NIK</th>
-                                <th>Nama RW</th>
-                                <th>Ketua RW</th>
+                                <th>Nama RT</th>
+                                <th>Ketua RT</th>
                                 <th></th>
                             </tr>
                         </thead>

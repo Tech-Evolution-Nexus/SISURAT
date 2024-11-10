@@ -84,7 +84,6 @@ class Model
                 $whereClauses[] = "$prefix {$where['column']} {$where['operator']} '{$where['value']}' ";
                 // Now bind the value properly
                 $this->bindings[$placeholder] = $where['value'];
-     
             }
 
             $this->query .= ' ' . implode(' ', $whereClauses);
@@ -94,7 +93,6 @@ class Model
         $this->bindings = $data;
 
         $this->execute($this->query, $this->bindings);
-        // dd($query, $bindings);
         return $this->execute($query, $bindings)->fetch($this->fetchMode);
     }
     // public function delete($id)
@@ -216,7 +214,7 @@ class Model
 
             $stmt->execute($bindings);
         } catch (\Throwable $th) {
-            // Log the error or handle it as needed
+            // dd($th);
             throw new \Exception("Database query error: " . $th->getMessage());
         }
         return $stmt;
