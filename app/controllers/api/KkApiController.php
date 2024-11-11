@@ -16,8 +16,8 @@ class KkApiController
     public function __construct(){
 $this->masyarakatModel = new MasyarakatModel();
     }
-    public function getdatakk($nik){
-$data = $this->masyarakatModel->get();
-return response(["data"=> $data],200);
+    public function getdatakk($nokk){
+$data = $this->masyarakatModel->select()->where("no_kk","=",$nokk)->get();
+return response(["datakk"=> $data],200);
     }
 }
