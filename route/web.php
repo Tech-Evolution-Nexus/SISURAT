@@ -91,7 +91,7 @@ Router::addRoute("POST", "/ganti-password", [AuthController::class, "gantiPasswo
 Router::addRoute("GET", "/admin/berita", [BeritaController::class, "index"]);
 Router::addRoute("POST", "/admin/berita", [BeritaController::class, "add"]);
 Router::addRoute("GET", "/admin/getberita/{id}", [BeritaController::class, "getedit"]);
-Router::addRoute("POST", "/admin/editberita", [BeritaController::class, "add"]);
+Router::addRoute("POST", "/admin/editberita/{id}", [BeritaController::class, "update"]);
 Router::addRoute("POST", "/admin/deleteberita/{id}", [BeritaController::class, "delete"]);
 
 

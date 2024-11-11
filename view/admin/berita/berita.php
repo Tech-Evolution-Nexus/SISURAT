@@ -70,7 +70,7 @@
                                             <button data-id="<?= $kk->id ?>" title="Hapus" class="btn btnDelete text-white btn-danger btn-sm">
                                                 <i class="fa fa-trash"></i>
                                             </button>
-                                            
+
                                         </div>
                                     </td>
                                 </tr>
@@ -130,7 +130,28 @@
     <!--end yang perlu diubah -->
 
     <?php includeFile("layout/script") ?>
+
     <script>
+        let editorInstance;
+        ClassicEditor
+            .create(document.querySelector('.deskripsi'), {
+                toolbar: [
+                    'undo', 'redo', '|',
+                    'bold', 'italic', 'underline', 'strikethrough', '|',
+                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+                    'alignment', 'bulletedList', 'numberedList', '|',
+                    'link', 'blockQuote', 'insertTable', 'imageUpload', '|',
+                    'heading', '|',
+                    'code', 'codeBlock', '|',
+                    'removeFormat'
+                ],
+            })
+            .then(editor => {
+                editorInstance = editor;
+            })
+            .catch(error => {
+                console.error('There was a problem initializing the editor:', error);
+            });
         $("#add-btn").on("click", function() {
             setupForm("Tambah Jenis Surat", "<?= url("/admin/berita") ?>")
             $("[name=judul]").attr('required');
@@ -172,7 +193,11 @@
 
             $("[name=judul]").val(judul)
             $("[name=subjudul]").val(sub_judul)
-            $("[name=deskripsi]").text(deskripsi)
+            if (editorInstance) {
+                editorInstance.setData(deskripsi); // Mengatur konten CKEditor 5
+            } else {
+                console.error("Editor belum siap.");
+            }
             // $("[name=file_berita]").val(gambar)
 
         }
@@ -223,25 +248,6 @@
                 });
             });
         });
-        ClassicEditor
-            .create(document.querySelector('.deskripsi'), {
-                toolbar: [
-                    'undo', 'redo', '|',
-                    'bold', 'italic', 'underline', 'strikethrough', '|',
-                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
-                    'alignment', 'bulletedList', 'numberedList', '|',
-                    'link', 'blockQuote', 'insertTable', 'imageUpload', '|',
-                    'heading', '|',
-                    'code', 'codeBlock', '|',
-                    'removeFormat'
-                ],
-            })
-            .then(editor => {
-                console.log('Editor was initialized', editor);
-            })
-            .catch(error => {
-                console.error('There was a problem initializing the editor:', error);
-            });
     </script>
 </body>
 

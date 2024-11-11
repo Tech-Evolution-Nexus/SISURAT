@@ -26,7 +26,7 @@ class FileUploader
         // }
 
         if ($this->moveFile()) {
-            return "File " . htmlspecialchars(basename($this->file["name"])) . " telah berhasil diunggah.";
+            return true;
         }
 
         return "Maaf, terjadi kesalahan saat mengunggah file.";
