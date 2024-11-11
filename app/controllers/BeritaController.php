@@ -71,50 +71,67 @@ class BeritaController
         }
         return redirect()->with("success", "Data berhasil ditambahkan.")->back();
     }
-    public function update(){
+    public function update($id) {
         request()->validate([
             "judul" => "required",
             "subjudul" => "required",
             "deskripsi" => "required",
-            "file_berita" => "required",
+            "file_berita" => "nullable|file",
         ]);
-
-        $jud= $_POST['judul'] ?? null;
+    
+        $jud = $_POST['judul'] ?? null;
         $sub = $_POST['subjudul'] ?? null;
         $des = $_POST['deskripsi'] ?? null;
         $ficon = $_FILES['file_berita'] ?? null;
-
-
-        $maxFileSize = 2 * 1024 * 1024;
-        if ($ficon['size'] > $maxFileSize) {
-            return redirect()->with("error", "Ukuran file terlalu besar. Maksimal 2MB.")->back();
+    
+        // Check if the entry exists
+        $d = $this->model->beritamodel->select()->where("id", "=", $id)->first();
+        if (!$d) {
+            return redirect()->with("error", "Data tidak ditemukan.")->back();
         }
-        $d = $this->model->beritamodel->select()->where("judul", "=", $jud)->first();
-        if ($d) {
-            return redirect()->with("error", "Data Sudah Terdaftar.")->back();
-        }
-        $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-        $uploader = new FileUploader($ficon, "../upload/", $allowedFileTypes);
-        $uploadSs = $uploader->isAllowedFileType();
-        if ($uploadSs !== true) {
-            return redirect()->with("error", "$uploadSs")->back();
-        }
-        
-        $idsur = $this->model->beritamodel->create(
-            [
+    
+        // Check file size if a new file is provided
+        if ($ficon && $ficon['size'] > 0) {
+            $maxFileSize = 2 * 1024 * 1024;
+            if ($ficon['size'] > $maxFileSize) {
+                return redirect()->with("error", "Ukuran file terlalu besar. Maksimal 2MB.")->back();
+            }
+    
+            // File type validation
+            $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
+            $uploader = new FileUploader($ficon, "../upload/", $allowedFileTypes);
+            $uploadSs = $uploader->isAllowedFileType();
+            if ($uploadSs !== true) {
+                return redirect()->with("error", "$uploadSs")->back();
+            }
+    
+            // Upload file
+            $uploadStatus = $uploader->upload();
+            if ($uploadStatus !== true) {
+                return redirect()->with("error", "$uploadStatus")->back();
+            }
+            // Update with new file name
+            $updateData = [
                 "judul" => $jud,
                 "sub_judul" => $sub,
                 "deskripsi" => $des,
                 "gambar" => $ficon['name']
-            ]
-        );
-
-        $uploadStatus = $uploader->upload();
-        if ($uploadStatus !== true) {
-            return redirect()->with("success", "$uploadStatus")->back();
+            ];
+        } else {
+            // Update without changing the file
+            $updateData = [
+                "judul" => $jud,
+                "sub_judul" => $sub,
+                "deskripsi" => $des
+            ];
         }
-        return redirect()->with("success", "Data berhasil ditambahkan.")->back();
+    
+        // Perform the update
+        $this->model->beritamodel->update($updateData);
+    
+        return redirect()->with("success", "Data berhasil diperbarui.")->back();
     }
+    
     public function delete($id){
         $this->model->beritamodel->where("id", "=", $id)->delete();
         return redirect("/admin/berita");
