@@ -1,6 +1,6 @@
 <?php
 
-namespace App\services;
+namespace app\services;
 
 
 class Request
@@ -8,7 +8,8 @@ class Request
     public function get($key)
     {
         // Get the value and sanitize it
-        return $this->sanitize($this->format()[$key] ?? null);
+        $result = $this->sanitize($this->format()[$key] ?? null);
+        return $result === "" ? null : $result;
     }
 
     public function getAll()

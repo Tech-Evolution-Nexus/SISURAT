@@ -144,13 +144,12 @@ class SuratController extends Controller
         }
 
         // Ambil data surat lama dari database
-        $existingData = $this->model->jsurat->find($id)->get();
+        $existingData = $this->model->jsurat->find($id);
+     
         if (!$existingData) {
             return redirect()->with("error", "Data tidak ditemukan.")->back();
         }
-
-        // Cek apakah ada file icon baru yang diunggah
-        $fileName = $existingData['image']; // Set default ke nama file lama
+        $fileName = $existingData->image;
         if (!empty($ficon['name'])) {
             $maxFileSize = 2 * 1024 * 1024;
             if ($ficon['size'] > $maxFileSize) {
@@ -177,24 +176,28 @@ class SuratController extends Controller
             "nama_surat" => $namasur,
             "image" => $fileName // Set ke nama file lama atau baru tergantung ada perubahan atau tidak
         ];
-        $idsur = $this->model->jsurat->update($id, $updateData);
+       $this->model->jsurat->where("id","=",$id)->update($updateData);
 
         // Update lampiran surat
-        // foreach ($opsi as $data) {
-        //     $exists = $this->model->lampiransurat->exists([
-        //         'id_surat' => $idsur,
-        //         'id_lampiran' => $data
-        //     ]);
+        foreach ($opsi as $data) {
+            $exists = $this->model->lampiransurat->exists([
+                'id_surat' => $id,
+                'id_lampiran' => $data
+            ]);
 
-        //     if (!$exists) {
-        //         $this->model->lampiransurat->update($data, [
-        //             'id_surat' => $idsur,
-        //             'id_lampiran' => $data
-        //         ]);
-        //     } else {
-        //         return redirect()->with("error", "Kombinasi id_surat $idsur dan id_lampiran $data sudah tersimpan di database.")->back();
-        //     }
-        // }
+            // if (!$exists) {
+                // $this->model->lampiransurat->where("id_surat","=",$id)->update( [
+                //     'id_surat' => $id,
+                //     'id_lampiran' => $data
+                // ]);
+            // } else {
+            //     return redirect()->with("error", "Kombinasi id_surat $id dan id_lampiran $data sudah tersimpan di database.")->back();
+            // }
+            $this->model->lampiransurat->where("id_surat","=",$id)->update( [
+                'id_surat' => $id,
+                'id_lampiran' => $data
+            ]);
+        }
 
         return redirect("/admin/surat")->with("success", "Data berhasil diupdate.");
     }

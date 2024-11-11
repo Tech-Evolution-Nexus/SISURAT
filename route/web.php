@@ -2,14 +2,18 @@
 
 use app\controllers\AnggotaKeluargaController;
 use app\controllers\AuthController;
+use app\controllers\BeritaController;
+use app\controllers\DashController;
 use app\controllers\KartuKeluargaController;
 use app\controllers\RT_RWController;
 use app\controllers\SuratController;
+use app\controllers\SuratMasukController;
 use app\controllers\SuratMasukSelesaiController;
 use app\services\Router;
 use app\controllers\UserController;
 
 //surat
+Router::addRoute("GET", "/admin", [DashController::class, "index"]);
 Router::addRoute("GET", "/admin/surat", [SuratController::class, "index"]);
 Router::addRoute("POST", "/admin/surat", [SuratController::class, "add"]);
 Router::addRoute("GET", "/admin/esurat/{id}", [SuratController::class, "getedit"]);
@@ -18,8 +22,6 @@ Router::addRoute("POST", "/admin/editsurat/{id}", [SuratController::class, "edit
 
 Router::addRoute("GET", "/admin/surat-selesai", [SuratMasukSelesaiController::class, "index"]);
 Router::addRoute("GET", "/admin/surat-selesai/{id}", [SuratMasukSelesaiController::class, "getdata"]);
-
-
 
 //USER
 Router::addRoute("GET", "/admin/users", [UserController::class, "index"]);
@@ -36,7 +38,16 @@ Router::addRoute("GET", "/admin/kartu-keluarga/create", [KartuKeluargaController
 Router::addRoute("POST", "/admin/kartu-keluarga", [KartuKeluargaController::class, "store"]);
 Router::addRoute("GET", "/admin/kartu-keluarga/{id}/edit", [KartuKeluargaController::class, "edit"]);
 Router::addRoute("POST", "/admin/kartu-keluarga/{id}", [KartuKeluargaController::class, "update"]);
-Router::addRoute("GET", "/admin/kartu-keluarga/{id}/delete", [KartuKeluargaController::class, "delete"]);
+Router::addRoute("POST", "/admin/kartu-keluarga/{id}/delete", [KartuKeluargaController::class, "delete"]);
+
+//Surat Masuk
+Router::addRoute("GET", "/admin/surat-masuk", [SuratMasukController::class, "index"]);
+Router::addRoute("GET", "/admin/surat-masuk/ajax/{idPengajuan}", [SuratMasukController::class, "ajaxPengajuan"]);
+Router::addRoute("GET", "/admin/surat-masuk/create", [SuratMasukController::class, "create"]);
+Router::addRoute("POST", "/admin/surat-masuk", [SuratMasukController::class, "store"]);
+Router::addRoute("GET", "/admin/surat-masuk/{id}/edit", [SuratMasukController::class, "edit"]);
+Router::addRoute("POST", "/admin/surat-masuk/{id}", [SuratMasukController::class, "update"]);
+Router::addRoute("GET", "/admin/surat-masuk/{id}/delete", [SuratMasukController::class, "delete"]);
 
 
 //anggota kk
@@ -44,6 +55,7 @@ Router::addRoute("GET", "/admin/kartu-keluarga/{nokk}/anggota-keluarga", [Anggot
 Router::addRoute("GET", "/admin/kartu-keluarga/{nokk}/anggota-keluarga/create", [AnggotaKeluargaController::class, "create"]);
 Router::addRoute("POST", "/admin/kartu-keluarga/{nokk}/anggota-keluarga", [AnggotaKeluargaController::class, "store"]);
 Router::addRoute("GET", "/admin/kartu-keluarga/{nokk}/anggota-keluarga/{nik}/edit", [AnggotaKeluargaController::class, "edit"]);
+Router::addRoute("GET", "/admin/kartu-keluarga/{nokk}/anggota-keluarga/{nik}", [AnggotaKeluargaController::class, "show"]);
 Router::addRoute("POST", "/admin/kartu-keluarga/{nokk}/anggota-keluarga/{nik}", [AnggotaKeluargaController::class, "update"]);
 Router::addRoute("GET", "/admin/kartu-keluarga/{nokk}/anggota-keluarga/{nik}/delete", [AnggotaKeluargaController::class, "delete"]);
 
@@ -52,7 +64,7 @@ Router::addRoute("GET", "/admin/kartu-keluarga/{nokk}/anggota-keluarga/{nik}/del
 Router::addRoute("GET", "/admin/master-rw", [RT_RWController::class, "indexRW"]);
 Router::addRoute("GET", "/admin/master-rw/ajax-rw/{nik}", [RT_RWController::class, "ajaxRW"]);
 Router::addRoute("GET", "/admin/master-rw/ajax-masyarakat/{nik}", [RT_RWController::class, "ajaxMasyarakat"]);
-Router::addRoute("GET", "/admin/master-rw/create", [RT_RWController::class, "createRW"]);
+Router::addRoute("GET", "/admin/msaster-rw/create", [RT_RWController::class, "createRW"]);
 Router::addRoute("POST", "/admin/master-rw", [RT_RWController::class, "storeRW"]);
 Router::addRoute("POST", "/admin/master-rw/{nik}", [RT_RWController::class, "updateRW"]);
 
@@ -75,3 +87,13 @@ Router::addRoute("POST", "/sendemail", [AuthController::class, 'sendemail']);
 //ganti password
 Router::addRoute("GET", "/ganti-password", [AuthController::class, "gantiPassword"]);
 Router::addRoute("POST", "/ganti-password", [AuthController::class, "gantiPasswordStore"]);
+
+Router::addRoute("GET", "/admin/berita", [BeritaController::class, "index"]);
+Router::addRoute("POST", "/admin/berita", [BeritaController::class, "add"]);
+Router::addRoute("GET", "/admin/getberita/{id}", [BeritaController::class, "getedit"]);
+Router::addRoute("POST", "/admin/editberita", [BeritaController::class, "add"]);
+Router::addRoute("POST", "/admin/deleteberita/{id}", [BeritaController::class, "delete"]);
+
+
+
+

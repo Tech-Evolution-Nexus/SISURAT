@@ -1,5 +1,6 @@
 <?php
 
+use app\models\UserModel;
 use app\services\Redirector;
 use app\services\Request;
 use app\services\Session;
@@ -58,7 +59,7 @@ if (!function_exists("request")) {
     {
         $request = new Request();
         if (!$key) return $request;
-        return $request->get($key);
+        return $request->get($key) ?? null;
     }
 }
 if (!function_exists("redirect")) {
@@ -83,6 +84,12 @@ if (!function_exists("session")) {
     function session()
     {
         return  new Session();
+    }
+}
+if (!function_exists("auth")) {
+    function auth()
+    {
+        return  new UserModel();
     }
 }
 
@@ -117,6 +124,66 @@ if (!function_exists("url")) {
         $path = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
         $path = str_replace('/public', '', $path);
         return $protocol . $host . $path . '/' . ltrim($url, '/');
+    }
+}
+
+if (!function_exists("formatStatusPengajuan")) {
+    function formatStatusPengajuan($status)
+    {
+        switch ($status) {
+            case 'di_terima_rw':
+                return "Disetujui RW";
+                break;
+            case 'di_terima_rt':
+                return "Disetujui RT";
+                break;
+            case 'di_tolak_rw':
+                return "Ditolak RW";
+                break;
+            case 'di_tolak_rt':
+                return "Ditolak RT";
+                break;
+            case 'selesai':
+                return "Selesai";
+                break;
+
+            default:
+                return "Selesai";
+                break;
+        }
+    }
+}
+
+if (!function_exists("formatDate")) {
+    function formatDate($date)
+    {
+        // Cek apakah tanggal valid dan tidak kosong
+        if (!empty($date) && strtotime($date) !== false) {
+            // Ubah nama bulan ke bahasa Indonesia
+            $bulanIndonesia = [
+                'January' => 'Januari',
+                'February' => 'Februari',
+                'March' => 'Maret',
+                'April' => 'April',
+                'May' => 'Mei',
+                'June' => 'Juni',
+                'July' => 'Juli',
+                'August' => 'Agustus',
+                'September' => 'September',
+                'October' => 'Oktober',
+                'November' => 'November',
+                'December' => 'Desember'
+            ];
+
+            // Format tanggal ke bahasa Inggris terlebih dahulu
+            $formattedDate = date('d F Y', strtotime($date));
+
+            // Ganti bulan Inggris dengan bulan Indonesia
+            return strtr($formattedDate, $bulanIndonesia);
+        }
+
+        // Kembalikan NULL jika tanggal tidak valid atau kosong
+        return null;
     }
 }
 

@@ -139,8 +139,8 @@
         $("#add-btn").on("click", function() {
             setupForm("Tambah Jenis Surat", "<?= url("/admin/surat") ?>")
             $("[name=nama_surat]").attr('required');
-            $('#fselect').show();
-            $('.fselected').remove();
+            $('#fselect').remove();
+            $('.fselected').show();
             $(".modal form").trigger("reset");
             $(".personal-information, .modal-footer").css({
                 height: 0,

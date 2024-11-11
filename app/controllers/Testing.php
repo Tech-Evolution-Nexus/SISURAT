@@ -1,86 +1,141 @@
 <?php
 
-use app\controllers\AuthController;
-use app\services\Session;
-use PHPUnit\Framework\TestCase;
+namespace app\controllers;
+
+use app\models\UserModel;
+use PHPUnit\Framework\TestCase; // Adjust based on your namespace
+// Your User model
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
+use Mockery as m;
+use stdClass;
 
 class Testing extends TestCase
 {
-    protected function setUp(): void
+    protected function tearDown(): void
     {
-        // Set up session
-        if (!isset($_SESSION)) {
-            $_SESSION = [];
-        }
-    }
-    //method mengecek apakah email kosong
-    public function testEmptyEmail()
-    {
-        $_POST['email'] = '';
-        $_POST['password'] = 'password123';
-
-        $auth = new AuthController(); // Replace with the actual class name containing the authentic() method
-        $auth->authentic();
-
-        // $this->assertArrayHasKey("usernameErr", $_SESSION);
-        $this->assertEquals('email tidak boleh kosong', $_SESSION["usernameErr"]);
+        m::close(); // Close Mockery after each test
     }
 
-    //method mengecek apakah password kosong
-    public function testEmptyPassword()
+    public function testUserAuthenticatesSuccessfully()
     {
-        $_POST['email'] = 'test@example.com';
-        $_POST['password'] = '';
+        // Arrange
+        $authController = new AuthController();
 
-        $auth = new AuthController();
-        $auth->authentic();
+        // Mock request to simulate form input
+        $requestMock = m::mock('alias:Request');
+        $requestMock->shouldReceive('validate')->once()->with([
+            "email" => "required|email",
+            "password" => "required|min:8",
+        ]);
 
-        // $this->assertArrayHasKey("passwordErr", $_SESSION);
-        $this->assertEquals('Kata sandi tidak boleh kosong', $_SESSION["passwordErr"]);
+        // Input values
+        $email = "test@example.com";
+        $password = "password123";
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+        $requestMock->shouldReceive('input')->with('email')->andReturn($email);
+        $requestMock->shouldReceive('input')->with('password')->andReturn($password);
+
+        // Mock UserModel to find user by email
+        $user = (object) ["email" => $email, "password" => $hashedPassword];
+        $userModelMock = m::mock(UserModel::class);
+        $userModelMock->shouldReceive('where')->with("email", "=", $email)->andReturnSelf();
+        $userModelMock->shouldReceive('first')->andReturn($user);
+
+        // Inject mock UserModel into $this->model->users
+        $authController->model->users = $userModelMock;
+
+        // Mock session
+        $sessionMock = m::mock('alias:Session');
+        $sessionMock->shouldReceive('set')->with("user", $user)->once();
+
+        // Mock redirect
+        $redirectMock = m::mock('alias:Redirect');
+        $redirectMock->shouldReceive('to')->with("/admin")->andReturn("redirected to /admin");
+
+        // Act
+        $result = $authController->authentic();
+
+        // Assert
+        $this->assertEquals("redirected to /admin", $result);
     }
 
-    //method mengecek apakah panjang password kurang dari 8
-    public function testPasswordTooShort()
+
+    public function testAuthenticationFailsWithInvalidPassword()
     {
-        $_POST['email'] = 'test@example.com';
-        $_POST['password'] = 'short';
+        // Arrange
+        $authController = new AuthController();
 
-        $auth = new AuthController();
-        $auth->authentic();
+        // Mock request and validation
+        $requestMock = m::mock('alias:Request');
+        $requestMock->shouldReceive('validate')->once()->with([
+            "email" => "required|email",
+            "password" => "required|min:8",
+        ]);
 
-        // $this->assertArrayHasKey("passwordErr", $_SESSION);
-        $this->assertEquals('Kata sandi minimal 8 karakter', $_SESSION["passwordErr"]);
+        // Input values
+        $email = "test@example.com";
+        $password = "invalid_password";
+
+        $requestMock->shouldReceive('input')->with('email')->andReturn($email);
+        $requestMock->shouldReceive('input')->with('password')->andReturn($password);
+
+        // Mock UserModel to return user with different password
+        $user = (object) ["email" => $email, "password" => password_hash("password123", PASSWORD_DEFAULT)];
+        $userModelMock = m::mock(UserModel::class);
+        $userModelMock->shouldReceive('where')->with("email", "=", $email)->andReturnSelf();
+        $userModelMock->shouldReceive('first')->andReturn($user);
+
+        $authController->model->users = $userModelMock;
+
+        // Mock redirect back with error message
+        $redirectMock = m::mock('alias:Redirect');
+        $redirectMock->shouldReceive('with')->with("error", "Password salah")->andReturnSelf();
+        $redirectMock->shouldReceive('back')->andReturn("redirected back with error");
+
+        // Act
+        $result = $authController->authentic();
+
+        // Assert
+        $this->assertEquals("redirected back with error", $result);
     }
 
-    //method mengecek apakah akun tidak benar
-    public function testInvalidCredentials()
+    public function testAuthenticationFailsWithUnknownUser()
     {
-        $_POST['email'] = 'muh2@example.com';
-        $_POST['password'] = 'incorrectpassword';
+        // Arrange
+        $authController = new AuthController();
 
-        // Mock database connection and query result
-        // $dbMock = $this->createMock(Database::class);
-        // $dbMock->method('getConnection')->willReturn($this->getMockPDO(false));
+        // Mock request and validation
+        $requestMock = m::mock('alias:Request');
+        $requestMock->shouldReceive('validate')->once()->with([
+            "email" => "required|email",
+            "password" => "required|min:8",
+        ]);
 
-        $auth = new AuthController();
-        // $auth->setDatabase($dbMock); // Method to set the database connection in the authentic() method
-        $auth->authentic();
+        // Input values
+        $email = "unknown@example.com";
+        $password = "password123";
 
-        // $this->assertArrayHasKey("usernameErr", $_SESSION);
-        $this->assertEquals('Username tidak terdaftar', $_SESSION["usernameErr"]);
-    }
+        $requestMock->shouldReceive('input')->with('email')->andReturn($email);
+        $requestMock->shouldReceive('input')->with('password')->andReturn($password);
 
-    //method mengecek login dengan benar 
-    public function testSuccessfulLogin()
-    {
-        $_POST['email'] = 'test@example.com';
-        $_POST['password'] = 'validpassword';
+        // Mock UserModel to return no user
+        $userModelMock = m::mock(UserModel::class);
+        $userModelMock->shouldReceive('where')->with("email", "=", $email)->andReturnSelf();
+        $userModelMock->shouldReceive('first')->andReturn(null);
 
-        $auth = new AuthController();
-        // $auth->setDatabase($dbMock);
-        $auth->authentic();
-        $session = new Session();
-        $this->assertTrue(!!$session->get("user"));
-        // Checking if headers have been sent as expected for a successful login
+        $authController->model->users = $userModelMock;
+
+        // Mock redirect back with error message
+        $redirectMock = m::mock('alias:Redirect');
+        $redirectMock->shouldReceive('with')->with("error", "User tidak ditemukan")->andReturnSelf();
+        $redirectMock->shouldReceive('back')->andReturn("redirected back with error");
+
+        // Act
+        $result = $authController->authentic();
+
+        // Assert
+        $this->assertEquals("redirected back with error", $result);
     }
 }

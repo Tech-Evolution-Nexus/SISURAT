@@ -72,9 +72,14 @@
                                                 <i class="fa fa-pencil"></i>
                                             </a>
 
-                                            <a href="<?= url("/admin/kartu-keluarga/$kk->no_kk/delete") ?>" title="Hapus" class="btn  text-white btn-danger btn-sm">
+                                            <button data-url="<?= url("/admin/kartu-keluarga/$kk->no_kk/delete") ?>" title="Hapus" class="btn deleteBtn  text-white btn-danger btn-sm">
                                                 <i class="fa fa-trash"></i>
-                                            </a>
+                                            </button>
+                                            <!-- <a  href="<?= url("/admin/kartu-keluarga/$kk->no_kk/delete") ?>" title="Hapus" class="btn  text-white btn-danger btn-sm">
+                                                <i class="fa fa-trash"></i>
+                                            </a> -->
+
+
                                             <a href="<?= url("/admin/kartu-keluarga/$kk->no_kk/anggota-keluarga") ?>" title="Detail" class="btn  text-white btn-success btn-sm">
                                                 <i class="fa fa-users"></i>
                                             </a>
@@ -87,9 +92,10 @@
                     </table>
                 </div>
             </div>
-
         </div>
     </main>
+
+
 
 
     <!--end yang perlu diubah -->
