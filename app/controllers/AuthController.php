@@ -25,6 +25,7 @@ class AuthController
 
     public function authentic()
     {
+
         //validasi login
         request()->validate([
             "email" => "required|email",
