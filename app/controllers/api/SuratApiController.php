@@ -26,11 +26,11 @@ class SuratApiController
 
     }
     public function getdata(){
-        $data =$this->model->jsurat->select("nama_surat","image")->limit(6)->all();
+        $data =$this->model->jsurat->select()->limit(6)->all();
         return response(["data"=>$data],200);
     }
     public function getdataall(){
-        $data =$this->model->jsurat->select("nama_surat","image")->all();
+        $data =$this->model->jsurat->select()->all();
         return response(["data"=>$data],200);
     }
     public function getlampiran($id){
