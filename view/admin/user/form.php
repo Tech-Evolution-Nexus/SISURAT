@@ -16,19 +16,20 @@
                 <div class="card-body">
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" value="<?= $data->data->email ?>" required>
+                        <input disabled type="email" name="email" class="form-control" value="<?= $data->data->email ?>" required>
+                    </div>
+                   
+                    <div class="mb-3">
+                        <label for="no_hp" class="form-label">No. HP</label>
+                        <input disabled type="text" name="no_hp" class="form-control" value="<?= $data->data->no_hp ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Role</label>
+                        <input disabled type="text" name="role" class="form-control" value="<?= $data->data->role ?>" required>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
                         <input type="password" name="password" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="no_hp" class="form-label">No. HP</label>
-                        <input type="text" name="no_hp" class="form-control" value="<?= $data->data->no_hp ?>" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="role" class="form-label">Role</label>
-                        <input type="text" name="role" class="form-control" value="<?= $data->data->role ?>" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Simpan</button>
                     <a href="/admin/users" class="btn btn-secondary">Kembali</a>

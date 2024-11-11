@@ -24,9 +24,11 @@ class Request
     }
 
     private function format()
-    {
-        return [...$_GET, ...$_POST, ...$_FILES];
-    }
+{
+    // Menggabungkan array $_GET, $_POST, dan $_FILES tanpa menggunakan operator `...`
+    return array_merge($_GET, $_POST, $_FILES);
+}
+
 
     private function sanitize($data)
     {
