@@ -79,7 +79,7 @@
             </a>
             <ul class="list-unstyled ps-2">
                 <li>
-                    <a class="text-body-secondary sidebar-subitem side-link d-flex align-items-center px-3 rounded py-2 text-decoration-none" href="<?= url("/admin/pengaturan") ?>">
+                    <a class="text-body-secondary sidebar-subitem side-link d-flex align-items-center px-3 rounded py-2 text-decoration-none" href="<?= url("/admin/berita") ?>">
                         <i class="fa fa-users"></i>
                         <span class="d-inline-block ms-3">Berita</span>
                     </a>
