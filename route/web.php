@@ -3,12 +3,16 @@
 use app\controllers\AnggotaKeluargaController;
 use app\controllers\AuthController;
 use app\controllers\KartuKeluargaController;
+use app\controllers\LandingController;
 use app\controllers\RT_RWController;
 use app\controllers\SuratController;
 use app\controllers\SuratMasukController;
 use app\controllers\SuratMasukSelesaiController;
 use app\services\Router;
 use app\controllers\UserController;
+
+// landing
+Router::addRoute("GET", "/", [LandingController::class, "index"]);
 
 //surat
 Router::addRoute("GET", "/admin/surat", [SuratController::class, "index"]);
@@ -31,6 +35,7 @@ Router::addRoute("POST", "/admin/users/delete/:id", [UserController::class, "del
 
 //Kartu Keluarga
 Router::addRoute("GET", "/admin/kartu-keluarga", [KartuKeluargaController::class, "index"]);
+Router::addRoute("POST", "/admin/kartu-keluarga/import", [KartuKeluargaController::class, "import"]);
 Router::addRoute("GET", "/admin/kartu-keluarga/create", [KartuKeluargaController::class, "create"]);
 Router::addRoute("POST", "/admin/kartu-keluarga", [KartuKeluargaController::class, "store"]);
 Router::addRoute("GET", "/admin/kartu-keluarga/{id}/edit", [KartuKeluargaController::class, "edit"]);

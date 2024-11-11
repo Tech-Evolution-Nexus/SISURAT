@@ -15,6 +15,7 @@ class SuratMasukController extends Controller
         $this->model->pengajuan_surat = new PengajuanSuratModel();
         $this->model->lampiran = new LampiranPengajuanModel();
     }
+
     public function index()
     {
         $data = $this->model->pengajuan_surat

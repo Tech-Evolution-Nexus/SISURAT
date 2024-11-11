@@ -109,12 +109,9 @@
                                     <h5>Detail Surat :</h5>
                                     <button type="button" id="add-field" class="btn btn-warning"><i class="fa-solid fa-plus"></i></button>
                                 </div>
-
-
                                 <div class="form-group ms-3" id="fselect">
                                     <label>Upoload Icon</label>
                                     <select name="fields[]" class="form-select" required>
-
                                         <option value="">Pilih Opsi</option>
                                         <?php foreach ($data->datalampiran  as $index => $datas) : ?>
                                             <option value="<?= $datas->id ?>"><?= $datas->nama_lampiran ?></option>
@@ -146,18 +143,20 @@
                 height: 0,
                 opacity: 0
             })
+            removeLampiranInput()
+            addField()
         })
         $(".editBtn").on("click", function() {
             const id = $(this).attr("data-id")
 
             setupForm("Ubah Jenis Surat", `<?= url("/admin/editsurat/") ?>${id}`);
-
             $(".modal").modal("show")
             $.ajax({
                 url: "/SISURAT/admin/esurat/" + id,
                 success: (data) => {
                     $('#fselect').remove();
                     $('.fselected').remove();
+                    removeLampiranInput()
                     data.datalampiran.forEach((element, index) => {
                         const dynamicFields = document.getElementById("dynamic-fields");
                         const formGroup = document.createElement("div");
@@ -165,16 +164,15 @@
                         formGroup.innerHTML = `
                         <div class="d-flex ms-3 mt-3 fselected">
                             <select name="fields[]" class="form-select" required>
-
                                 <option value="">Pilih Opsi</option>
                                 <?php foreach ($data->datalampiran  as $index => $datas) : ?>
                                 <option ${element.id==<?= $datas->id ?>?"selected":""} value="<?= $datas->id ?>"><?= $datas->nama_lampiran ?></option>
                                 <?php endforeach; ?>
                                 </select>
                                 ${index!=0?'<button type="button" class="btn btn-danger ms-2" onclick="removeField(this)"><i class="fa-solid fa-trash"></i></button>':''}
-                        
                             </div>
                         `;
+
                         dynamicFields.appendChild(formGroup);
                     });
                     setFormData(data.datasurat)
@@ -183,6 +181,18 @@
         })
 
 
+        const removeLampiranInput = () => {
+            const dynamicFields = document.getElementById("dynamic-fields");
+            const countInput = $(dynamicFields).children(".form-group").remove()
+
+            const allSelects = document.querySelectorAll('[name="fields[]"]');
+            allSelects.forEach(s => {
+                const optionToEnable = s.querySelector(`option[value="${selectedValue}"]`);
+                if (optionToEnable) {
+                    optionToEnable.disabled = false;
+                }
+            });
+        }
         const setupForm = (title, action) => {
             $("#titleForm").text(title)
             $(".modal form").attr("action", action)
@@ -203,16 +213,16 @@
             const dynamicFields = document.getElementById("dynamic-fields");
             const formGroup = document.createElement("div");
             formGroup.className = "form-group";
+            const countInput = $(dynamicFields).children(".form-group").length
             formGroup.innerHTML = `
             <div class="d-flex ms-3 mt-3">
                  <select name="fields[]" class="form-select" required>
-
-                                            <option value="">Pilih Opsi</option>
-                                            <?php foreach ($data->datalampiran  as $index => $datas) : ?>
-                                            <option value="<?= $datas->id ?>"><?= $datas->nama_lampiran ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
-                <button type="button" class="btn btn-danger ms-2" onclick="removeField(this)"><i class="fa-solid fa-trash"></i></button>
+                    <option value="">Pilih Opsi</option>
+                    <?php foreach ($data->datalampiran  as $index => $datas) : ?>
+                    <option value="<?= $datas->id ?>"><?= $datas->nama_lampiran ?></option>
+                    <?php endforeach; ?>
+                </select>
+                    ${countInput > 0 ? '<button type="button" class="btn btn-danger ms-2" onclick="removeField(this)"><i class="fa-solid fa-trash"></i></button>':""}
                 </div>
             `;
             dynamicFields.appendChild(formGroup);
@@ -226,8 +236,8 @@
 
         document.querySelectorAll('.btnDelete').forEach(button => {
             button.addEventListener('click', function() {
-                const id = this.getAttribute('data-id'); 
-              
+                const id = this.getAttribute('data-id');
+
                 Swal.fire({
                     title: 'Apakah Anda yakin?',
                     text: "Data ini akan dihapus dan tidak bisa dikembalikan!",
@@ -239,34 +249,34 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-             
+
                         fetch(`<?= url('/admin/dsurat/') ?>${id}`, {
-                            method: 'POST'
-                        })
-                        .then(response => {
-                            if (response.ok) {
-                                Swal.fire(
-                                    'Dihapus!',
-                                    'Data telah dihapus.',
-                                    'success'
-                                ).then(() => {
-                                    location.reload(); // Reload halaman setelah dihapus
-                                });
-                            } else {
+                                method: 'POST'
+                            })
+                            .then(response => {
+                                if (response.ok) {
+                                    Swal.fire(
+                                        'Dihapus!',
+                                        'Data telah dihapus.',
+                                        'success'
+                                    ).then(() => {
+                                        location.reload(); // Reload halaman setelah dihapus
+                                    });
+                                } else {
+                                    Swal.fire(
+                                        'Gagal!',
+                                        'Terjadi kesalahan saat menghapus data.',
+                                        'error'
+                                    );
+                                }
+                            })
+                            .catch(error => {
                                 Swal.fire(
                                     'Gagal!',
                                     'Terjadi kesalahan saat menghapus data.',
                                     'error'
                                 );
-                            }
-                        })
-                        .catch(error => {
-                            Swal.fire(
-                                'Gagal!',
-                                'Terjadi kesalahan saat menghapus data.',
-                                'error'
-                            );
-                        });
+                            });
                     }
                 });
             });

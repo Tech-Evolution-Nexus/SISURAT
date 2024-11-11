@@ -14,9 +14,10 @@ class UserController extends Controller
         $this->userModel = new UserModel();
     }
 
-    public function index() {
-        $users = $this->userModel->getAll(); // Ganti dengan fungsi yang sesuai
-        
+    public function index()
+    {
+        $users = $this->userModel->all(); // Ganti dengan fungsi yang sesuai
+
         $params["data"] = (object)[
             "title" => "Users",
             "description" => "Kelola Users anda",
@@ -24,8 +25,8 @@ class UserController extends Controller
         ];
         $this->view('admin/user/user', $params);
     }
-    
-    
+
+
 
     public function create()
     {
