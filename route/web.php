@@ -2,6 +2,8 @@
 
 use app\controllers\AnggotaKeluargaController;
 use app\controllers\AuthController;
+use app\controllers\BeritaController;
+use app\controllers\DashController;
 use app\controllers\KartuKeluargaController;
 use app\controllers\RT_RWController;
 use app\controllers\SuratController;
@@ -11,6 +13,7 @@ use app\services\Router;
 use app\controllers\UserController;
 
 //surat
+Router::addRoute("GET", "/admin", [DashController::class, "index"]);
 Router::addRoute("GET", "/admin/surat", [SuratController::class, "index"]);
 Router::addRoute("POST", "/admin/surat", [SuratController::class, "add"]);
 Router::addRoute("GET", "/admin/esurat/{id}", [SuratController::class, "getedit"]);
@@ -84,3 +87,13 @@ Router::addRoute("POST", "/sendemail", [AuthController::class, 'sendemail']);
 //ganti password
 Router::addRoute("GET", "/ganti-password", [AuthController::class, "gantiPassword"]);
 Router::addRoute("POST", "/ganti-password", [AuthController::class, "gantiPasswordStore"]);
+
+Router::addRoute("GET", "/admin/berita", [BeritaController::class, "index"]);
+Router::addRoute("POST", "/admin/berita", [BeritaController::class, "add"]);
+Router::addRoute("GET", "/admin/getberita/{id}", [BeritaController::class, "getedit"]);
+Router::addRoute("POST", "/admin/editberita", [BeritaController::class, "add"]);
+Router::addRoute("POST", "/admin/deleteberita/{id}", [BeritaController::class, "delete"]);
+
+
+
+
