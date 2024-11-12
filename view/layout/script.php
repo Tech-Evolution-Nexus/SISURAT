@@ -119,5 +119,21 @@
         }
         $(".deleteBtn").on("click", showSwalDelete);
 
+
+        $(".password-toggle").on("click", function() {
+            const passwordField = $(this).parent().find("input[type='password'], input[type='text']");
+            const fieldType = passwordField.attr("type") === "password" ? "text" : "password";
+            if (passwordField.attr("type") === "password") {
+                $(this).find("i").addClass("fa-eye-slash")
+                $(this).find("i").removeClass("fa-eye")
+            } else {
+                $(this).find("i").removeClass("fa-eye-slash")
+                $(this).find("i").addClass("fa-eye")
+            }
+            const font = passwordField.attr("type") === "password" ? $(this).addClass("") : $(this).removeClass("");
+            passwordField.attr("type", fieldType);
+
+        });
+
     })
 </script>

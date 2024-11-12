@@ -34,7 +34,12 @@
                     <h2 class="mb-0 text-white"><?= $data->title ?></h2>
                     <p class="text-white text-small"><?= $data->description ?> </p>
                 </div>
-                <div class="ms-auto">
+                <div class="ms-auto d-flex gap-2">
+
+                    <button data-bs-toggle="modal" data-bs-target="#modal" class="btn btn-success text-white">
+                        Import
+                    </button>
+
                     <a href="<?= url("/admin/kartu-keluarga/create") ?>" class="btn btn-warning">
                         Tambah KK
                     </a>
@@ -96,6 +101,35 @@
     </main>
 
 
+
+    <!-- FORM MODAL -->
+    <div id="modal" class="modal hide fade " role="dialog" aria-labelledby="modal" aria-hidden="true">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="titleForm">Import Kartu Keluarga</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="<?= url("/admin/kartu-keluarga/import") ?>" enctype="multipart/form-data" method="post">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <button class="btn btn-success text-white mb-2">Download Template Import</button>
+                        </div>
+                        <div class="form-group">
+                            <label for="">File excel</label>
+                            <input accept=".xls,.xlsx" type="file" class="form-control" name="file" id="file">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary fw-normal">Import</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+            </div>
+            </form>
+        </div>
+
+    </div>
+    </div>
 
 
     <!--end yang perlu diubah -->

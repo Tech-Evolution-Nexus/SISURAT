@@ -15,6 +15,6 @@
     "mockery/mockery": "^1.6"
   },
   "require": {
-    "phpoffice/phpspreadsheet":"^3.4"
+    "phpoffice/phpspreadsheet": "^3.4"
   }
 }

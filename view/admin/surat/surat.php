@@ -107,12 +107,9 @@
                                     <h5>Detail Surat :</h5>
                                     <button type="button" id="add-field" class="btn btn-warning"><i class="fa-solid fa-plus"></i></button>
                                 </div>
-
-
                                 <div class="form-group ms-3" id="fselect">
                                     <label>Upoload Icon</label>
                                     <select name="fields[]" class="form-select" required>
-
                                         <option value="">Pilih Opsi</option>
                                         <?php foreach ($data->datalampiran  as $index => $datas) : ?>
                                             <option value="<?= $datas->id ?>"><?= $datas->nama_lampiran ?></option>
@@ -138,7 +135,9 @@
             setupForm("Tambah Jenis Surat", "<?= url("/admin/surat") ?>")
             $("[name=nama_surat]").attr('required');
             $('#fselect').remove();
-            $('.fselected').show();
+            $('.fselected').remove();
+            $('#add-field').show()
+            $('#btn-simpan').show()
             $('#file_icon').show();
             $(".modal form").trigger("reset");
             $(".personal-information, .modal-footer").css({
@@ -169,7 +168,9 @@
                         const formGroup = document.createElement("div");
                         formGroup.className = "form-group";
                         formGroup.innerHTML = `
-                        <div class="d-flex ms-3 mt-3 fselected">
+                       <div class="mt-3 fselected">
+                        <label>Data ${index+1}</label>
+                        <div class="d-flex ms-3  ">
                             <select name="fields[]" class="form-select" required>
                                 <option value="">Pilih Opsi</option>
                                 <?php foreach ($data->datalampiran  as $index => $datas) : ?>
@@ -177,7 +178,7 @@
                                 <?php endforeach; ?>
                                 </select>
                                 ${index!=0?'<button type="button" class="btn btn-danger ms-2" onclick="removeField(this)"><i class="fa-solid fa-trash"></i></button>':''}
-                            </div>
+                            </div></div>
                         `;
 
                         dynamicFields.appendChild(formGroup);
@@ -195,11 +196,11 @@
             $.ajax({
                 url: "/SISURAT/admin/esurat/" + id,
                 success: (data) => {
-                    $('#fselect').remove()
-                    $('.fselected').remove()
-                    $('#add-field').remove()
-                    $('#btn-simpan').remove()
-                    $('#file_icon').remove();
+                    $('#fselect').hide()
+                    $('.fselected').hide()
+                    $('#add-field').hide()
+                    $('#btn-simpan').hide()
+                    $('#file_icon').hide();
 
                     $("[name=nama_surat]").attr('disabled', true);
                     removeLampiranInput()
@@ -258,7 +259,9 @@
             formGroup.className = "form-group";
             const countInput = $(dynamicFields).children(".form-group").length
             formGroup.innerHTML = `
-            <div class="d-flex ms-3 mt-3">
+            <div class="mt-3">
+            <label>Data ${countInput+1}</label>
+            <div class="d-flex  ms-3 ">
                  <select name="fields[]" class="form-select" required>
                     <option value="">Pilih Opsi</option>
                     <?php foreach ($data->datalampiran  as $index => $datas) : ?>
@@ -266,13 +269,13 @@
                     <?php endforeach; ?>
                 </select>
                     ${countInput > 0 ? '<button type="button" class="btn btn-danger ms-2" onclick="removeField(this)"><i class="fa-solid fa-trash"></i></button>':""}
-                </div>
+                </div></div>
             `;
             dynamicFields.appendChild(formGroup);
         }
 
         function removeField(button) {
-            button.parentNode.remove();
+            $(button).parent().parent().remove();
         }
 
         document.getElementById("add-field").addEventListener("click", addField);

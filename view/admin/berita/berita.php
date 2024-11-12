@@ -140,7 +140,7 @@
                     'bold', 'italic', 'underline', 'strikethrough', '|',
                     'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
                     'alignment', 'bulletedList', 'numberedList', '|',
-                    'link', 'blockQuote', 'insertTable', 'imageUpload', '|',
+                    'link', 'blockQuote', 'insertTable', '|',
                     'heading', '|',
                     'code', 'codeBlock', '|',
                     'removeFormat'

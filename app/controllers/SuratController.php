@@ -17,6 +17,9 @@ class SuratController extends Controller
 
     function __construct()
     {
+        if (!auth()->check()) {
+            redirect("/login");
+        }
         $this->model =  (object)[];
         $this->model->jsurat  = new JenisSuratModel();
         $this->model->lampiran  = new LampiranModel();
@@ -43,6 +46,8 @@ class SuratController extends Controller
         $namasur = $_POST['nama_surat'] ?? null;
         $ficon = $_FILES['file_icon'] ?? null;
         $opsi = $_POST['fields'] ?? [];
+        $fileType = strtolower(pathinfo($ficon['name'], PATHINFO_EXTENSION));
+
         if (empty($namasur)) {
             return redirect()->with("error", "Nama surat tidak boleh kosong.")->back();
         }
@@ -69,7 +74,7 @@ class SuratController extends Controller
             return redirect()->with("error", "Terdapat data duplikat dalam pilihan Anda.")->back();
         }
         $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-        $uploader = new FileUploader($ficon, "../upload/", $allowedFileTypes);
+        $uploader = new FileUploader($namasur . "." . $fileType, $ficon, "../upload/surat", $allowedFileTypes);
         $uploadSs = $uploader->isAllowedFileType();
         if ($uploadSs !== true) {
             return redirect()->with("error", "$uploadSs")->back();
@@ -77,7 +82,7 @@ class SuratController extends Controller
         $idsur = $this->model->jsurat->create(
             [
                 "nama_surat" => $namasur,
-                "image" => $ficon['name']
+                "image" => $namasur . "." . $fileType
             ]
         );
         foreach ($opsi as $data) {
@@ -118,6 +123,8 @@ class SuratController extends Controller
         $ficon = $_FILES['file_icon'] ?? null;
         $opsi = $_POST['fields'] ?? [];
 
+        $fileType =
+            strtolower(pathinfo($ficon['name'], PATHINFO_EXTENSION));
         // Validasi nama surat
         if (empty($namasur)) {
             return redirect()->with("error", "Nama surat tidak boleh kosong.")->back();
@@ -131,7 +138,7 @@ class SuratController extends Controller
 
         // Ambil data surat lama dari database
         $existingData = $this->model->jsurat->find($id);
-   
+
         if (!$existingData) {
             return redirect()->with("error", "Data tidak ditemukan.")->back();
         }
@@ -149,15 +156,17 @@ class SuratController extends Controller
             }
 
             $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-            $uploader = new FileUploader($ficon, "../upload/", $allowedFileTypes);
+            $uploader = new FileUploader($namasur . "." . $fileType, $ficon, "../upload/surat/", $allowedFileTypes);
 
             // Hapus file lama jika ada dan nama file baru berhasil diunggah
             $uploadStatus = $uploader->upload();
             if ($uploadStatus === true) {
-                if ($fileName && file_exists("../upload/" . $fileName)) {
-                    unlink("../upload/" . $fileName); // Hapus file lama
+                if ($fileName && file_exists("../upload/surat/" . $fileName)) {
+                    unlink("../upload/surat/" . $fileName); // Hapus file lama
                 }
-                $fileName = $ficon['name']; // Set nama file baru
+                $fileName = $ficon['name'];
+                return redirect()->with("success", "Data berhasil Diubah.")->back();
+                // Set nama file baru
             } else {
                 return redirect()->with("error", "$uploadStatus")->back();
             }

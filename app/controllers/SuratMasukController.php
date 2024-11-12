@@ -11,10 +11,14 @@ class SuratMasukController extends Controller
     private $model;
     public function __construct()
     {
+        if (!auth()->check()) {
+            redirect("/login");
+        }
         $this->model =  (object)[];
         $this->model->pengajuan_surat = new PengajuanSuratModel();
         $this->model->lampiran = new LampiranPengajuanModel();
     }
+
     public function index()
     {
         $data = $this->model->pengajuan_surat
