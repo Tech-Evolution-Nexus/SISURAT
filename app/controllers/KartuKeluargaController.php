@@ -3,8 +3,10 @@
 namespace app\controllers;
 
 use app\abstract\Controller;
+use app\import\KartuKeluargaImport;
 use app\models\KartuKeluargaModel;
 use app\models\MasyarakatModel;
+use app\models\UserModel;
 
 class KartuKeluargaController extends Controller
 {
@@ -32,6 +34,7 @@ class KartuKeluargaController extends Controller
 
         return $this->view("admin/kartu_keluarga/kartu_keluarga", $params);
     }
+
     public  function create()
     {
         // default value
@@ -293,6 +296,20 @@ class KartuKeluargaController extends Controller
             return response("Kartu keluarga gagal dihapus", 500);
 
             // return redirect()->with("error", "Kartu keluarga gagal dihapus")->to("/admin/kartu-keluarga");
+        }
+    }
+
+
+    public function import()
+    {
+        $file = request("file");
+        try {
+            $kkImport = new KartuKeluargaImport();
+            $data =  $kkImport->import($file);
+            return redirect()->with("success", "Kartu keluarga berhasil diimport")->back();
+        } catch (\Throwable $th) {
+            dd($th);
+            return redirect()->with("error", "Kartu keluarga gagal diimport")->back();
         }
     }
 }

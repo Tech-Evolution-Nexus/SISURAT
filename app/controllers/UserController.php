@@ -16,14 +16,27 @@ class UserController extends Controller
         $this->model->user = new UserModel();
     }
 
-    // Menampilkan daftar pengguna
     public function index()
     {
+        $users = $this->userModel->all(); // Ganti dengan fungsi yang sesuai
+
+        $params["data"] = (object)[
+            "title" => "Users",
+            "description" => "Kelola Users anda",
+            "data" => $users
+        ];
+        $this->view('admin/user/user', $params);
+    }
+
+
+
+    public function create()
+    {
         $data = $this->model->user->select("id, nama_lengkap,users.nik,email,users.no_hp,role")
-            ->join("masyarakat","users.nik","masyarakat.nik")
+            ->join("masyarakat", "users.nik", "masyarakat.nik")
             ->orderBy("users.created_at", "desc")
             ->get();
-     
+
 
         $params["data"] = (object)[
             "title" => "Manajemen Pengguna",
@@ -38,8 +51,8 @@ class UserController extends Controller
     // Menampilkan form untuk mengedit pengguna
     public function edit($id)
     {
-        $user = $this->model->user->join("masyarakat","users.nik","masyarakat.nik")
-        ->find($id);
+        $user = $this->model->user->join("masyarakat", "users.nik", "masyarakat.nik")
+            ->find($id);
         if (!$user) {
             return show404();
         }
@@ -66,13 +79,13 @@ class UserController extends Controller
     // Memperbarui pengguna yang ada
     public function update($id)
     {
-      
+
         $password = request("password");
 
-        if ($password){
+        if ($password) {
             $this->model->user->where("id", "=", $id)->update([
-            "password" => password_hash($password,PASSWORD_BCRYPT),
-            
+                "password" => password_hash($password, PASSWORD_BCRYPT),
+
             ]);
         }
 
@@ -88,7 +101,7 @@ class UserController extends Controller
             return redirect()->with("error", "Pengguna tidak ditemukan")->back();
         }
 
-        $this->model->user->where("id","=",$id)->delete();
+        $this->model->user->where("id", "=", $id)->delete();
 
         return redirect()->with("success", "Pengguna berhasil dihapus")->to("/admin/users");
     }
