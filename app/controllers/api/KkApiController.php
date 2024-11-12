@@ -22,10 +22,10 @@ class KkApiController
     }
     public function getdatakk($nokk){
         $data = $this->model->masyarakatModel->select()->where("no_kk", "=", $nokk)->get();
-        return response(["datakk" => $data], 200);
+        return response(["data"=>["msg"=>"ad","datakk" => $data]], 200);
     }
     public function getdatasurat(){
         $data = $this->model->suratModel->select()->get();
-        return response(["datasurat" => $data], 200);
+        return response(["data"=>["msg"=>"ad","datasurat" => $data]], 200);
     }
 }
