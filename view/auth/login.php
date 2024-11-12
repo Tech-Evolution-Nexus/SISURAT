@@ -60,7 +60,12 @@
                         </div>
                         <div class="form-group mb-4">
                             <label for="password" class="mb-2">Kata sandi</label>
-                            <input type="password" class="form-control" placeholder="Masukkan kata sandi" name="password" id="password">
+
+                            <!-- code password  -->
+                            <div class="position-relative">
+                                <input type="password" class="form-control" placeholder="Masukkan kata sandi" name="password" id="password">
+                                <button type="button" class="bg-transparent password-toggle border-0 position-absolute " style="top:50%;right:10px;transform:translateY(-50%)"><i class="fa fa-eye"></i></button>
+                            </div>
                             <?php if (session()->has("password")): ?>
                                 <small class="text-danger "><?= session()->error("password") ?></small>
                             <?php endif; ?>
