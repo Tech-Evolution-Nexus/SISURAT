@@ -20,6 +20,7 @@ class AuthController
     }
     public  function index()
     {
+       
         return view("auth/login");
     }
 
