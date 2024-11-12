@@ -1,13 +1,15 @@
 <?php
 
-namespace App\services;
+namespace app\services;
+
 
 class Request
 {
     public function get($key)
     {
         // Get the value and sanitize it
-        return $this->sanitize($this->format()[$key] ?? null);
+        $result = $this->sanitize($this->format()[$key] ?? null);
+        return $result === "" ? null : $result;
     }
 
     public function getAll()
@@ -22,9 +24,11 @@ class Request
     }
 
     private function format()
-    {
-        return [...$_GET, ...$_POST, ...$_FILES];
-    }
+{
+    // Menggabungkan array $_GET, $_POST, dan $_FILES tanpa menggunakan operator `...`
+    return array_merge($_GET, $_POST, $_FILES);
+}
+
 
     private function sanitize($data)
     {
@@ -33,5 +37,20 @@ class Request
         }
 
         return htmlspecialchars(strip_tags($data), ENT_QUOTES, 'UTF-8'); // Basic sanitization
+    }
+
+    public function validate($rule, $message = [])
+    {
+        $validate = new Validator(request()->getAll(), $rule, $message);
+        $validate->validate();
+
+        if ($errors = $validate->errors()) {
+            foreach ($errors as $key => $error) {
+                session()->error($key, $error[0]);
+            }
+            return redirect()->withInput(request()->getAll())->back();
+        }
+
+        return $errors;
     }
 }

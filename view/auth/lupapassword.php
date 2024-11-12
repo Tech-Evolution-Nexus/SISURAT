@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <div class="row" style="height: 100vh;">
+    <div class="row mx-0" style="height: 100vh;">
         <!-- Sisi kiri (ilustrasi) -->
         <div class="col-md-7 justify-content-center d-flex flex-column align-items-center" style="background-color:#052158;">
             <img class="img-fluid" src="<?= assets("assets/logosurat.png") ?>" width="450">
@@ -30,20 +30,33 @@
                 <img src="<?= assets("assets/logo-badean.png") ?>" alt="Logo Badean" width="300" height="100">
                 <h1>Lupa Password</h1>
                 <p>Atur kembali password anda!</p>
+                <?php if (session()->has("success")): ?>
+                    <div class="alert alert-success d-flex justify-content-between" role="alert">
+                        <?= session()->flash("success") ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+                <?php if (session()->has("error")): ?>
+                    <div class="alert alert-danger d-flex justify-content-between" role="alert">
+                        <?= session()->flash("error") ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
                 <form action="sendemail" method="post">
                     <div class="form-group mb-2">
                         <label for="email" class="mb-2">Email</label>
                         <input type="text" class="form-control" placeholder="Masukkan Email" name="email" id="email">
-                        <?php if (isset($_SESSION["emailErr"])): ?>
-                            <small class="text-danger"><?= $_SESSION["emailErr"] ?></small>
-                        <?php unset($_SESSION["emailErr"]); ?>
+                        <?php if (session()->has("email")): ?>
+                            <small class="text-danger "><?= session()->error("email") ?></small>
                         <?php endif; ?>
                     </div>
-                    <button class="btn btn-primary w-100" type="submit">Kirim</button>
+                    <button class="btn btn-primary w-100 fw-normal" type="submit">Kirim</button>
                 </form>
             </div>
         </div>
     </div>
+    <?php includeFile("layout/script") ?>
+
 </body>
 
 </html>

@@ -20,8 +20,8 @@ class Database
 
         // var_dump($_ENV);
         // $servername = "localhost";
-        // $username = "admin";
-        // $password = "101010";
+        // $username = "root";
+        // $password = "";
         // $dbName = "badean_post";
         try {
             // Mencoba membuat koneksi ke database menggunakan PDO

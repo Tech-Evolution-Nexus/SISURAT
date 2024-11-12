@@ -26,8 +26,8 @@ class Router
         }
 
         // Simpan aksi rute
-        self::$routes[$method][self::$prefix . rtrim($url, "/")] = $action;
-        return new self;
+        $prefixedUrl = self::$prefix . rtrim($url, "/");
+        self::$routes[$method][$prefixedUrl] = $action;
     }
     public static function run()
     {
@@ -45,39 +45,41 @@ class Router
 
         if (isset(self::$routes[$method])) {
             foreach (self::$routes[$method] as $routeUrl => $target) {
-                $pattern = preg_replace('/\/:(\w+)/', '/(?P<$1>[^/]+)', $routeUrl);
-
+                $pattern = preg_replace('/\{[^\/]+\}/', '([^/]+)', $routeUrl);
                 if (preg_match('#^' . $pattern . '$#', $url, $matches)) {
                     $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+                    array_shift($matches);
 
                     // Extract query parameters
                     $queryString = $_SERVER['QUERY_STRING'] ?? ''; // Check if QUERY_STRING is set
                     parse_str($queryString, $queryParams); // Use empty string if not set
                     $params = array_merge($params, $queryParams); // Combine route parameters and query parameters
-
                     if (is_array($target)) {
                         $class = $target[0];
                         $method = $target[1];
                         if (class_exists($class) && method_exists($class, $method)) {
                             $instance = new $class();
-                            call_user_func_array([$instance, $method], $params);
+                            call_user_func_array([$instance, $method], $matches);
                             return;
                         } else {
                             show400();
                             throw new Exception("Class or method not found");
+                            return;
                         }
                     } else if (is_callable($target)) {
-                        call_user_func_array($target, $params);
+                        call_user_func_array($target, $matches);
                         return;
                     } else {
                         show400();
                         throw new Exception("Target is not callable");
+                        return;
                     }
                 }
             }
         }
         http_response_code(404);
         show404();
+
         return;
     }
 }

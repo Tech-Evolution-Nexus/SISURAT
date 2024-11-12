@@ -15,13 +15,32 @@
     <main class="flex-grow-1 ">
         <?php includeFile("layout/navbar") ?>
         <div class="p-4">
+            <?php if (session()->has("success")): ?>
+                <div class="alert alert-success d-flex justify-content-between" role="alert">
+                    <?= session()->flash("success") ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+                </div>
+            <?php endif; ?>
+
+            <?php if (session()->has("error")): ?>
+                <div class="alert alert-danger d-flex justify-content-between" role="alert">
+                    <?= session()->flash("error") ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
             <div class="d-flex align-items-center">
                 <div class="">
                     <h2 class="mb-0 text-white"><?= $data->title ?></h2>
                     <p class="text-white text-small"><?= $data->description ?> </p>
                 </div>
-                <div class="ms-auto">
-                    <a href="/admin/kartu-keluarga/create" class="btn btn-warning">
+                <div class="ms-auto d-flex gap-2">
+
+                    <button data-bs-toggle="modal" data-bs-target="#modal" class="btn btn-success text-white">
+                        Import
+                    </button>
+
+                    <a href="<?= url("/admin/kartu-keluarga/create") ?>" class="btn btn-warning">
                         Tambah KK
                     </a>
                 </div>
@@ -54,13 +73,19 @@
                                     <td><?= $kk->rt ?></td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Action buttons">
-                                            <a href="/admin/kartu-keluarga/<?= $kk->id ?>/edit" title="Edit" class="btn  text-white btn-warning btn-sm">
+                                            <a href="<?= url("/admin/kartu-keluarga/$kk->no_kk/edit") ?>" title="Edit" class="btn  text-white btn-warning btn-sm">
                                                 <i class="fa fa-pencil"></i>
                                             </a>
-                                            <a href="" title="Hapus" class="btn  text-white btn-danger btn-sm">
+
+                                            <button data-url="<?= url("/admin/kartu-keluarga/$kk->no_kk/delete") ?>" title="Hapus" class="btn deleteBtn  text-white btn-danger btn-sm">
                                                 <i class="fa fa-trash"></i>
-                                            </a>
-                                            <a href="" title="Detail" class="btn  text-white btn-success btn-sm">
+                                            </button>
+                                            <!-- <a  href="<?= url("/admin/kartu-keluarga/$kk->no_kk/delete") ?>" title="Hapus" class="btn  text-white btn-danger btn-sm">
+                                                <i class="fa fa-trash"></i>
+                                            </a> -->
+
+
+                                            <a href="<?= url("/admin/kartu-keluarga/$kk->no_kk/anggota-keluarga") ?>" title="Detail" class="btn  text-white btn-success btn-sm">
                                                 <i class="fa fa-users"></i>
                                             </a>
                                         </div>
@@ -72,93 +97,45 @@
                     </table>
                 </div>
             </div>
-
         </div>
     </main>
+
+
+
+    <!-- FORM MODAL -->
+    <div id="modal" class="modal hide fade " role="dialog" aria-labelledby="modal" aria-hidden="true">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="titleForm">Import Kartu Keluarga</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="<?= url("/admin/kartu-keluarga/import") ?>" enctype="multipart/form-data" method="post">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <button class="btn btn-success text-white mb-2">Download Template Import</button>
+                        </div>
+                        <div class="form-group">
+                            <label for="">File excel</label>
+                            <input accept=".xls,.xlsx" type="file" class="form-control" name="file" id="file">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary fw-normal">Import</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+            </div>
+            </form>
+        </div>
+
+    </div>
+    </div>
 
 
     <!--end yang perlu diubah -->
 
     <?php includeFile("layout/script") ?>
-    <script>
-        // handle change data
-        $('.select2-modal').on('select2:select', function(e) {
-            var data = e.params.data;
-            $(".personal-information,.modal-footer").css({
-                height: "auto",
-                opacity: 1
-            })
 
-
-            $.ajax({
-                url: "/admin/master-rw/ajax-masyarakat/" + data.id,
-                success: (data) => {
-                    const formData = data;
-
-                    setFormData(formData)
-
-                }
-            })
-        });
-
-
-        // handle add data
-        $("#add-btn").on("click", function() {
-            setupForm("Tambah KK", "/admin/kartu-keluarga")
-            $(".search-section").show();
-            $(".required-password").show();
-            $("[name=password]").attr('required');
-            $(".modal form").trigger("reset");
-
-        })
-
-        // handle edit data
-        $(".editBtn").on("click", function() {
-            const id = $(this).attr("data-id")
-
-            setupForm("Ubah RKKW", "/admin/kartu-keluarga/" + id)
-            $(".search-section").hide();
-            $(".required-password").hide();
-            $("[name=password]").removeAttr('required');
-
-
-            $(".modal").modal("show")
-            $.ajax({
-                url: "/admin/master-rw/ajax-rw/" + id,
-                success: (data) => {
-                    const formData = data;
-                    console.log(formData);
-
-                    setFormData(formData)
-                }
-            })
-        })
-
-
-        const setupForm = (title, action) => {
-            $("#titleForm").text(title)
-            $(".modal form").attr("action", action)
-        }
-
-        const setFormData = ({
-            nik,
-            nama_lengkap,
-            alamat,
-            rt,
-            rw,
-            no_hp,
-            id
-        }) => {
-
-            $("[name=id_masyarakat]").val(id)
-            $("[name=nik]").val(nik)
-            $("[name=nama_lengkap]").val(nama_lengkap)
-            $("[name=alamat]").val(alamat)
-            $("[name=rt]").val(rt)
-            $("[name=rw]").val(rw)
-            $("[name=no_hp]").val(no_hp)
-        }
-    </script>
 </body>
 
 </html>

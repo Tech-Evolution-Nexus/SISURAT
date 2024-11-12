@@ -1,6 +1,8 @@
 <?php
 
-use App\services\Request;
+use app\models\UserModel;
+use app\services\Redirector;
+use app\services\Request;
 use app\services\Session;
 
 if (!function_exists("assets")) {
@@ -16,12 +18,7 @@ if (!function_exists("session")) {
         return new Session();
     }
 }
-if (!function_exists("old")) {
-    function old($key, $default)
-    {
-        return session()->flash($key) ?? $default;
-    }
-}
+
 if (!function_exists("baseUrl")) {
     function baseUrl()
     {
@@ -62,18 +59,21 @@ if (!function_exists("request")) {
     {
         $request = new Request();
         if (!$key) return $request;
-        return $request->get($key);
+        return $request->get($key) ?? null;
     }
 }
 if (!function_exists("redirect")) {
-    function redirect($url)
+    function redirect($url = null)
     {
-        header('Location: ' . $_ENV['APP_URL'] . $url);
+        $redirect = new Redirector();
+        if (is_null($url)) return $redirect;
+        $redirect->to($url);
         exit;
     }
 }
+
 if (!function_exists("old")) {
-    function old($key, $default)
+    function old($key, $default = "")
     {
         $session = new Session();
         return $session->flash($key) ?? $default;
@@ -84,6 +84,12 @@ if (!function_exists("session")) {
     function session()
     {
         return  new Session();
+    }
+}
+if (!function_exists("auth")) {
+    function auth()
+    {
+        return  new UserModel();
     }
 }
 
@@ -99,12 +105,85 @@ if (!function_exists("response")) {
     }
 }
 if (!function_exists("dd")) {
-    function dd($data,)
+    function dd(...$data)
     {
-        echo '<pre>';
-        var_dump($data);
-        echo '</pre>';
+        foreach ($data as $d) {
+            echo '<pre>';
+            var_dump($d);
+            echo '</pre>';
+            echo '<br/>';
+        }
         die();
+    }
+}
+if (!function_exists("url")) {
+    function url($url)
+    {
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        $host = $_SERVER['HTTP_HOST'];
+        $path = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
+        $path = str_replace('/public', '', $path);
+        return $protocol . $host . $path . '/' . ltrim($url, '/');
+    }
+}
+
+if (!function_exists("formatStatusPengajuan")) {
+    function formatStatusPengajuan($status)
+    {
+        switch ($status) {
+            case 'di_terima_rw':
+                return "Disetujui RW";
+                break;
+            case 'di_terima_rt':
+                return "Disetujui RT";
+                break;
+            case 'di_tolak_rw':
+                return "Ditolak RW";
+                break;
+            case 'di_tolak_rt':
+                return "Ditolak RT";
+                break;
+            case 'selesai':
+                return "Selesai";
+                break;
+
+            default:
+                return "Selesai";
+                break;
+        }
+    }
+}
+
+if (!function_exists("formatDate")) {
+    function formatDate($date)
+    {
+        // Cek apakah tanggal valid dan tidak kosong
+        if (!empty($date) && strtotime($date) !== false) {
+            // Ubah nama bulan ke bahasa Indonesia
+            $bulanIndonesia = [
+                'January' => 'Januari',
+                'February' => 'Februari',
+                'March' => 'Maret',
+                'April' => 'April',
+                'May' => 'Mei',
+                'June' => 'Juni',
+                'July' => 'Juli',
+                'August' => 'Agustus',
+                'September' => 'September',
+                'October' => 'Oktober',
+                'November' => 'November',
+                'December' => 'Desember'
+            ];
+
+            // Format tanggal ke bahasa Inggris terlebih dahulu
+            $formattedDate = date('d F Y', strtotime($date));
+
+            // Ganti bulan Inggris dengan bulan Indonesia
+            return strtr($formattedDate, $bulanIndonesia);
+        }
+
+        // Kembalikan NULL jika tanggal tidak valid atau kosong
+        return null;
     }
 }
 

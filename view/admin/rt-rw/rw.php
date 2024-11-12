@@ -15,6 +15,20 @@
     <main class="flex-grow-1 ">
         <?php includeFile("layout/navbar") ?>
         <div class="p-4">
+            <?php if (session()->has("success")): ?>
+                <div class="alert alert-success d-flex justify-content-between" role="alert">
+                    <?= session()->flash("success") ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+                </div>
+            <?php endif; ?>
+
+            <?php if (session()->has("error")): ?>
+                <div class="alert alert-danger d-flex justify-content-between" role="alert">
+                    <?= session()->flash("error") ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
             <div class="d-flex align-items-center">
                 <div class="">
                     <h2 class="mb-0 text-white"><?= $data->title ?></h2>
@@ -46,7 +60,7 @@
                                             <select name="search" class="form-control select2-modal" data-placeholder="Masukkan NIK untuk mencari" id="">
                                                 <option value=""></option>
                                                 <?php foreach ($data->masyarakat as $masyarakat): ?>
-                                                    <option value="<?= $masyarakat->id ?>"><?= $masyarakat->nama_lengkap ?> | <?= $masyarakat->nik ?></option>
+                                                    <option value="<?= $masyarakat->nik ?>"><?= $masyarakat->nama_lengkap ?> | <?= $masyarakat->nik ?></option>
                                                 <?php endforeach; ?>
                                             </select>
 
@@ -87,7 +101,21 @@
 
                                             </div>
                                         </div>
-                                        <div class="col-12">
+                                        <h6 class="mb-2  fw-bold mt-4">Masa Jabatan</h6>
+
+                                        <div class="col-md-6 col-12 ">
+                                            <div class="form-group mb-2 ms-3">
+                                                <label for="masa_jabatan_awal">Masa Jabatan Awal</label>
+                                                <input type="date" class="  form-control" name="masa_jabatan_awal" id="masa_jabatan_awal" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            <div class="form-group mb-2">
+                                                <label for="masa_jabatan_akhir">Masa Jabatan Akhir</label>
+                                                <input type="date" class="  form-control" name="masa_jabatan_akhir" id="masa_jabatan_akhir" required>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="col-12">
                                             <div class="form-group mb-2 ms-3">
                                                 <label for="no_hp">Nomor Telepon<span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control phone-format" placeholder="Contoh: 08123456789" name="no_hp" id="no_hp" required>
@@ -101,14 +129,14 @@
                                                     <i class="fa fa-eye"></i>
                                                 </span>
                                             </div>
-                                        </div>
+                                        </div> -->
                                     </div>
 
                                 </div>
                             </div>
 
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                <button type="submit" class="btn btn-primary fw-normal">Simpan</button>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                             </div>
                         </form>
@@ -136,13 +164,13 @@
                                     <td><?= $kk->rw ?></td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Action buttons">
-                                            <button data-id="<?= $kk->id ?>" title="Edit" class="btn editBtn text-white btn-warning btn-sm">
+                                            <button data-nik="<?= $kk->nik ?>" title="Edit" class="btn editBtn text-white btn-warning btn-sm">
                                                 <i class="fa fa-pencil"></i>
                                             </button>
-                                            <a href="" title="Hapus" class="btn  text-white btn-danger btn-sm">
-                                                <i class="fa fa-trash"></i>
-                                            </a>
-                                            <a href="" title="Detail" class="btn  text-white btn-success btn-sm">
+
+
+
+                                            <a href="/admin/master-rw/<?= $kk->rw ?>/master-rt" title="Detail" class="btn  text-white btn-success btn-sm">
                                                 <i class="fa fa-users"></i>
                                             </a>
                                         </div>
@@ -154,9 +182,11 @@
                     </table>
                 </div>
             </div>
-
         </div>
     </main>
+
+
+
 
 
     <!--end yang perlu diubah -->
@@ -175,9 +205,10 @@
             $.ajax({
                 url: "/admin/master-rw/ajax-masyarakat/" + data.id,
                 success: (data) => {
-                    const formData = data;
-                    console.log(formData)
-                    setFormData(formData)
+                    setFormData(data)
+                },
+                error: (error) => {
+                    console.log(error);
 
                 }
             })
@@ -204,9 +235,9 @@
 
         // handle edit data
         $(".editBtn").on("click", function() {
-            const id = $(this).attr("data-id")
+            const nik = $(this).attr("data-nik")
 
-            setupForm("Ubah RW", "/admin/master-rw/" + id)
+            setupForm("Ubah RW", "/admin/master-rw/" + nik)
             $(".search-section").hide();
             $(".required-password").hide();
             $("[name=password]").removeAttr('required');
@@ -217,7 +248,7 @@
 
             $(".modal").modal("show")
             $.ajax({
-                url: "/admin/master-rw/ajax-rw/" + id,
+                url: "/admin/master-rw/ajax-rw/" + nik,
                 success: (data) => {
                     const formData = data;
                     console.log(formData);
@@ -243,7 +274,7 @@
             id
         }) => {
 
-            $("[name=id_masyarakat]").val(id)
+
             $("[name=nik]").val(nik)
             $("[name=nama_lengkap]").val(nama_lengkap)
             $("[name=alamat]").val(alamat)
