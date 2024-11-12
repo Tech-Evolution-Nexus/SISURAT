@@ -13,6 +13,9 @@ class RT_RWController extends Controller
     private $model;
     public function __construct()
     {
+        if (!auth()->check()) {
+            redirect("/login");
+        }
         $this->model = (object)[];
         $this->model->masyarakat  = new MasyarakatModel();
         $this->model->users  = new UserModel();

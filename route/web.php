@@ -1,16 +1,22 @@
 <?php
 
+use app\controllers\AboutController;
 use app\controllers\AnggotaKeluargaController;
 use app\controllers\AuthController;
 use app\controllers\BeritaController;
 use app\controllers\DashController;
 use app\controllers\KartuKeluargaController;
+use app\controllers\LandingController;
 use app\controllers\RT_RWController;
 use app\controllers\SuratController;
 use app\controllers\SuratMasukController;
 use app\controllers\SuratMasukSelesaiController;
 use app\services\Router;
+use app\controllers\ProfileController;
 use app\controllers\UserController;
+
+// landing
+Router::addRoute("GET", "/", [LandingController::class, "index"]);
 
 //surat
 Router::addRoute("GET", "/admin", [DashController::class, "index"]);
@@ -34,6 +40,7 @@ Router::addRoute("POST", "/admin/users/{id}", [UserController::class, "delete"])
 
 //Kartu Keluarga
 Router::addRoute("GET", "/admin/kartu-keluarga", [KartuKeluargaController::class, "index"]);
+Router::addRoute("POST", "/admin/kartu-keluarga/import", [KartuKeluargaController::class, "import"]);
 Router::addRoute("GET", "/admin/kartu-keluarga/create", [KartuKeluargaController::class, "create"]);
 Router::addRoute("POST", "/admin/kartu-keluarga", [KartuKeluargaController::class, "store"]);
 Router::addRoute("GET", "/admin/kartu-keluarga/{id}/edit", [KartuKeluargaController::class, "edit"]);
@@ -88,12 +95,16 @@ Router::addRoute("POST", "/sendemail", [AuthController::class, 'sendemail']);
 Router::addRoute("GET", "/ganti-password", [AuthController::class, "gantiPassword"]);
 Router::addRoute("POST", "/ganti-password", [AuthController::class, "gantiPasswordStore"]);
 
+//profile
+Router::addRoute("GET", "/admin/profile", [ProfileController::class, "profile"]);
+Router::addRoute("POST", "/admin/profile", [ProfileController::class, "profile"]);
+
+//tentang
+Router::addRoute("GET", "/admin/tentangAplikasi", [AboutController::class, "about"]);
+Router::addRoute("POST", "/admin/tentangAplikasi", [AboutController::class, "about"]);
+
 Router::addRoute("GET", "/admin/berita", [BeritaController::class, "index"]);
 Router::addRoute("POST", "/admin/berita", [BeritaController::class, "add"]);
 Router::addRoute("GET", "/admin/getberita/{id}", [BeritaController::class, "getedit"]);
-Router::addRoute("POST", "/admin/editberita", [BeritaController::class, "add"]);
+Router::addRoute("POST", "/admin/editberita/{id}", [BeritaController::class, "update"]);
 Router::addRoute("POST", "/admin/deleteberita/{id}", [BeritaController::class, "delete"]);
-
-
-
-

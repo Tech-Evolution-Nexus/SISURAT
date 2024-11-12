@@ -6,27 +6,31 @@ class FileUploader
     private $file;
     private $targetFile;
 
-    public function __construct($file, $targetDir = "", $allowedFileTypes = ["jpg", "png", "jpeg", "gif"])
+
+    public function __construct($namefile,$file, $targetDir = "", $allowedFileTypes = ["jpg", "png", "jpeg", "gif"])
     {
+        // dd($file);
         $this->file = $file;
         $this->targetDir = $targetDir;
         $this->allowedFileTypes = $allowedFileTypes;
-        $this->targetFile = $this->targetDir . basename($this->file["name"]);
+        // dd($this->targetDir . basename($namefile . '.' . $fileType));
+        $this->targetFile = $this->targetDir . basename($namefile);
     }
 
     // Metode untuk mengunggah file
     public function upload()
     {
-        // if (!$this->isAllowedFileType()) {
-        //     return "Maaf, hanya file " . implode(", ", $this->allowedFileTypes) . " yang diperbolehkan.";
-        // }
+        
+        if (!$this->isAllowedFileType()) {
+            return "Maaf, hanya file " . implode(", ", $this->allowedFileTypes) . " yang diperbolehkan.";
+        }
 
         // if ($this->fileExists()) {
         //     return "Maaf, file sudah ada.";
         // }
 
         if ($this->moveFile()) {
-            return "File " . htmlspecialchars(basename($this->file["name"])) . " telah berhasil diunggah.";
+            return true;
         }
 
         return "Maaf, terjadi kesalahan saat mengunggah file.";

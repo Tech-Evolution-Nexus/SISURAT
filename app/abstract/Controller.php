@@ -2,7 +2,7 @@
 
 namespace app\abstract;
 
-abstract class Controller
+class Controller
 {
     protected function view($path, $data = [])
     {

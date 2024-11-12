@@ -17,6 +17,9 @@ class SuratController extends Controller
 
     function __construct()
     {
+        if (!auth()->check()) {
+            redirect("/login");
+        }
         $this->model =  (object)[];
         $this->model->jsurat  = new JenisSuratModel();
         $this->model->lampiran  = new LampiranModel();
@@ -43,6 +46,8 @@ class SuratController extends Controller
         $namasur = $_POST['nama_surat'] ?? null;
         $ficon = $_FILES['file_icon'] ?? null;
         $opsi = $_POST['fields'] ?? [];
+        $fileType = strtolower(pathinfo($ficon['name'], PATHINFO_EXTENSION));
+
         if (empty($namasur)) {
             return redirect()->with("error", "Nama surat tidak boleh kosong.")->back();
         }
@@ -63,8 +68,13 @@ class SuratController extends Controller
         if ($d) {
             return redirect()->with("error", "Data Sudah Terdaftar.")->back();
         }
+        $opsiUnik = array_unique($opsi);
+
+        if (count($opsi) !== count($opsiUnik)) {
+            return redirect()->with("error", "Terdapat data duplikat dalam pilihan Anda.")->back();
+        }
         $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-        $uploader = new FileUploader($ficon, "../upload/", $allowedFileTypes);
+        $uploader = new FileUploader($namasur . "." . $fileType, $ficon, "../upload/surat", $allowedFileTypes);
         $uploadSs = $uploader->isAllowedFileType();
         if ($uploadSs !== true) {
             return redirect()->with("error", "$uploadSs")->back();
@@ -72,33 +82,14 @@ class SuratController extends Controller
         $idsur = $this->model->jsurat->create(
             [
                 "nama_surat" => $namasur,
-                "image" => $ficon['name']
+                "image" => $namasur . "." . $fileType
             ]
         );
-
         foreach ($opsi as $data) {
-
-            // Cek apakah kombinasi id_surat dan id_lampiran sudah ada
-            $exists = $this->model->lampiransurat->exists([
+            $this->model->lampiransurat->create([
                 'id_surat' => $idsur,
                 'id_lampiran' => $data
             ]);
-
-            if ($exists) {
-
-                return redirect()->with("error", "Kombinasi id_surat $idsur dan id_lampiran $data sudah tersimpan di database.")->back();
-            } else {
-
-                $d = true;
-            }
-        }
-        if ($d) {
-            foreach ($opsi as $data) {
-                $this->model->lampiransurat->create([
-                    'id_surat' => $idsur,
-                    'id_lampiran' => $data
-                ]);
-            }
         }
 
         $uploadStatus = $uploader->upload();
@@ -118,13 +109,12 @@ class SuratController extends Controller
             "datalampiran" => $data,
         ];
         return response($params, 200);
-        // return view("admin/surat/surat", $params);
     }
     public function deletedata($id)
     {
         $this->model->lampiransurat->where("id_surat", "=", $id)->delete();
         $this->model->jsurat->where("id", "=", $id)->delete();
-      
+
         return redirect("/admin/surat");
     }
     public function edit($id)
@@ -133,6 +123,8 @@ class SuratController extends Controller
         $ficon = $_FILES['file_icon'] ?? null;
         $opsi = $_POST['fields'] ?? [];
 
+        $fileType =
+            strtolower(pathinfo($ficon['name'], PATHINFO_EXTENSION));
         // Validasi nama surat
         if (empty($namasur)) {
             return redirect()->with("error", "Nama surat tidak boleh kosong.")->back();
@@ -143,12 +135,19 @@ class SuratController extends Controller
             return redirect()->with("error", "Tidak ada data yang diterima.")->back();
         }
 
+
         // Ambil data surat lama dari database
         $existingData = $this->model->jsurat->find($id);
-     
+
         if (!$existingData) {
             return redirect()->with("error", "Data tidak ditemukan.")->back();
         }
+        $opsiUnik = array_unique($opsi);
+
+        if (count($opsi) !== count($opsiUnik)) {
+            return redirect()->with("error", "Terdapat data duplikat dalam pilihan Anda.")->back();
+        }
+
         $fileName = $existingData->image;
         if (!empty($ficon['name'])) {
             $maxFileSize = 2 * 1024 * 1024;
@@ -157,15 +156,17 @@ class SuratController extends Controller
             }
 
             $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-            $uploader = new FileUploader($ficon, "../upload/", $allowedFileTypes);
+            $uploader = new FileUploader($namasur . "." . $fileType, $ficon, "../upload/surat/", $allowedFileTypes);
 
             // Hapus file lama jika ada dan nama file baru berhasil diunggah
             $uploadStatus = $uploader->upload();
             if ($uploadStatus === true) {
-                if ($fileName && file_exists("../upload/" . $fileName)) {
-                    unlink("../upload/" . $fileName); // Hapus file lama
+                if ($fileName && file_exists("../upload/surat/" . $fileName)) {
+                    unlink("../upload/surat/" . $fileName); // Hapus file lama
                 }
-                $fileName = $ficon['name']; // Set nama file baru
+                $fileName = $ficon['name'];
+                return redirect()->with("success", "Data berhasil Diubah.")->back();
+                // Set nama file baru
             } else {
                 return redirect()->with("error", "$uploadStatus")->back();
             }
@@ -176,24 +177,11 @@ class SuratController extends Controller
             "nama_surat" => $namasur,
             "image" => $fileName // Set ke nama file lama atau baru tergantung ada perubahan atau tidak
         ];
-       $this->model->jsurat->where("id","=",$id)->update($updateData);
+        $this->model->jsurat->where("id", "=", $id)->update($updateData);
 
-        // Update lampiran surat
+
         foreach ($opsi as $data) {
-            $exists = $this->model->lampiransurat->exists([
-                'id_surat' => $id,
-                'id_lampiran' => $data
-            ]);
-
-            // if (!$exists) {
-                // $this->model->lampiransurat->where("id_surat","=",$id)->update( [
-                //     'id_surat' => $id,
-                //     'id_lampiran' => $data
-                // ]);
-            // } else {
-            //     return redirect()->with("error", "Kombinasi id_surat $id dan id_lampiran $data sudah tersimpan di database.")->back();
-            // }
-            $this->model->lampiransurat->where("id_surat","=",$id)->update( [
+            $this->model->lampiransurat->where("id_surat", "=", $id)->update([
                 'id_surat' => $id,
                 'id_lampiran' => $data
             ]);
