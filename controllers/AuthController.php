@@ -1,6 +1,8 @@
 <?php
 
-namespace controllers;
+namespace apps\controllers;
+
+use app\services\Database as ServicesDatabase;
 use services\Database;
 use PDO;
 class AuthController
@@ -31,7 +33,7 @@ class AuthController
         }
         //Cek inputan ke database
         $user = "SELECT * FROM users where email = '$email'";
-      $conn = (new Database())->getConnection(); 
+      $conn = (new ServicesDatabase())->getConnection(); 
       $result= $conn-> prepare ($user);
       $result->execute ();
       //var_dump ($result->fetch());

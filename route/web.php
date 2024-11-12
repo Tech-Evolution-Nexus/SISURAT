@@ -1,9 +1,11 @@
 <?php
 
+use app\controllers\AboutController;
 use app\controllers\AuthController;
 use app\controllers\KartuKeluargaController;
 use app\controllers\RT_RWController;
 use app\services\Router;
+use app\controllers\ProfileController;
 
 //Kartu Keluarga
 Router::addRoute("GET", "/admin/kartu-keluarga", [KartuKeluargaController::class, "index"]);
@@ -37,5 +39,13 @@ Router::addRoute("POST", "/sendemail", [AuthController::class, 'sendemail']);
 //ganti password
 Router::addRoute("GET", "/ganti-password", [AuthController::class, "gantiPassword"]);
 Router::addRoute("POST", "/ganti-password", [AuthController::class, "gantiPasswordStore"]);
+
+//profile
+Router::addRoute("GET", "/admin/profile", [ProfileController::class, "profile"]);
+Router::addRoute("POST", "/admin/profile", [ProfileController::class, "profile"]);
+
+//tentang
+Router::addRoute("GET", "/admin/tentangAplikasi", [AboutController::class, "about"]);
+Router::addRoute("POST", "/admin/tentangAplikasi", [AboutController::class, "about"]);
 
 Router::run();
