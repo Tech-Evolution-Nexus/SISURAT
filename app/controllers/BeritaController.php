@@ -40,7 +40,7 @@ class BeritaController
         $des = $_POST['deskripsi'] ?? null;
         $ficon = $_FILES['file_berita'] ?? null;
 
-
+        $fileType = strtolower(pathinfo($ficon['name'], PATHINFO_EXTENSION));
         $maxFileSize = 2 * 1024 * 1024;
         if ($ficon['size'] > $maxFileSize) {
             return redirect()->with("error", "Ukuran file terlalu besar. Maksimal 2MB.")->back();
@@ -50,7 +50,7 @@ class BeritaController
             return redirect()->with("error", "Data Sudah Terdaftar.")->back();
         }
         $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-        $uploader = new FileUploader($ficon, "../upload/", $allowedFileTypes);
+        $uploader = new FileUploader($jud . "." . $fileType,$ficon, "../upload/berita/", $allowedFileTypes);
         $uploadSs = $uploader->isAllowedFileType();
         if ($uploadSs !== true) {
             return redirect()->with("error", "$uploadSs")->back();
@@ -61,7 +61,7 @@ class BeritaController
                 "judul" => $jud,
                 "sub_judul" => $sub,
                 "deskripsi" => $des,
-                "gambar" => $ficon['name']
+                "gambar" => $jud.".".$fileType,
             ]
         );
 
@@ -83,6 +83,7 @@ class BeritaController
         $sub = $_POST['subjudul'] ?? null;
         $des = $_POST['deskripsi'] ?? null;
         $ficon = $_FILES['file_berita'] ?? null;
+        $fileType = strtolower(pathinfo($ficon['name'], PATHINFO_EXTENSION));
     
         // Check if the entry exists
         $d = $this->model->beritamodel->select()->where("id", "=", $id)->first();
@@ -99,7 +100,7 @@ class BeritaController
     
             // File type validation
             $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-            $uploader = new FileUploader($ficon, "../upload/", $allowedFileTypes);
+            $uploader = new FileUploader($jud . "." . $fileType,$ficon, "../upload/berita/", $allowedFileTypes);
             $uploadSs = $uploader->isAllowedFileType();
             if ($uploadSs !== true) {
                 return redirect()->with("error", "$uploadSs")->back();
@@ -115,7 +116,7 @@ class BeritaController
                 "judul" => $jud,
                 "sub_judul" => $sub,
                 "deskripsi" => $des,
-                "gambar" => $ficon['name']
+                "gambar" => $jud . "." . $fileType
             ];
         } else {
             // Update without changing the file
