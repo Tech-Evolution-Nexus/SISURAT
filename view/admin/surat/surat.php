@@ -65,9 +65,9 @@
                                             <button data-id="<?= $kk->id ?>" title="Hapus" class="btn btnDelete text-white btn-danger btn-sm">
                                                 <i class="fa fa-trash"></i>
                                             </button>
-                                            <a href="" title="Detail" class="btn  text-white btn-success btn-sm">
+                                            <button data-id="<?= $kk->id ?>" title="Detail" class="btn btnDetail text-white btn-success btn-sm">
                                                 <i class="fa fa-users"></i>
-                                            </a>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -81,15 +81,13 @@
         </div>
         <!-- FORM MODAL -->
         <div id="modal" class="modal hide fade " role="dialog" aria-labelledby="modal" aria-hidden="true">
-            <div class="modal-dialog  modal-lg">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="titleForm">Tambah Jenis Surat</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-
-
                         <form action="" method="POST" enctype="multipart/form-data">
                             <h5>Jenis Surat :</h5>
                             <div class="form-group mt-3 ms-3">
@@ -121,7 +119,7 @@
                             </div>
 
                             <br><br>
-                            <button type="submit" class="btn btn-success">Kirim</button>
+                            <button type="submit" class="btn btn-success" id="btn-simpan">Simpan</button>
                         </form>
                     </div>
 
@@ -138,6 +136,7 @@
             $("[name=nama_surat]").attr('required');
             $('#fselect').remove();
             $('.fselected').show();
+            $('#file_icon').show();
             $(".modal form").trigger("reset");
             $(".personal-information, .modal-footer").css({
                 height: 0,
@@ -149,13 +148,18 @@
         $(".editBtn").on("click", function() {
             const id = $(this).attr("data-id")
 
-            setupForm("Ubah Jenis Surat", `<?= url("/admin/editsurat/") ?>${id}`);
+            setupForm("Ubah Jenis Surat", ` <?= url("/admin/editsurat/") ?>${id}`);
             $(".modal").modal("show")
             $.ajax({
                 url: "/SISURAT/admin/esurat/" + id,
                 success: (data) => {
                     $('#fselect').remove();
                     $('.fselected').remove();
+                    $('#add-field').show()
+                    $('#btn-simpan').show()
+                    $('#file_icon').show();
+
+                    $("[name=nama_surat]").prop('disabled', false);
                     removeLampiranInput()
                     data.datalampiran.forEach((element, index) => {
                         const dynamicFields = document.getElementById("dynamic-fields");
@@ -180,6 +184,42 @@
             })
         })
 
+        $(".btnDetail").on("click", function() {
+            const id = $(this).attr("data-id")
+
+            setupForm("Detail Jenis Surat", "");
+            $(".modal").modal("show")
+            $.ajax({
+                url: "/SISURAT/admin/esurat/" + id,
+                success: (data) => {
+                    $('#fselect').remove()
+                    $('.fselected').remove()
+                    $('#add-field').remove()
+                    $('#btn-simpan').remove()
+                    $('#file_icon').remove();
+
+                    $("[name=nama_surat]").attr('disabled', true);
+                    removeLampiranInput()
+                    data.datalampiran.forEach((element, index) => {
+                        const dynamicFields = document.getElementById("dynamic-fields");
+                        const formGroup = document.createElement("div");
+                        formGroup.className = "form-group";
+                        formGroup.innerHTML = `
+                         <div class="form-group mt-3 ms-3">
+                            <label>Data ${index+1}</label>
+                                <div class="input-group">
+                                    <input class="form-control" name="data-${index}" id="data${index}" value="${element.nama_lampiran}" disabled/>
+                                </div>
+                        </div>
+                        `;
+
+                        dynamicFields.appendChild(formGroup);
+                    });
+                    setFormData(data.datasurat)
+                }
+            })
+        })
+
 
         const removeLampiranInput = () => {
             const dynamicFields = document.getElementById("dynamic-fields");
@@ -187,7 +227,7 @@
 
             const allSelects = document.querySelectorAll('[name="fields[]"]');
             allSelects.forEach(s => {
-                const optionToEnable = s.querySelector(`option[value="${selectedValue}"]`);
+                const optionToEnable = s.querySelector(option[value = "${selectedValue}"]);
                 if (optionToEnable) {
                     optionToEnable.disabled = false;
                 }
