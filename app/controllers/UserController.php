@@ -12,13 +12,16 @@ class UserController extends Controller
 
     public function __construct()
     {
+        if (!auth()->check()) {
+            redirect("/login");
+        }
         $this->model = (object)[];
         $this->model->user = new UserModel();
     }
 
     public function index()
     {
-        $users = $this->userModel->all(); // Ganti dengan fungsi yang sesuai
+        $users = $this->model->user->all(); // Ganti dengan fungsi yang sesuai
 
         $params["data"] = (object)[
             "title" => "Users",

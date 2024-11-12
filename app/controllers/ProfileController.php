@@ -8,6 +8,7 @@ use PDO;
 
 class ProfileController
 {
+
     public  function profile()
     {
         return view("admin/setting/profile");
@@ -35,6 +36,5 @@ class ProfileController
         if ($hasError) {
             return redirect("/login");
         }
-}
-
+    }
 }

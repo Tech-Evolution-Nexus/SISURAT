@@ -16,6 +16,9 @@ class SuratMasukSelesaiController extends Controller
     private $model;
     function __construct()
     {
+        if (!auth()->check()) {
+            redirect("/login");
+        }
         $this->model =  (object)[];
         $this->model->psurat  = new PengajuanSuratModel();
     }
