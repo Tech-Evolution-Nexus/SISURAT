@@ -260,7 +260,7 @@
 
                     <!-- Tombol Aksi -->
                     <div class="mt-4">
-                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        <button type="submit" class="btn btn-primary fw-normal">Simpan</button>
                         <a href="<?= url("/admin/kartu-keluarga/$data->nokk/anggota-keluarga") ?>" class="btn btn-secondary">Kembali</a>
                     </div>
 
