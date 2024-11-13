@@ -6,6 +6,7 @@ use app\controllers\AuthController;
 use app\controllers\BeritaController;
 use app\controllers\DashController;
 use app\controllers\KartuKeluargaController;
+use app\controllers\KomponenController;
 use app\controllers\LandingController;
 use app\controllers\RT_RWController;
 use app\controllers\SuratController;
@@ -108,3 +109,12 @@ Router::addRoute("POST", "/admin/berita", [BeritaController::class, "add"]);
 Router::addRoute("GET", "/admin/getberita/{id}", [BeritaController::class, "getedit"]);
 Router::addRoute("POST", "/admin/editberita/{id}", [BeritaController::class, "update"]);
 Router::addRoute("POST", "/admin/deleteberita/{id}", [BeritaController::class, "delete"]);
+
+Router::addRoute("GET", "/admin/assetssurat/{name}", [KomponenController::class, "getImageSurat"]);
+Router::addRoute("GET", "/admin/assetsberita/{name}", [KomponenController::class, "getImageBerita"]);
+
+
+
+
+
+

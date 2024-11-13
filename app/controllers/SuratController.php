@@ -74,7 +74,7 @@ class SuratController extends Controller
             return redirect()->with("error", "Terdapat data duplikat dalam pilihan Anda.")->back();
         }
         $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-        $uploader = new FileUploader($namasur . "." . $fileType, $ficon, "../upload/surat", $allowedFileTypes);
+        $uploader = new FileUploader($namasur . "." . $fileType, $ficon, "../upload/surat/", $allowedFileTypes);
         $uploadSs = $uploader->isAllowedFileType();
         if ($uploadSs !== true) {
             return redirect()->with("error", "$uploadSs")->back();

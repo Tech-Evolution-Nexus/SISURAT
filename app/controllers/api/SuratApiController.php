@@ -29,17 +29,11 @@ class SuratApiController
         $data = $this->model->jsurat->select()->limit(6)->all();
         return response(["data" => $data,], 200);
     }
+
     public function getdataall()
     {
         $data = $this->model->jsurat->select()->all();
-
-        return response(["data" => $data,], 200);
-    }
-    public function getlampiran($id)
-    {
-        $data = $this->model->lampiransurat->select("id_surat", "lampiran.id", "nama_lampiran")
-            ->join("lampiran", "lampiran.id", "id_lampiran")->where("id_surat", "=", $id)->get();;
-        return response(["data" => $data], 200);
+        return response(["data" => ["msg" => "ad", "datalampiran" => $data]], 200);
     }
     public function getform($nik, $idsurat)
     {
@@ -49,11 +43,11 @@ class SuratApiController
             ->get();
         $data2 = $this->model->lampiransurat->select("id_surat", "lampiran.id", "nama_lampiran")
             ->join("lampiran", "lampiran.id", "id_lampiran")->where("id_surat", "=", $idsurat)->get();;
-        return response(["biodata" => $data, "data" => $data2], 200);
+        return response(["data" => ["msg" => "ad", "biodata" => $data, "datalampiran" => $data2]], 200);
     }
     public function getPengajuan($nik, $status)
     {
         $data = $this->model->psurat->select()->where("nik", "=", $nik)->where("status", "=", $status)->get();
-        return response(["datariwayat" => $data], 200);
+        return response(["data" => ["msg" => "ad", "datariwayat" => $data]], 200);
     }
 }
