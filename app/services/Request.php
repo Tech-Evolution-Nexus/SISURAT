@@ -24,10 +24,10 @@ class Request
     }
 
     private function format()
-{
-    // Menggabungkan array $_GET, $_POST, dan $_FILES tanpa menggunakan operator `...`
-    return array_merge($_GET, $_POST, $_FILES);
-}
+    {
+        // Menggabungkan array $_GET, $_POST, dan $_FILES tanpa menggunakan operator `...`
+        return array_merge($_GET, $_POST, $_FILES);
+    }
 
 
     private function sanitize($data)
@@ -36,7 +36,7 @@ class Request
             return array_map([$this, 'sanitize'], $data); // Recursively sanitize arrays
         }
 
-        return htmlspecialchars(strip_tags($data), ENT_QUOTES, 'UTF-8'); // Basic sanitization
+        return $data !== null ? htmlspecialchars(strip_tags($data), ENT_QUOTES, 'UTF-8') : null;
     }
 
     public function validate($rule, $message = [])

@@ -12,5 +12,3 @@ Router::addRoute("GET", "/s/{id}", [SuratApiController::class, "getlampiran"]);
 Router::addRoute("GET", "/getpengajuan/{nik}/{status}", [SuratApiController::class, "getPengajuan"]);
 Router::addRoute("GET", "/getlistkk/{id}", [KkApiController::class, "getdatakk"]);
 Router::addRoute("GET", "/getlistsurat", [KkApiController::class, "getdatasurat"]);
-
-

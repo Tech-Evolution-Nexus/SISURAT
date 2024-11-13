@@ -24,7 +24,7 @@
             <?php endif; ?>
 
             <?php if (session()->has("error")): ?>
-                <div class="alert alert-success d-flex justify-content-between" role="alert">
+                <div class="alert alert-danger d-flex justify-content-between" role="alert">
                     <?= session()->flash("error") ?>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -44,7 +44,7 @@
                         <h5>Informasi Diri</h5>
                         <div class="form-group ms-2 mb-2">
                             <label>NIK<span class="text-danger ">*</span></label></label>
-                            <input type="text" name="nik" class="form-control only-number" maxlength="16" placeholder="NIK" value="<?= old("nik", $data->data->nik) ?>">
+                            <input type="text" name="nik" class="form-control only-number" maxlength="16" minlength="16" placeholder="NIK" value="<?= old("nik", $data->data->nik) ?>">
                             <?php if (session()->has("nik")): ?>
                                 <small class="text-danger text-capitalize"><?= session()->error("nik") ?></small>
                             <?php endif; ?>
@@ -166,7 +166,8 @@
                                     <select class="form-select" name="status_perkawinan">
                                         <option <?= old("status_perkawinan", $data->data->status_perkawinan) === "Belum Kawin" ? "selected" : "" ?> value="Belum Kawin">Belum Kawin</option>
                                         <option <?= old("status_perkawinan", $data->data->status_perkawinan) === "Kawin" ? "selected" : "" ?> value="Kawin">Kawin</option>
-                                        <option <?= old("status_perkawinan", $data->data->status_perkawinan) === "Cerai" ? "selected" : "" ?> value="Cerai">Cerai</option>
+                                        <option <?= old("status_perkawinan", $data->data->status_perkawinan) === "Cerai Hidup" ? "selected" : "" ?> value="Cerai Hidup">Cerai Hidup</option>
+                                        <option <?= old("status_perkawinan", $data->data->status_perkawinan) === "Cerai Mati" ? "selected" : "" ?> value="Cerai Mati">Cerai Mati</option>
                                     </select>
                                     <?php if (session()->has("status_perkawinan")): ?>
                                         <small class="text-danger text-capitalize"><?= session()->error("status_perkawinan") ?></small>

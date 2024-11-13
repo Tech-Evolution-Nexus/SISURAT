@@ -56,7 +56,7 @@
                             <div class="col-md-6 col-12 mb-2">
                                 <div class="form-group mb-2 ">
                                     <label for="tanggal_kk">Tanggal KK<span class="text-danger ">*</span></label>
-                                    <input value="<?= old("tanggal_kk", $data->data->tanggal_kk) ?>" type="date" class="  form-control only-number" placeholder="tanggal_kk" name="tanggal_kk" id="tanggal_kk" required>
+                                    <input value="<?= old("tanggal_kk", $data->data->tanggal_kk) ?>" type="date" class="  form-control " placeholder="tanggal_kk" name="tanggal_kk" id="tanggal_kk" required>
                                     <?php if (session()->has("tanggal_kk")): ?>
                                         <small class="text-danger text-capitalize"><?= session()->error("tanggal_kk") ?></small>
                                     <?php endif; ?>
