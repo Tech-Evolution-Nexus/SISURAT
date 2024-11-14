@@ -62,12 +62,12 @@
                                     <td><?= $user->role ?></td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Action buttons">
-                                            <button data-url="<?= url("/admin/users/$user->id") ?>" title="Hapus" class="btn deleteBtn  text-white btn-danger btn-sm">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
                                             <a href="/admin/users/<?= $user->id ?>/edit" title="Detail" class="btn text-white btn-warning btn-sm">
                                                 <i class="fa fa-pencil"></i>
                                             </a>
+                                            <button data-url="<?= url("/admin/users/$user->id") ?>" title="Hapus" class="btn deleteBtn  text-white btn-danger btn-sm">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -101,6 +101,8 @@
                     dataType: "json", // Pastikan response dalam format JSON
                     success: (data) => {
                         if (data) {
+                            $("[name=nama_lengkap]").val(data.nama_lengkap);
+                            $("[name=nik]").val(data.nik);
                             $("[name=email]").val(data.email);
                             $("[name=no_hp]").val(data.no_hp);
                             $("[name=role]").val(data.role);
