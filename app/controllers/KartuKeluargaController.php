@@ -91,13 +91,6 @@ class KartuKeluargaController extends Controller
         $kecamatan = request("kecamatan");
 
 
-        $check = $this->model->kartuKeluarga
-            ->select("kartu_keluarga.no_kk,nik")
-            ->join("masyarakat", "kartu_keluarga.no_kk", "masyarakat.no_kk")
-            ->where("kartu_keluarga.no_kk", "=", $noKK)
-            ->where("nik", "=", $nik)
-            ->first();
-        if ($check) return redirect()->with("error", "Nik Kepala Keluarga dan No KK $noKK sudah terdaftar")->withInput(request()->getAll())->back();
 
         $check = $this->model->kartuKeluarga
             ->select("kartu_keluarga.no_kk,nik")
@@ -116,7 +109,7 @@ class KartuKeluargaController extends Controller
             ->first();
         if ($check2) {
             return redirect()
-                ->with("error", "Nik Kepala Keluarga $nik sudah terdaftar")
+                ->with("error", "Nik  $nik sudah terdaftar")
                 ->withInput(request()->getAll())
                 ->back();
         }
@@ -219,7 +212,6 @@ class KartuKeluargaController extends Controller
             ->select("kartu_keluarga.no_kk,nik")
             ->join("masyarakat", "kartu_keluarga.no_kk", "masyarakat.no_kk")
             ->where("kartu_keluarga.no_kk", "=", $noKK)
-            ->where("nik", "=", $nik)
             ->where("kartu_keluarga.no_kk", "<>", $id)
             ->first();
         if ($check) {
@@ -235,7 +227,7 @@ class KartuKeluargaController extends Controller
             ->first();
         if ($check2) {
             return redirect()
-                ->with("error", "Nik Kepala Keluarga $nik sudah terdaftar")
+                ->with("error", "Nik  $nik sudah terdaftar")
                 ->withInput(request()->getAll())
                 ->back();
         }

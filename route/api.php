@@ -13,4 +13,9 @@ Router::addRoute("GET", "/getpengajuan/{nik}/{status}", [SuratApiController::cla
 Router::addRoute("GET", "/getlistkk/{id}", [KkApiController::class, "getdatakk"]);
 Router::addRoute("GET", "/getlistsurat", [KkApiController::class, "getdatasurat"]);
 
-
+Router::addRoute("GET", "/getberita", [BeritaApiController::class, "getBerita"]);
+Router::addRoute("GET", "/detailberita/{id}", [BeritaApiController::class, "getdetailberita"]);
+Router::addRoute("POST", "/test", function () {
+    $file = request("file");
+    return response($file);
+});

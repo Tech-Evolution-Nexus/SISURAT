@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISURAT | <?=$data->title ?></title>
+    <title>SISURAT | <?= $data->title ?></title>
     <?php includeFile("layout/css") ?>
 </head>
 
@@ -15,7 +15,7 @@
     <main class="flex-grow-1 ">
         <?php includeFile("layout/navbar") ?>
         <div class="p-4">
-        <?php if (session()->has("success")): ?>
+            <?php if (session()->has("success")): ?>
                 <div class="alert alert-success d-flex justify-content-between" role="alert">
                     <?= session()->flash("success") ?>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -51,29 +51,30 @@
                             </tr>
                         </thead>
                         <tbody>
-                        <?php if (!empty($data->data) && is_array($data->data)) : ?>
-                            <?php foreach ($data->data as $index => $user) : ?>
-                                <tr>
-                                    <td><?= $index + 1 ?></td>
-                                    <td><?= $user->nama_lengkap ?></td>
-                                    <td><?= $user->nik ?></td>
-                                    <td><?= $user->email ?></td>
-                                    <td><?= $user->no_hp?></td>
-                                    <td><?= $user->role ?></td>
-                                    <td>
-                                        <div class="btn-group" role="group" aria-label="Action buttons">
-                                            <button data-url="<?= url("/admin/users/$user->id") ?>" title="Hapus" class="btn deleteBtn  text-white btn-danger btn-sm">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                            <a href="/admin/users/<?= $user->id ?>/edit" title="Detail" class="btn text-white btn-warning btn-sm">
-                                                <i class="fa fa-pencil"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-            
-                        <?php endif; ?>
+                            <?php if (!empty($data->data) && is_array($data->data)) : ?>
+                                <?php foreach ($data->data as $index => $user) : ?>
+                                    <tr>
+                                        <td><?= $index + 1 ?></td>
+                                        <td><?= $user->nama_lengkap ?></td>
+                                        <td><?= $user->nik ?></td>
+                                        <td><?= $user->email ?></td>
+                                        <td><?= $user->no_hp ?></td>
+                                        <td><?= $user->role ?></td>
+                                        <td>
+                                            <div class="btn-group" role="group" aria-label="Action buttons">
+                                                <a href="<?= url("/admin/users/$user->id/edit") ?>" title="Detail" class="btn text-white btn-warning btn-sm">
+                                                    <i class="fa fa-pencil"></i>
+                                                </a>
+                                                <button data-url="<?= url("/admin/users/$user->id") ?>" title="Hapus" class="btn deleteBtn  text-white btn-danger btn-sm">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>

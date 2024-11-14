@@ -320,7 +320,6 @@ class AnggotaKeluargaController extends Controller
                     ->back();
             }
 
-
             $data = [
                 "nik" => $nik,
                 "nama_lengkap" => $nama,

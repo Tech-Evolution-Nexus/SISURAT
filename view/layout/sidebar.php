@@ -1,6 +1,6 @@
 <aside class="d-flex  flex-column bg-white shadow-sm sidebar  custom-scroll z-5">
-    <div class="p-4 d-flex align-items-center ">
-        <img src="<?= assets("assets/logo-admin.png") ?>" alt="">
+    <div class="px-4 py-3 d-flex align-items-center ">
+        <img src="<?= assets("assets/logo-admin.png") ?>" style="width: 130px;" alt="">
         <button class="btn nav-toggle d-md-none ms-auto text-body-secondary d-flex align-items-center btn-transparent"><i class="fa fa-close"></i></button>
     </div>
 

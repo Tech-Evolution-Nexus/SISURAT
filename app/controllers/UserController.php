@@ -18,7 +18,7 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = $this->userModel->all(); // Ganti dengan fungsi yang sesuai
+        $users = $this->model->user->all(); // Ganti dengan fungsi yang sesuai
 
         $params["data"] = (object)[
             "title" => "Users",

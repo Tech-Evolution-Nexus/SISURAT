@@ -99,6 +99,5 @@ Router::addRoute("GET", "/admin/getberita/{id}", [BeritaController::class, "gete
 Router::addRoute("POST", "/admin/editberita/{id}", [BeritaController::class, "update"]);
 Router::addRoute("POST", "/admin/deleteberita/{id}", [BeritaController::class, "delete"]);
 
-
-
-
+Router::addRoute("GET", "/admin/assetssurat/{name}", [KomponenController::class, "getImageSurat"]);
+Router::addRoute("GET", "/admin/assetsberita/{name}", [KomponenController::class, "getImageBerita"]);

@@ -169,8 +169,7 @@
                                             </button>
 
 
-
-                                            <a href="/admin/master-rw/<?= $kk->rw ?>/master-rt" title="Detail" class="btn  text-white btn-success btn-sm">
+                                            <a href="<?= url("/admin/master-rw/$kk->rw/master-rt") ?>" title="Detail" class="btn  text-white btn-success btn-sm">
                                                 <i class="fa fa-users"></i>
                                             </a>
                                         </div>
@@ -222,7 +221,7 @@
 
         // handle add data
         $("#add-btn").on("click", function() {
-            setupForm("Tambah RW", "/admin/master-rw")
+            setupForm("Tambah RW", '<?= url("/admin/master-rw/") ?>')
             $(".search-section").show();
             $(".required-password").show();
             $("[name=password]").attr('required');
@@ -237,7 +236,7 @@
         $(".editBtn").on("click", function() {
             const nik = $(this).attr("data-nik")
 
-            setupForm("Ubah RW", "/admin/master-rw/" + nik)
+            setupForm("Ubah RW", '<?= url("/admin/master-rw/") ?>' + nik)
             $(".search-section").hide();
             $(".required-password").hide();
             $("[name=password]").removeAttr('required');
@@ -248,7 +247,7 @@
 
             $(".modal").modal("show")
             $.ajax({
-                url: "/admin/master-rw/ajax-rw/" + nik,
+                url: '<?= url("/admin/master-rw/ajax-rw/") ?>' + nik,
                 success: (data) => {
                     const formData = data;
                     console.log(formData);
