@@ -4,7 +4,20 @@
   --clr-primary: #1c2f5a;
   --clr-primary2: #315098;
 }
-
+.border-dashed {
+  border-style: dashed !important;
+  border-width: 2px !important;
+}
+.image-upload {
+  display: block;
+  aspect-ratio: 2/1;
+  transition: all 0.2s;
+  background-position: center;
+  background-size: cover;
+}
+.image-upload:hover {
+  opacity: 0.8;
+}
 body {
   font-family: "Inter", sans-serif;
   font-size: 1rem; /* default untuk body */

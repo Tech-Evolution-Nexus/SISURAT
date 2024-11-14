@@ -135,5 +135,13 @@
 
         });
 
+
+        //hanle image preview
+        $(".image-upload-file").on("change", function() {
+            const file = $(this)[0].files[0];
+            const imageUrl = URL.createObjectURL(file);
+            $(this).parent().css("backgroundImage", `url(${imageUrl})`);
+            $(this).parent().find("i,span").hide();
+        })
     })
 </script>

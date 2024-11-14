@@ -7,25 +7,25 @@ class Request
 {
     public function get($key)
     {
-        // Get the value and sanitize it
         $result = $this->sanitize($this->format()[$key] ?? null);
         return $result === "" ? null : $result;
     }
 
     public function getAll()
     {
-        // Sanitize all input values
         return array_map([$this, 'sanitize'], $this->format());
     }
 
     public function file($key)
     {
-        return $_FILES[$key] ?? null; // Return null if the key does not exist
+        return $_FILES[$key] ?? null;
     }
 
     private function format()
     {
+
         // Menggabungkan array $_GET, $_POST, dan $_FILES tanpa menggunakan operator ...
+
         return array_merge($_GET, $_POST, $_FILES);
     }
 
@@ -35,7 +35,6 @@ class Request
         if (is_array($data)) {
             return array_map([$this, 'sanitize'], $data); // Recursively sanitize arrays
         }
-
         return $data !== null ? htmlspecialchars(strip_tags($data), ENT_QUOTES, 'UTF-8') : null;
     }
 
