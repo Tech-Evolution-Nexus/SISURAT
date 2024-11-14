@@ -3,6 +3,7 @@
 use app\controllers\api\AuthApiController;
 use app\controllers\api\BeritaApiController;
 use app\controllers\api\KkApiController;
+use app\controllers\api\PengajuanSuratApiController;
 use app\controllers\api\SuratApiController;
 use app\services\Router;
 
@@ -18,6 +19,7 @@ Router::addRoute("GET", "/getlistsurat", [KkApiController::class, "getdatasurat"
 Router::addRoute("GET", "/getberita", [BeritaApiController::class, "getBerita"]);
 Router::addRoute("GET", "/detailberita/{id}", [BeritaApiController::class, "getdetailberita"]);
 
+Router::addRoute("POST", "/sendpengajuansuratmasyarakat", [PengajuanSuratApiController::class, "sendsurmas"]);
 Router::addRoute("POST", "/login", [AuthApiController::class, "login"]);
 Router::addRoute("POST", "/register", [AuthApiController::class, "register"]);
 Router::addRoute("POST", "/veriv", [AuthApiController::class, "veriv"]);
