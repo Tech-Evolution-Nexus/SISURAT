@@ -17,6 +17,9 @@ class SuratController extends Controller
 
     function __construct()
     {
+        if (!auth()->check()) {
+            redirect("/login");
+        }
         $this->model =  (object)[];
         $this->model->jsurat  = new JenisSuratModel();
         $this->model->lampiran  = new LampiranModel();
@@ -72,6 +75,7 @@ class SuratController extends Controller
         }
         $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
         $uploader = new FileUploader($namasur . "." . $fileType, $ficon, "/surat", $allowedFileTypes);
+
         $uploadSs = $uploader->isAllowedFileType();
         if ($uploadSs !== true) {
             return redirect()->with("error", "$uploadSs")->back();
@@ -154,6 +158,7 @@ class SuratController extends Controller
 
             $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
             $uploader = new FileUploader($namasur . "." . $fileType, $ficon, "/surat", $allowedFileTypes);
+
 
             // Hapus file lama jika ada dan nama file baru berhasil diunggah
             $uploadStatus = $uploader->upload();

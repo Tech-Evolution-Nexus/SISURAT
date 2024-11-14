@@ -1,16 +1,19 @@
 <?php
 
+use app\controllers\AboutController;
 use app\controllers\AnggotaKeluargaController;
 use app\controllers\AuthController;
 use app\controllers\BeritaController;
 use app\controllers\DashController;
 use app\controllers\KartuKeluargaController;
+use app\controllers\KomponenController;
 use app\controllers\LandingController;
 use app\controllers\RT_RWController;
 use app\controllers\SuratController;
 use app\controllers\SuratMasukController;
 use app\controllers\SuratMasukSelesaiController;
 use app\services\Router;
+use app\controllers\ProfileController;
 use app\controllers\UserController;
 
 // landing
@@ -88,6 +91,14 @@ Router::addRoute("POST", "/sendemail", [AuthController::class, 'sendemail']);
 //ganti password
 Router::addRoute("GET", "/ganti-password", [AuthController::class, "gantiPassword"]);
 Router::addRoute("POST", "/ganti-password", [AuthController::class, "gantiPasswordStore"]);
+
+//profile
+Router::addRoute("GET", "/admin/profile", [ProfileController::class, "profile"]);
+Router::addRoute("POST", "/admin/profile", [ProfileController::class, "profile"]);
+
+//tentang
+Router::addRoute("GET", "/admin/tentangAplikasi", [AboutController::class, "about"]);
+Router::addRoute("POST", "/admin/tentangAplikasi", [AboutController::class, "about"]);
 
 Router::addRoute("GET", "/admin/berita", [BeritaController::class, "index"]);
 Router::addRoute("POST", "/admin/berita", [BeritaController::class, "add"]);

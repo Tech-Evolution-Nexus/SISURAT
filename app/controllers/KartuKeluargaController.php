@@ -14,6 +14,10 @@ class KartuKeluargaController extends Controller
     private $model;
     public function __construct()
     {
+        if (!auth()->check()) {
+            redirect("/login");
+        }
+
         $this->model =  (object)[];
         $this->model->kartuKeluarga = new KartuKeluargaModel();
         $this->model->masyarakat = new MasyarakatModel();

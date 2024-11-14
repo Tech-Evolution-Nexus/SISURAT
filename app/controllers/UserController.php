@@ -12,6 +12,9 @@ class UserController extends Controller
 
     public function __construct()
     {
+        if (!auth()->check()) {
+            redirect("/login");
+        }
         $this->model = (object)[];
         $this->model->user = new UserModel();
     }
