@@ -19,6 +19,17 @@
             <form action="<?= $data->action_form ?>" method="post" class="card">
                 <div class="card-body">
                     <div class="mb-3">
+                        <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
+                        <input disabled type="text" name="nama_lengkap" class="form-control" value="<?= $data->data->nama_lengkap ?>" required>
+                    </div>
+                   
+                    <div class="mb-3">
+                        <label for="nik" class="form-label">Nik</label>
+                        <input disabled type="number" name="nik" class="form-control" value="<?= $data->data->nik ?>" required>
+                    </div>
+                   
+            
+                    <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
                         <input disabled type="email" name="email" class="form-control" value="<?= $data->data->email ?>" required>
                     </div>

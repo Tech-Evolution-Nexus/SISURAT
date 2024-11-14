@@ -102,6 +102,8 @@
                     dataType: "json", // Pastikan response dalam format JSON
                     success: (data) => {
                         if (data) {
+                            $("[name=nama_lengkap]").val(data.nama_lengkap);
+                            $("[name=nik]").val(data.nik);
                             $("[name=email]").val(data.email);
                             $("[name=no_hp]").val(data.no_hp);
                             $("[name=role]").val(data.role);

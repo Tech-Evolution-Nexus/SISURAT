@@ -7,5 +7,7 @@ use app\abstract\ImportExcel;
 class KartuKeluargaImport extends ImportExcel
 {
 
-    public function run(array $data) {}
+    public function run(array $data) {
+        
+    }
 }

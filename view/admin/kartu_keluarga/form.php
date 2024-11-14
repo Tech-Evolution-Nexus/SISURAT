@@ -47,7 +47,7 @@
                             <div class="col-md-6 col-12">
                                 <div class="form-group  ms-3">
                                     <label for="no_kk">Nomor Kartu Keluarga<span class="text-danger only-number">*</span></label>
-                                    <input value="<?= old("no_kk", $data->data->no_kk) ?>" maxlength="16" minlength="16" type="text" class="  form-control" placeholder="Nomor Kartu Keluarga" name="no_kk" id="no_kk" required>
+                                    <input value="<?= old("no_kk", $data->data->no_kk) ?>" maxlength="16" minlength="16" type="text" class=" only-number form-control" placeholder="Nomor Kartu Keluarga" name="no_kk" id="no_kk" required>
                                     <?php if (session()->has("no_kk")): ?>
                                         <small class="text-danger text-capitalize"><?= session()->error("no_kk") ?></small>
                                     <?php endif; ?>
@@ -56,7 +56,7 @@
                             <div class="col-md-6 col-12 mb-2">
                                 <div class="form-group mb-2 ">
                                     <label for="tanggal_kk">Tanggal KK<span class="text-danger ">*</span></label>
-                                    <input value="<?= old("tanggal_kk", $data->data->tanggal_kk) ?>" type="date" class="  form-control" placeholder="tanggal_kk" name="tanggal_kk" id="tanggal_kk" required>
+                                    <input value="<?= old("tanggal_kk", $data->data->tanggal_kk) ?>" type="date" class="  form-control " placeholder="tanggal_kk" name="tanggal_kk" id="tanggal_kk" required>
                                     <?php if (session()->has("tanggal_kk")): ?>
                                         <small class="text-danger text-capitalize"><?= session()->error("tanggal_kk") ?></small>
                                     <?php endif; ?>
@@ -79,7 +79,7 @@
                             <div class="col-12">
                                 <div class="form-group mb-2 ms-3">
                                     <label for="no_kk">NIK Kepala Keluarga<span class="text-danger only-number">*</span></label>
-                                    <input value="<?= old("nik", $data->data->nik) ?>" maxlength="16" minlength="16" type="text" class="  form-control" placeholder="NIK Kepala Keluarga" name="nik" id="nik" required>
+                                    <input value="<?= old("nik", $data->data->nik) ?>" maxlength="16" minlength="16" type="text" class=" only-number form-control" placeholder="NIK Kepala Keluarga" name="nik" id="nik" required>
                                     <?php if (session()->has("nik")): ?>
                                         <small class="text-danger text-capitalize"><?= session()->error("nik") ?></small>
                                     <?php endif; ?>

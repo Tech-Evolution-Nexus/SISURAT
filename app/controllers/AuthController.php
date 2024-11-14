@@ -22,7 +22,9 @@ class AuthController
     {
        
         return view("auth/login");
+        
     }
+
 
     public function authentic()
     {
@@ -50,6 +52,8 @@ class AuthController
             return redirect()->with("error", "User tidak ditemukan")->back();
         }
     }
+
+    
 
     public function lupaPassword()
     {
