@@ -2,6 +2,7 @@
 
 use app\controllers\api\BeritaApiController;
 use app\controllers\api\KkApiController;
+use app\controllers\api\PengajuanSuratApiController;
 use app\controllers\api\SuratApiController;
 use app\controllers\BeritaController;
 use app\services\Router;
@@ -17,6 +18,8 @@ Router::addRoute("GET", "/getlistsurat", [KkApiController::class, "getdatasurat"
 
 Router::addRoute("GET", "/getberita", [BeritaApiController::class, "getBerita"]);
 Router::addRoute("GET", "/detailberita/{id}", [BeritaApiController::class, "getdetailberita"]);
+
+Router::addRoute("POST", "/sendpengajuansuratmasyarakat", [PengajuanSuratApiController::class, "sendsurmas"]);
 
 
 

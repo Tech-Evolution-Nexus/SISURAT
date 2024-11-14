@@ -56,7 +56,7 @@
                                 <tr>
                                     <td><?= $index + 1 ?></td>
                                     <td><?= $kk->nama_surat ?></td>
-                                    <td> <img src="<?= url("/admin/assets/$kk->image") ?>" width="32"height="32" alt="a"></td>
+                                    <td> <img src="<?= url("/admin/assetssurat/$kk->image") ?>" width="32"height="32" alt="a"></td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Action buttons">
                                             <button data-id="<?= $kk->id ?>" title="Edit" class="btn editBtn text-white btn-warning btn-sm">
