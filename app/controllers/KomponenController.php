@@ -8,7 +8,8 @@ use app\models\MasyarakatModel;
 
 class KomponenController extends Controller
 {
-    public function getImageSurat($url){
+    public function getImageSurat($url)
+    {
         $filePath = __DIR__ . '/../../upload/surat/' . $url;
         if (file_exists($filePath) && is_file($filePath)) {
             $mimeType = mime_content_type($filePath);
@@ -17,8 +18,19 @@ class KomponenController extends Controller
             return;
         }
     }
-    public function getImageBerita($url){
+    public function getImageBerita($url)
+    {
         $filePath = __DIR__ . '/../../upload/berita/' . $url;
+        if (file_exists($filePath) && is_file($filePath)) {
+            $mimeType = mime_content_type($filePath);
+            header('Content-Type: ' . $mimeType);
+            readfile($filePath);
+            return;
+        }
+    }
+    public function getImageKartuKeluarga($url)
+    {
+        $filePath = __DIR__ . '/../../upload/kartu_keluarga/' . $url;
         if (file_exists($filePath) && is_file($filePath)) {
             $mimeType = mime_content_type($filePath);
             header('Content-Type: ' . $mimeType);
