@@ -51,30 +51,29 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if (!empty($data->data) && is_array($data->data)) : ?>
-                                <?php foreach ($data->data as $index => $user) : ?>
-                                    <tr>
-                                        <td><?= $index + 1 ?></td>
-                                        <td><?= $user->nama_lengkap ?></td>
-                                        <td><?= $user->nik ?></td>
-                                        <td><?= $user->email ?></td>
-                                        <td><?= $user->no_hp ?></td>
-                                        <td><?= $user->role ?></td>
-                                        <td>
-                                            <div class="btn-group" role="group" aria-label="Action buttons">
-                                                <a href="/admin/users/<?= $user->id ?>/edit" title="Detail" class="btn text-white btn-warning btn-sm">
-                                                    <i class="fa fa-pencil"></i>
-                                                </a>
-                                                <button data-url="<?= url("/admin/users/$user->id") ?>" title="Hapus" class="btn deleteBtn  text-white btn-danger btn-sm">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-
-                            <?php endif; ?>
+                        <?php if (!empty($data->data) && is_array($data->data)) : ?>
+                            <?php foreach ($data->data as $index => $user) : ?>
+                                <tr>
+                                    <td><?= $index + 1 ?></td>
+                                    <td><?= $user->nama_lengkap ?></td>
+                                    <td><?= $user->nik ?></td>
+                                    <td><?= $user->email ?></td>
+                                    <td><?= $user->no_hp?></td>
+                                    <td><?= $user->role ?></td>
+                                    <td>
+                                        <div class="btn-group" role="group" aria-label="Action buttons">
+                                            <a href="/admin/users/<?= $user->id ?>/edit" title="Detail" class="btn text-white btn-warning btn-sm">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
+                                            <button data-url="<?= url("/admin/users/$user->id") ?>" title="Hapus" class="btn deleteBtn  text-white btn-danger btn-sm">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+            
+                        <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
@@ -102,6 +101,8 @@
                     dataType: "json", // Pastikan response dalam format JSON
                     success: (data) => {
                         if (data) {
+                            $("[name=nama_lengkap]").val(data.nama_lengkap);
+                            $("[name=nik]").val(data.nik);
                             $("[name=email]").val(data.email);
                             $("[name=no_hp]").val(data.no_hp);
                             $("[name=role]").val(data.role);
