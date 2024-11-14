@@ -18,7 +18,7 @@
 <body>
 
 
-    <nav class="navbar navbar-expand-lg bg-white position-sticky top-0 left-0 w-100">
+    <nav class="navbar navbar-expand-lg bg-primary position-sticky top-0 left-0 w-100">
         <div class="container">
             <a class="navbar-brand" href="/"><img src="<?= assets("assets/logo-badean.png") ?>" style="width: 150px;" alt=""></a> <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -26,23 +26,23 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-md-4">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Beranda</a>
+                        <a class="nav-link text-white " aria-current="page" href="#">Beranda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Berita</a>
+                        <a class="nav-link text-white" href="#">Berita</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Tentang Kami</a>
+                        <a class="nav-link text-white" href="#">Tentang Kami</a>
                     </li>
                 </ul>
                 <div class="d-flex" role="search">
-                    <button class="btn btn-primary px-4" type="submit">Login</button>
+                    <a href="<?= url("/login") ?>" class="btn btn-light px-4" type="submit">Login</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <section id="hero" class="mb-4">
+    <section id="hero" class="mb-4 text-white " style="background-size:cover;background-image: url(<?= assets("assets/heroBg.svg") ?>);">
         <div class="container ">
             <div class="row  align-items-md-center align-items-center" style="height: 70vh;">
                 <div class="col-md-6 col-12">

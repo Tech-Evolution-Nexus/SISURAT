@@ -9,6 +9,7 @@ class FileUploader
     private $targetFile;
 
 
+
     public function __construct($namefile, $tmp="", $file = "", $targetDir = "", $allowedFileTypes = ["jpg", "png", "jpeg", "gif"])
 
     {
@@ -16,19 +17,17 @@ class FileUploader
         $this->file = $file;
         $this->tmp = $tmp;
         $this->targetDir = $targetDir;
+
         $this->allowedFileTypes = $allowedFileTypes;
-        // dd($this->targetDir . basename($namefile . '.' . $fileType));
-        $this->targetFile = $this->targetDir . basename($namefile);
+        $this->targetFile = __DIR__ . "/../../upload/" . $this->targetDir . "/" . basename($namefile);
     }
 
     // Metode untuk mengunggah file
     public function upload()
     {
-        
         // if (!$this->isAllowedFileType()) {
         //     return "Maaf, hanya file " . implode(", ", $this->allowedFileTypes) . " yang diperbolehkan.";
         // }
-
         // if ($this->fileExists()) {
         //     return "Maaf, file sudah ada.";
         // }
@@ -53,7 +52,6 @@ class FileUploader
         return file_exists($this->targetFile);
     }
 
-    // Metode untuk memindahkan file ke direktori tujuan
     private function moveFile()
     {
         if($this->file==""){
@@ -66,7 +64,7 @@ class FileUploader
     }
     public function delete($fileName)
     {
-        $filePath = $this->targetDir . basename($fileName);
+        $filePath = __DIR__ . "/../../upload/" . $this->targetDir . "/" . basename($fileName);
         if (file_exists($filePath)) {
             if (unlink($filePath)) {
                 return "File $fileName telah berhasil dihapus.";
@@ -78,4 +76,3 @@ class FileUploader
         }
     }
 }
-?>

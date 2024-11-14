@@ -24,7 +24,7 @@
             <?php endif; ?>
 
             <?php if (session()->has("error")): ?>
-                <div class="alert alert-success d-flex justify-content-between" role="alert">
+                <div class="alert alert-danger d-flex justify-content-between" role="alert">
                     <?= session()->flash("error") ?>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>

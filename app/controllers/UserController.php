@@ -21,7 +21,11 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = $this->model->user->all(); // Ganti dengan fungsi yang sesuai
+        $users = $this->model->user
+            ->select("id, nama_lengkap,users.nik,email,users.no_hp,role")
+            ->join("masyarakat", "users.nik", "masyarakat.nik")
+            ->get(); // Ganti dengan fungsi yang sesuai
+
 
         $params["data"] = (object)[
             "title" => "Users",
@@ -55,20 +59,20 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = $this->model->user->join("masyarakat", "users.nik", "masyarakat.nik")
-            ->find($id);
+            ->first($id);
+
         if (!$user) {
             return show404();
         }
 
         $data = (object)[
 
-            "name" => $user->nama_lengkap ?? null,
+            "nama_lengkap" => $user->nama_lengkap ?? null,
             "nik" => $user->nik ?? null,
             "email" => $user->email ?? null,
-            "no_hp" => $user->no ?? null,
+            "no_hp" => $user->no_hp ?? null,
             "role" => $user->role ?? null,
         ];
-
         $params["data"] = (object)[
             "title" => "Edit Pengguna",
             "description" => "Kelola pengguna dengan mudah",
