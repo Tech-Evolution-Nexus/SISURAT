@@ -48,11 +48,7 @@ Router::addRoute("POST", "/admin/kartu-keluarga/{id}/delete", [KartuKeluargaCont
 //Surat Masuk
 Router::addRoute("GET", "/admin/surat-masuk", [SuratMasukController::class, "index"]);
 Router::addRoute("GET", "/admin/surat-masuk/ajax/{idPengajuan}", [SuratMasukController::class, "ajaxPengajuan"]);
-Router::addRoute("GET", "/admin/surat-masuk/create", [SuratMasukController::class, "create"]);
-Router::addRoute("POST", "/admin/surat-masuk", [SuratMasukController::class, "store"]);
-Router::addRoute("GET", "/admin/surat-masuk/{id}/edit", [SuratMasukController::class, "edit"]);
-Router::addRoute("POST", "/admin/surat-masuk/{id}", [SuratMasukController::class, "update"]);
-Router::addRoute("GET", "/admin/surat-masuk/{id}/delete", [SuratMasukController::class, "delete"]);
+Router::addRoute("POST", "/admin/surat-masuk/{id}", [SuratMasukController::class, "updateStatus"]);
 
 
 //anggota kk

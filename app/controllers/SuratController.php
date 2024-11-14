@@ -71,7 +71,7 @@ class SuratController extends Controller
             return redirect()->with("error", "Terdapat data duplikat dalam pilihan Anda.")->back();
         }
         $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-        $uploader = new FileUploader($namasur.".".$fileType,$ficon, "../upload/surat", $allowedFileTypes );
+        $uploader = new FileUploader($namasur . "." . $fileType, $ficon, "/surat", $allowedFileTypes);
         $uploadSs = $uploader->isAllowedFileType();
         if ($uploadSs !== true) {
             return redirect()->with("error", "$uploadSs")->back();
@@ -121,7 +121,7 @@ class SuratController extends Controller
         $opsi = $_POST['fields'] ?? [];
 
         $fileType =
-        strtolower(pathinfo($ficon['name'], PATHINFO_EXTENSION));
+            strtolower(pathinfo($ficon['name'], PATHINFO_EXTENSION));
         // Validasi nama surat
         if (empty($namasur)) {
             return redirect()->with("error", "Nama surat tidak boleh kosong.")->back();
@@ -135,7 +135,7 @@ class SuratController extends Controller
 
         // Ambil data surat lama dari database
         $existingData = $this->model->jsurat->find($id);
-   
+
         if (!$existingData) {
             return redirect()->with("error", "Data tidak ditemukan.")->back();
         }
@@ -153,7 +153,7 @@ class SuratController extends Controller
             }
 
             $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-            $uploader = new FileUploader($namasur . "." . $fileType,$ficon, "../upload/surat/", $allowedFileTypes);
+            $uploader = new FileUploader($namasur . "." . $fileType, $ficon, "/surat", $allowedFileTypes);
 
             // Hapus file lama jika ada dan nama file baru berhasil diunggah
             $uploadStatus = $uploader->upload();
@@ -162,8 +162,8 @@ class SuratController extends Controller
                     unlink("../upload/surat/" . $fileName); // Hapus file lama
                 }
                 $fileName = $ficon['name'];
-        return redirect()->with("success", "Data berhasil Diubah.")->back();
-                 // Set nama file baru
+                return redirect()->with("success", "Data berhasil Diubah.")->back();
+                // Set nama file baru
             } else {
                 return redirect()->with("error", "$uploadStatus")->back();
             }

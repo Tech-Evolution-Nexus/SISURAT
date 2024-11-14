@@ -204,14 +204,12 @@
         // handle edit data
         $(".editBtn").on("click", function() {
             const id = $(this).attr("data-id")
-            setupForm("Detail Pengajuan Surat", "/admin/surat-masuk")
+            setupForm("Detail Pengajuan Surat", '<?= url("/admin/surat-masuk") ?>/' + id)
 
             $(".modal").modal("show")
             $.ajax({
-                url: "/admin/surat-masuk/ajax/" + id,
+                url: "<?= url("/admin/surat-masuk/ajax/") ?>" + id,
                 success: (data) => {
-                    console.log(data);
-
                     setFormData(data)
                 },
                 error: (error) => {
