@@ -21,8 +21,11 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = $this->model->user->select("id, nama_lengkap,users.nik,email,users.no_hp,role")
-        ->join("masyarakat", "users.nik", "masyarakat.nik")->get(); // Ganti dengan fungsi yang sesuai
+        $users = $this->model->user
+            ->select("id, nama_lengkap,users.nik,email,users.no_hp,role")
+            ->join("masyarakat", "users.nik", "masyarakat.nik")
+            ->get(); // Ganti dengan fungsi yang sesuai
+
 
         $params["data"] = (object)[
             "title" => "Users",
@@ -55,8 +58,8 @@ class UserController extends Controller
     // Menampilkan form untuk mengedit pengguna
     public function edit($id)
     {
-        $user = $this->model->user->join("masyarakat","users.nik","masyarakat.nik")
-        ->first($id);
+        $user = $this->model->user->join("masyarakat", "users.nik", "masyarakat.nik")
+            ->first($id);
 
         if (!$user) {
             return show404();
@@ -88,7 +91,7 @@ class UserController extends Controller
 
         if ($password) {
             $this->model->user->where("id", "=", $id)->update([
-            "password" => password_hash($password,PASSWORD_BCRYPT),
+                "password" => password_hash($password, PASSWORD_BCRYPT),
 
             ]);
         }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISURAT | <?=$data->title ?></title>
+    <title>SISURAT | <?= $data->title ?></title>
     <?php includeFile("layout/css") ?>
 </head>
 
@@ -15,7 +15,7 @@
     <main class="flex-grow-1 ">
         <?php includeFile("layout/navbar") ?>
         <div class="p-4">
-        <?php if (session()->has("success")): ?>
+            <?php if (session()->has("success")): ?>
                 <div class="alert alert-success d-flex justify-content-between" role="alert">
                     <?= session()->flash("success") ?>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

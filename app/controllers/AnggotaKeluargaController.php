@@ -86,8 +86,6 @@ class AnggotaKeluargaController extends Controller
                 "status_perkawinan" => "required",
                 "status_keluarga" => "required",
                 "kewarganegaraan" => "required",
-                "no_paspor" => "required",
-                "no_kitap" => "required",
                 "nama_ayah" => "required",
                 "nama_ibu" => "required",
             ], [
@@ -107,8 +105,6 @@ class AnggotaKeluargaController extends Controller
                 "status_perkawinan.required" => "Status perkawinan wajib diisi.",
                 "status_keluarga.required" => "Status keluarga wajib diisi.",
                 "kewarganegaraan.required" => "Kewarganegaraan wajib diisi.",
-                "no_paspor.required" => "Nomor paspor wajib diisi.",
-                "no_kitap.required" => "Nomor KITAP wajib diisi.",
                 "nama_ayah.required" => "Nama ayah wajib diisi.",
                 "nama_ibu.required" => "Nama ibu wajib diisi."
             ]);
@@ -169,7 +165,7 @@ class AnggotaKeluargaController extends Controller
 
             return redirect()->with("success", "Anggota keluarga berhasil ditambah")->to("/admin/kartu-keluarga/$nokk/anggota-keluarga");
         } catch (\Throwable $th) {
-            return redirect()->with("error", "Anggota keluarga gagal ditambah")->back();
+            return redirect()->with("error", "Anggota keluarga gagal ditambah")->withInput(request()->getAll())->back();
         }
     }
 
@@ -265,8 +261,6 @@ class AnggotaKeluargaController extends Controller
                 "status_perkawinan" => "required",
                 "status_keluarga" => "required",
                 "kewarganegaraan" => "required",
-                "no_paspor" => "required",
-                "no_kitap" => "required",
                 "nama_ayah" => "required",
                 "nama_ibu" => "required",
             ], [
@@ -286,8 +280,6 @@ class AnggotaKeluargaController extends Controller
                 "status_perkawinan.required" => "Status perkawinan wajib diisi.",
                 "status_keluarga.required" => "Status keluarga wajib diisi.",
                 "kewarganegaraan.required" => "Kewarganegaraan wajib diisi.",
-                "no_paspor.required" => "Nomor paspor wajib diisi.",
-                "no_kitap.required" => "Nomor KITAP wajib diisi.",
                 "nama_ayah.required" => "Nama ayah wajib diisi.",
                 "nama_ibu.required" => "Nama ibu wajib diisi."
             ]);
@@ -348,7 +340,7 @@ class AnggotaKeluargaController extends Controller
 
             return redirect()->with("success", "Anggota keluarga berhasil diubah")->to("/admin/kartu-keluarga/$nokk/anggota-keluarga");
         } catch (\Throwable $th) {
-            return redirect()->with("error", "Anggota keluarga gagal diubah")->back();
+            return redirect()->with("error", "Anggota keluarga gagal diubah")->withInput(request()->getAll())->back();
         }
     }
 
@@ -362,7 +354,6 @@ class AnggotaKeluargaController extends Controller
                     ->with("error", "Kartu keluarga tidak ditemukan")
                     ->back();
             }
-
             $masyarakat = $this->model->masyarakat->where("no_kk", "=", $check->no_kk)->get();
             foreach ($masyarakat as $msy) {
                 $this->model->masyarakat->delete($msy->nik);
@@ -371,7 +362,6 @@ class AnggotaKeluargaController extends Controller
 
             return redirect()->with("success", "Kartu keluarga berhasil dihapus")->to("/admin/kartu-keluarga");
         } catch (\Throwable $th) {
-            dd($th);
             return redirect()->with("error", "Kartu keluarga gagal dihapus")->to("/admin/kartu-keluarga");
         }
     }

@@ -312,7 +312,6 @@ class KartuKeluargaController extends Controller
             $data =  $kkImport->import($file);
             return redirect()->with("success", "Kartu keluarga berhasil diimport")->back();
         } catch (\Throwable $th) {
-            dd($th);
             return redirect()->with("error", "Kartu keluarga gagal diimport")->back();
         }
     }

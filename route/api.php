@@ -4,7 +4,6 @@ use app\controllers\api\AuthApiController;
 use app\controllers\api\BeritaApiController;
 use app\controllers\api\KkApiController;
 use app\controllers\api\SuratApiController;
-use app\controllers\BeritaController;
 use app\services\Router;
 
 //surat
