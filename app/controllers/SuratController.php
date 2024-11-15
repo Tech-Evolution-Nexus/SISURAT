@@ -157,7 +157,7 @@ class SuratController extends Controller
             }
 
             $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-            $uploader = new FileUploader($namasur . "." . $fileType, $ficon, "/surat", $allowedFileTypes);
+            $uploader = new FileUploader($namasur . "." . $fileType, $ficon, "/surat", "private", $allowedFileTypes);
 
 
             // Hapus file lama jika ada dan nama file baru berhasil diunggah

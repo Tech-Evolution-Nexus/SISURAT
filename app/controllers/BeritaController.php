@@ -55,7 +55,7 @@ class BeritaController
             return redirect()->with("error", "Data Sudah Terdaftar.")->back();
         }
         $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-        $uploader = new FileUploader($jud . "." . $fileType, $ficon, "../upload/berita/", $allowedFileTypes);
+        $uploader = new FileUploader($jud . "." . $fileType, $ficon, "/berita", $allowedFileTypes);
         $uploadSs = $uploader->isAllowedFileType();
         if ($uploadSs !== true) {
             return redirect()->with("error", "$uploadSs")->back();
