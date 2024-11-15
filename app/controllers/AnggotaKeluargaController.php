@@ -24,16 +24,15 @@ class AnggotaKeluargaController extends Controller
             ->where("no_kk", "=", $nokk)
             ->orderBy("status_keluarga", "asc")
             ->get();
-        $kepalaKeluarga = $this->model->masyarakat
-            ->where("no_kk", "=", $nokk)
-            ->where("status_keluarga", "=", "kk")
-            ->first();
 
+
+        $kk = $this->model->kartuKeluarga->find($nokk);
         $params["data"] = (object)[
             "title" => "Anggota Keluarga ",
             "description" => "Kelola Anggota Keluarga dengan mudah",
             "data" => $data,
-            "no_kk" => $nokk
+            "no_kk" => $nokk,
+            "kk_file" => url("/admin/assets-kartu-keluarga/" . $kk->kk_file)
         ];
 
         return $this->view("admin/anggota_keluarga/anggota_keluarga", $params);

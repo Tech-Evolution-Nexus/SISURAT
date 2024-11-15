@@ -21,6 +21,7 @@ class KartuKeluargaController extends Controller
         $this->model =  (object)[];
         $this->model->kartuKeluarga = new KartuKeluargaModel();
         $this->model->masyarakat = new MasyarakatModel();
+        $this->model->user = new UserModel();
     }
     public  function index()
     {
@@ -184,7 +185,7 @@ class KartuKeluargaController extends Controller
             "alamat" => $kartuKeluarga->alamat ?? null,
             "rt" => $kartuKeluarga->rt ?? null,
             "rw" => $kartuKeluarga->rw ?? null,
-            "foto_kartu_keluarga" => $kartuKeluarga->kk_file ?? null,
+            "foto_kartu_keluarga" => url("/admin/assets-kartu-keluarga/" . $kartuKeluarga->kk_file) ?? null,
             "kode_pos" => $kartuKeluarga->kode_pos ?? null,
             "kelurahan" => $kartuKeluarga->kelurahan ?? null,
             "kecamatan" => $kartuKeluarga->kecamatan ?? null,
@@ -271,9 +272,11 @@ class KartuKeluargaController extends Controller
         if ($foto_kartu_keluarga["name"] !== "") {
             $file_extension = pathinfo($foto_kartu_keluarga['name'], PATHINFO_EXTENSION);
             $randomName = uniqid() . '.' . $file_extension;
-            $fileUpload = new FileUploader($randomName, $foto_kartu_keluarga, "/kartu_keluarga");
-            $fileUpload->delete($kk->kk_file);
+            $fileUpload = new FileUploader();
+            $fileUpload->setFile($foto_kartu_keluarga);
+            $fileUpload->setTarget(storagePath("private", "/kartu_keluarga/" . $randomName));
             $fileUpload->upload();
+            $fileUpload->delete(storagePath("private", "/kartu_keluarga/" . $kk->kk_file));
             $dataKK["kk_file"] = $randomName;
         }
         $this->model->kartuKeluarga->where("no_kk", "=", $id)->update($dataKK);
@@ -281,20 +284,6 @@ class KartuKeluargaController extends Controller
         $this->model->masyarakat->where("nik", "=", $idMasyarakat)->update([
             "nik" => $nik,
             "nama_lengkap" => $nama,
-            "jenis_kelamin" => "laki-laki",
-            "tempat_lahir" => "-",
-            "tgl_lahir" => date("Y-m-d"),
-            "agama" => "-",
-            "pendidikan" => "-",
-            "pekerjaan" => "-",
-            "golongan_darah" => "-",
-            "status_keluarga" => "KK",
-            "status_perkawinan" => "-",
-            "kewarganegaraan" => "-",
-            "no_paspor" => "-",
-            "no_kitap" => "-",
-            "nama_ayah" => "-",
-            "nama_ibu" => "-",
             "no_kk" => $noKK
         ]);
 
@@ -305,21 +294,23 @@ class KartuKeluargaController extends Controller
 
     public function delete($id)
     {
+
         try {
-            $check = $this->model->kartuKeluarga->find($id);
-            if (!$check) {
-                return redirect()
-                    ->with("error", "Kartu keluarga tidak ditemukan")
-                    ->back();
+            $kk = $this->model->kartuKeluarga->find($id);
+            if (!$kk) {
+                return response("Kartu keluarga tidak ditemukan", 404);
             }
 
-            $masyarakat = $this->model->masyarakat->where("no_kk", "=", $check->no_kk)->get();
+            $masyarakat = $this->model->masyarakat->where("no_kk", "=", $kk->no_kk)->get();
             foreach ($masyarakat as $msy) {
-                $this->model->masyarakat->delete($msy->nik);
+                $this->model->user->where("nik", "=", $msy->nik)->delete();
+                $this->model->masyarakat->where("nik", "=", $msy->nik)->delete();
             }
-            $this->model->kartuKeluarga->delete($id);
+            $fileUpload = new FileUploader();
+            $fileUpload->delete(storagePath("private", "/kartu_keluarga/" . $kk->kk_file));
+
+            $this->model->kartuKeluarga->where("no_kk", "=", $id)->delete();
             return response("Kartu keluarga berhasil dihapus", 200);
-            // return redirect()->with("success", "Kartu keluarga berhasil dihapus")->to("/admin/kartu-keluarga");
         } catch (\Throwable $th) {
             return response("Kartu keluarga gagal dihapus", 500);
 

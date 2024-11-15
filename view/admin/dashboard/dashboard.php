@@ -28,6 +28,13 @@
             /* Ensure it's non-interactive */
         }
 
+        @media (max-width:760px) {
+            .svg-container {
+                height: 80%;
+                z-index: -1;
+            }
+        }
+
         /* Icon styling within the card */
         .card-icon {
             width: 40px;
@@ -60,56 +67,56 @@
             </div>
             <div class="row mt-3 g-4">
                 <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-                    <div class="card glass-card border-0 text-white position-relative bg-success">
+                    <div class="card glass-card border-0 text-dark position-relative bg-white">
                         <div class="card-body pb-5 d-flex gap-2 align-items-center">
-                            <span class="card-icon" style="background-color: #09906d;">
-                                <i class="fa fa-envelope"></i>
+                            <span class="card-icon bg-success border border-white">
+                                <i class="fa fa-envelope text-white "></i>
                             </span>
                             <div>
-                                <h2 class="mb-0 fw-bold">20</h2>
+                                <h2 class="mb-0 fw-bold"><?= $data->jenis_surat ?></h2>
                                 <h6>Jenis Surat</h6>
                             </div>
                         </div>
                         <div class="svg-container">
                             <svg style="height: 100%;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-                                <path fill="#ffffff" fill-opacity="0.3" d="M0,160L80,138.7C160,117,320,75,480,80C640,85,800,139,960,165.3C1120,192,1280,192,1360,192L1440,192L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path>
+                                <path fill="#00bc8b" fill-opacity="1" d="M0,160L80,138.7C160,117,320,75,480,80C640,85,800,139,960,165.3C1120,192,1280,192,1360,192L1440,192L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path>
                             </svg>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-                    <div class="card glass-card border-0 text-white position-relative bg-warning">
+                    <div class="card glass-card border-0 text-dark position-relative bg-white">
                         <div class="card-body pb-5 d-flex gap-2 align-items-center">
-                            <span class="card-icon" style="background-color: #ce9415;">
-                                <i class="fa fa-envelope"></i>
+                            <span class="card-icon bg-warning border border-white">
+                                <i class="fa fa-envelope text-white "></i>
                             </span>
                             <div>
-                                <h2 class="mb-0 fw-bold">20</h2>
+                                <h2 class="mb-0 fw-bold"><?= $data->masyarakat ?></h2>
                                 <h6>Masyarakat</h6>
                             </div>
                         </div>
                         <div class="svg-container">
                             <svg style="height: 100%;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-                                <path fill="#ffffff" fill-opacity="0.3" d="M0,160L80,138.7C160,117,320,75,480,80C640,85,800,139,960,165.3C1120,192,1280,192,1360,192L1440,192L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path>
+                                <path fill="#fab41d" fill-opacity="1" d="M0,160L80,138.7C160,117,320,75,480,80C640,85,800,139,960,165.3C1120,192,1280,192,1360,192L1440,192L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path>
                             </svg>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-                    <div class="card glass-card border-0 text-white position-relative bg-info">
+                    <div class="card glass-card border-0 text-dark position-relative bg-white">
                         <div class="card-body pb-5 d-flex gap-2 align-items-center">
-                            <span class="card-icon" style="background-color: #064a80;">
-                                <i class="fa fa-envelope"></i>
+                            <span class="card-icon bg-primary border border-white">
+                                <i class="fa fa-envelope text-white "></i>
                             </span>
                             <div>
-                                <h2 class="mb-0 fw-bold">20</h2>
-                                <h6>Surat Masuk</h6>
+                                <h2 class="mb-0 fw-bold"><?= $data->pengajuan ?></h2>
+                                <h6>Surat Masuk Hari Ini</h6>
                             </div>
                         </div>
                         <div class="svg-container">
                             <svg style="height: 100%;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-                                <path fill="#ffffff" fill-opacity="0.3" d="M0,160L80,138.7C160,117,320,75,480,80C640,85,800,139,960,165.3C1120,192,1280,192,1360,192L1440,192L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path>
+                                <path fill="#052158" fill-opacity="1" d="M0,160L80,138.7C160,117,320,75,480,80C640,85,800,139,960,165.3C1120,192,1280,192,1360,192L1440,192L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path>
                             </svg>
                         </div>
                     </div>

@@ -108,6 +108,7 @@ class UserController extends Controller
             return redirect()->with("error", "Pengguna tidak ditemukan")->back();
         }
 
+
         $this->model->user->where("id", "=", $id)->delete();
 
         return redirect()->with("success", "Pengguna berhasil dihapus")->to("/admin/users");

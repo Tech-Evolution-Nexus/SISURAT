@@ -84,12 +84,10 @@
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-
                     fetch(`${deleteUrl}`, {
                             method: 'POST'
                         })
                         .then(response => {
-                            console.log(response);
 
                             if (response.ok) {
                                 Swal.fire(
@@ -100,14 +98,20 @@
                                     location.reload(); // Reload halaman setelah dihapus
                                 });
                             } else {
+
                                 Swal.fire(
                                     'Gagal!',
                                     'Terjadi kesalahan saat menghapus data.',
                                     'error'
                                 );
                             }
-                        })
+
+
+                            return response.json()
+                        }).then(res => console.log(res))
                         .catch(error => {
+                            console.log(error);
+
                             Swal.fire(
                                 'Gagal!',
                                 'Terjadi kesalahan saat menghapus data.',
