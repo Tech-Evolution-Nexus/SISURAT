@@ -3,10 +3,7 @@
 namespace app\controllers\api;
 
 use app\models\JenisSuratModel;
-use app\models\KartuKeluargaModel;
-use app\models\LampiranSuratModel;
 use app\models\MasyarakatModel;
-use app\services\Database;
 use PDO;
 use Exception;
 
