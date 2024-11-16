@@ -26,7 +26,7 @@ class SuratMasukController extends Controller
             ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
             ->join("surat", "pengajuan_surat.id_surat", "surat.id")
             ->where("status", "=", "di_terima_rw")
-            ->orderBy("created_at", "desc")
+            ->orderBy("pengajuan_surat.created_at", "desc")
             ->get();
         $params["data"] = (object)[
             "title" => "Surat Masuk",

@@ -1,5 +1,5 @@
 <aside class="d-flex  flex-column bg-white shadow-lg sidebar  custom-scroll z-5">
-    <div class="px-4 py-3 d-flex align-items-center ">
+    <div class="px-4 py-3 pb-0 d-flex align-items-center ">
         <img src="<?= assets("assets/logo-admin.png") ?>" style="width: 130px;" alt="">
         <button class="btn nav-toggle d-md-none ms-auto text-body-secondary d-flex align-items-center btn-transparent"><i class="fa fa-close"></i></button>
     </div>
@@ -12,7 +12,7 @@
             </a>
             <ul class="list-unstyled ps-2">
                 <li>
-                    <a class="text-body-secondary sidebar-subitem side-link d-flex align-items-center px-3 rounded py-2 text-decoration-none" href="<?= url("admin/") ?>">
+                    <a class="text-body-secondary sidebar-subitem side-link d-flex align-items-center px-3 rounded py-2 text-decoration-none" href="<?= url("admin") ?>">
                         <i class="fa fa-table-columns"></i>
                         <span class="d-inline-block ms-3">Dashboard</span>
                     </a>

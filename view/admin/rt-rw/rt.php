@@ -263,7 +263,9 @@
             rt,
             rw,
             no_hp,
-            id
+            id,
+            masa_jabatan_akhir,
+            masa_jabatan_awal
         }) => {
 
 
@@ -273,6 +275,10 @@
             $("[name=rt]").val(rt)
             $("[name=rw]").val(rw)
             $("[name=no_hp]").val(no_hp)
+            masa_jabatan_akhir = masa_jabatan_akhir.split(' ')[0]; // '2024-11-30'
+            masa_jabatan_awal = masa_jabatan_awal.split(' ')[0];
+            $("[name=masa_jabatan_akhir]").val(masa_jabatan_akhir)
+            $("[name=masa_jabatan_awal]").val(masa_jabatan_awal)
         }
     </script>
 </body>

@@ -15,6 +15,7 @@
     <main class="flex-grow-1 ">
         <?php includeFile("layout/navbar") ?>
         <div class="p-4">
+
             <?php if (session()->has("success")): ?>
                 <div class="alert alert-success d-flex justify-content-between" role="alert">
                     <?= session()->flash("success") ?>
@@ -30,10 +31,11 @@
                 </div>
             <?php endif; ?>
             <div class="d-flex align-items-center">
-                <div class="">
+                <div>
                     <h2 class="mb-0 text-white"><?= $data->title ?></h2>
-                    <p class="text-white text-small"><?= $data->description ?> </p>
+                    <p class="text-white text-small"><?= $data->description ?></p>
                 </div>
+
                 <div class="ms-auto d-flex gap-2">
 
                     <button data-bs-toggle="modal" data-bs-target="#modal" class="btn btn-success text-white">
