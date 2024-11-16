@@ -67,7 +67,7 @@
                                     <label for="foto_kartu_keluarga">Foto Kartu Keluarga</label>
                                     <label style="background-image: url(<?= $data->data->foto_kartu_keluarga ?>);" class="image-upload rounded mt-2 flex-column d-flex justify-content-center align-items-center border border-dashed p-4">
                                         <input value="<?= old("foto_kartu_keluarga", $data->data->foto_kartu_keluarga) ?>" type="file" class="  form-control d-none image-upload-file" accept="image/*" placeholder="foto_kartu_keluarga" name="foto_kartu_keluarga" id="foto_kartu_keluarga">
-                                        <i class="fa fa-image fs-1"></i>
+                                        <i class="fa fa-image fs-1 "></i>
                                         <span>Upload File</span>
                                     </label>
                                     <?php if (session()->has("foto_kartu_keluarga")): ?>

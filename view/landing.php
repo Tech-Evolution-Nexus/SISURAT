@@ -36,7 +36,12 @@
                     </li>
                 </ul>
                 <div class="d-flex" role="search">
-                    <a href="<?= url("/login") ?>" class="btn btn-light px-4" type="submit">Login</a>
+                    <?php if (auth()->check()): ?>
+                        <a href="<?= url("/admin") ?>" class="btn btn-light px-4"><i class="fa fa-home"></i> Dashboard</a>
+
+                    <?php else: ?>
+                        <a href="<?= url("/login") ?>" class="btn btn-light px-4">Login</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

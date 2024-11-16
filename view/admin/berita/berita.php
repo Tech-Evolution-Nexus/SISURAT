@@ -95,23 +95,23 @@
 
                         <form action="" method="POST" enctype="multipart/form-data">
                             <div class="form-group mt-3 mx-3">
-                                <label>Judul Berita</label>
+                                <label>Judul </label>
                                 <div class="input-group">
                                     <input type="text" class="form-control" placeholder="Masukan Judul Berita" name="judul" id="judul">
                                 </div>
                             </div>
                             <div class="form-group mt-3 mx-3">
-                                <label>Sub Judul Berita</label>
+                                <label>Keterangan</label>
                                 <div class="input-group">
                                     <input type="text" class="form-control" placeholder="Masukan SubJudul Berita" name="subjudul" id="subjudul">
                                 </div>
                             </div>
                             <div class="form-group mt-3 mx-3">
-                                <label class="">Deskripsi</label>
+                                <label class="">Konten</label>
                                 <textarea name="deskripsi" id="deskripsi" class="deskripsi"></textarea>
                             </div>
                             <div class="form-group mt-3 mx-3">
-                                <label class="">Upoload Icon</label>
+                                <label class="">Thumbbnail</label>
                                 <div class="input-group ">
                                     <input type="file" class="form-control-file" name="file_berita" accept="image/*" id="file_berita">
                                 </div>
@@ -153,7 +153,7 @@
                 console.error('There was a problem initializing the editor:', error);
             });
         $("#add-btn").on("click", function() {
-            setupForm("Tambah Jenis Surat", "<?= url("/admin/berita") ?>")
+            setupForm("Tambah Berita", "<?= url("/admin/berita") ?>")
             $("[name=judul]").attr('required');
             $("[name=subjudul]").attr('required');
             $("[name=deskripsi]").attr('required');

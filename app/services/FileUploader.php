@@ -1,78 +1,59 @@
 <?php
 class FileUploader
 {
-    private $targetDir;
-    private $allowedFileTypes;
-    private $file;
+    private $targetDir = "";
+    private $allowedFileTypes = ["jpg", "png", "jpeg", "gif"];
     private $tmp;
 
-    private $targetFile;
-
-
-
-    public function __construct($namefile, $tmp="", $file = "", $targetDir = "", $allowedFileTypes = ["jpg", "png", "jpeg", "gif"])
-
+    // Set the temporary file path (from the uploaded file)
+    public function setFile($file)
     {
-        // dd($file);
-        $this->file = $file;
-        $this->tmp = $tmp;
-        $this->targetDir = $targetDir;
-
-        $this->allowedFileTypes = $allowedFileTypes;
-        $this->targetFile = __DIR__ . "/../../upload/" . $this->targetDir . "/" . basename($namefile);
+        $this->tmp = is_array($file) ? $file["tmp_name"] : $file;
     }
 
-    // Metode untuk mengunggah file
+    // Set the target directory and file name
+    public function setTarget($targetDir = "")
+    {
+        $this->targetDir = $targetDir;
+        // $this->targetFile = __DIR__ . "/../../upload/" . $this->targetDir . "/" . basename($namefile);
+    }
+
+    // Set allowed file types
+    public function setAllowedFileTypes(array $allowedFileTypes)
+    {
+        $this->allowedFileTypes = $allowedFileTypes;
+    }
+
+    // Method to upload the file
     public function upload()
     {
-        // if (!$this->isAllowedFileType()) {
-        //     return "Maaf, hanya file " . implode(", ", $this->allowedFileTypes) . " yang diperbolehkan.";
-        // }
-        // if ($this->fileExists()) {
-        //     return "Maaf, file sudah ada.";
-        // }
-
-        if ($this->moveFile()) {
-            return true;
+        if (!$this->isAllowedFileType()) {
+            return "Maaf, hanya file " . implode(", ", $this->allowedFileTypes) . " yang diperbolehkan.";
         }
 
-        return "Maaf, terjadi kesalahan saat mengunggah file.";
+        return $this->moveFile() ? true : "Maaf, terjadi kesalahan saat mengunggah file.";
     }
 
-    // Metode untuk mengecek tipe file
+    // Check if the file type is allowed
     public function isAllowedFileType()
     {
-        $fileType = strtolower(pathinfo($this->targetFile, PATHINFO_EXTENSION));
+        $fileType = strtolower(pathinfo($this->targetDir, PATHINFO_EXTENSION));
         return in_array($fileType, $this->allowedFileTypes);
     }
 
-    // Metode untuk mengecek apakah file sudah ada
-    private function fileExists()
-    {
-        return file_exists($this->targetFile);
-    }
-
+    // Move the file to the target directory
     private function moveFile()
     {
-        if($this->file==""){
-
-            return move_uploaded_file($this->tmp, $this->targetFile);
-        }else{
-        return move_uploaded_file($this->file["tmp_name"], $this->targetFile);
-
-        }
+        return move_uploaded_file($this->tmp, $this->targetDir);
     }
-    public function delete($fileName)
+
+    // Method to delete a file
+    public function delete($targetDir)
     {
-        $filePath = __DIR__ . "/../../upload/" . $this->targetDir . "/" . basename($fileName);
-        if (file_exists($filePath)) {
-            if (unlink($filePath)) {
-                return "File $fileName telah berhasil dihapus.";
-            } else {
-                return "Maaf, terjadi kesalahan saat menghapus file.";
-            }
-        } else {
-            return "Maaf, file tidak ditemukan.";
+
+        if (file_exists($targetDir)) {
+            return unlink($targetDir) ? "File  telah berhasil dihapus." : "Maaf, terjadi kesalahan saat menghapus file.";
         }
+        return "Maaf, file tidak ditemukan.";
     }
 }

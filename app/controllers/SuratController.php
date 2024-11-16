@@ -73,17 +73,21 @@ class SuratController extends Controller
         if (count($opsi) !== count($opsiUnik)) {
             return redirect()->with("error", "Terdapat data duplikat dalam pilihan Anda.")->back();
         }
+        $fileExt = pathinfo($ficon['name'], PATHINFO_EXTENSION);
         $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-        $uploader = new FileUploader($namasur . "." . $fileType, $ficon, "/surat", $allowedFileTypes);
-
-        $uploadSs = $uploader->isAllowedFileType();
-        if ($uploadSs !== true) {
-            return redirect()->with("error", "$uploadSs")->back();
+        $nameFile  = uniqid() . "." . $fileExt;
+        $uploader = new FileUploader();
+        $uploader->setFile($ficon);
+        $uploader->setTarget(storagePath("private", "/surat/" . $nameFile));
+        $uploader->setAllowedFileTypes($allowedFileTypes);
+        $uploadStatus = $uploader->upload();
+        if ($uploadStatus !== true) {
+            return redirect()->with("error", "$uploadStatus")->back();
         }
         $idsur = $this->model->jsurat->create(
             [
                 "nama_surat" => $namasur,
-                "image" => $namasur . "." . $fileType
+                "image" => $nameFile
             ]
         );
         foreach ($opsi as $data) {
@@ -93,10 +97,7 @@ class SuratController extends Controller
             ]);
         }
 
-        $uploadStatus = $uploader->upload();
-        if ($uploadStatus !== true) {
-            return redirect()->with("success", "$uploadStatus")->back();
-        }
+
         return redirect()->with("success", "Data berhasil ditambahkan.")->back();
     }
     public function getedit($id)
@@ -115,7 +116,10 @@ class SuratController extends Controller
     {
         $this->model->lampiransurat->where("id_surat", "=", $id)->delete();
         $this->model->jsurat->where("id", "=", $id)->delete();
-
+        $existingData = $this->model->jsurat->find($id);
+        $fileName = $existingData->image;
+        $uploader = new FileUploader();
+        $uploader->delete(storagePath("private", "/surat/" . $fileName));
         return redirect("/admin/surat");
     }
     public function edit($id)
@@ -155,23 +159,30 @@ class SuratController extends Controller
             if ($ficon['size'] > $maxFileSize) {
                 return redirect()->with("error", "Ukuran file terlalu besar. Maksimal 2MB.")->back();
             }
+            $fileExt = pathinfo($ficon['name'], PATHINFO_EXTENSION);
 
+            $nameFile  = uniqid() . "." . $fileExt;
             $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-            $uploader = new FileUploader($namasur . "." . $fileType, $ficon, "/surat", $allowedFileTypes);
-
+            $uploader = new FileUploader();
+            $uploader->setFile($ficon);
+            $uploader->setTarget(storagePath("private", "/surat/" . $nameFile));
+            $uploader->setAllowedFileTypes($allowedFileTypes);
 
             // Hapus file lama jika ada dan nama file baru berhasil diunggah
             $uploadStatus = $uploader->upload();
+
             if ($uploadStatus === true) {
-                if ($fileName && file_exists("../upload/surat/" . $fileName)) {
-                    unlink("../upload/surat/" . $fileName); // Hapus file lama
-                }
-                $fileName = $ficon['name'];
-                return redirect()->with("success", "Data berhasil Diubah.")->back();
+                // if ($fileName && file_exists("../upload/surat/" . $fileName)) {
+                //     unlink("../upload/surat/" . $fileName); // Hapus file lama
+                // }
+                $uploader->delete(storagePath("private", "/surat/" . $fileName));
+                // return redirect()->with("success", "Data berhasil Diubah.")->back();
                 // Set nama file baru
             } else {
                 return redirect()->with("error", "$uploadStatus")->back();
             }
+
+            $fileName = $nameFile;
         }
 
         // Update data surat
