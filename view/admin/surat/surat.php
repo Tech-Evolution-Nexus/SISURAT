@@ -90,17 +90,31 @@
                     <div class="modal-body">
                         <form action="" method="POST" enctype="multipart/form-data">
                             <h5>Jenis Surat :</h5>
-                            <div class="form-group mt-3 ms-3">
-                                <label>Nama Surat</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Nama Surat" name="nama_surat" id="nama_surat">
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                    <div class="form-group  ms-3 mb-2">
+                                        <label class="">Gambar surat</label>
+                                        <div class="input-group ">
+                                            <label class="image-upload w-100 rounded mt-2 flex-column d-flex justify-content-center align-items-center border border-dashed p-4">
+                                                <input type="file" class="  form-control d-none image-upload-file" accept="image/*" placeholder="foto_kartu_keluarga" name="file_icon" id="file_icon">
+                                                <i class="fa fa-image fs-1 "></i>
+                                                <span>Upload File</span>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
-                                <label class="mt-3">Upoload Icon</label>
-                                <div class="input-group ">
-                                    <input type="file" class="form-control-file" name="file_icon" accept="image/*" id="file_icon">
+                                <div class="col-md-6 col-12">
+                                    <div class="form-group  ">
+                                        <label>Nama Surat</label>
+                                        <div class="input-group mt-2">
+                                            <input type="text" class="form-control" placeholder="Nama Surat" name="nama_surat" id="nama_surat">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <hr>
+
+
+                            <hr class="border-dark">
                             <div id="dynamic-fields">
                                 <!-- Select box pertama tanpa tombol "Hapus" -->
                                 <div class="d-flex justify-content-between">
@@ -119,7 +133,10 @@
                             </div>
 
                             <br><br>
-                            <button type="submit" class="btn btn-success" id="btn-simpan">Simpan</button>
+                            <div class="d-flex justify-content-end gap-2">
+                                <button type="submit" class="btn btn-primary fw-normal" id="btn-simpan">Simpan</button>
+                                <button type="button" data-bs-dismiss="modal" class="btn btn-secondary" id="btn-simpan">Batal</button>
+                            </div>
                         </form>
                     </div>
 
@@ -144,6 +161,8 @@
                 height: 0,
                 opacity: 0
             })
+            $(".image-upload").css("background-image", `url("")`)
+
             removeLampiranInput()
             addField()
         })
@@ -168,8 +187,8 @@
                         const formGroup = document.createElement("div");
                         formGroup.className = "form-group";
                         formGroup.innerHTML = `
-                       <div class="mt-3 fselected">
-                        <label>Data ${index+1}</label>
+                       <div class=" fselected">
+                        <label class="mb-2">Lampiran ${index+1}</label>
                         <div class="d-flex ms-3  ">
                             <select name="fields[]" class="form-select" required>
                                 <option value="">Pilih Opsi</option>
@@ -177,7 +196,7 @@
                                 <option ${element.id==<?= $datas->id ?>?"selected":""} value="<?= $datas->id ?>"><?= $datas->nama_lampiran ?></option>
                                 <?php endforeach; ?>
                                 </select>
-                                ${index!=0?'<button type="button" class="btn btn-danger ms-2" onclick="removeField(this)"><i class="fa-solid fa-trash"></i></button>':''}
+                                ${index!=0?'<button type="button" class="btn btn-danger text-white ms-2" onclick="removeField(this)"><i class="fa-solid fa-trash"></i></button>':''}
                             </div></div>
                         `;
 
@@ -210,7 +229,7 @@
                         formGroup.className = "form-group";
                         formGroup.innerHTML = `
                          <div class="form-group mt-3 ms-3">
-                            <label>Data ${index+1}</label>
+                            <label class="mb-2">Lampiran ${index+1}</label>
                                 <div class="input-group">
                                     <input class="form-control" name="data-${index}" id="data${index}" value="${element.nama_lampiran}" disabled/>
                                 </div>
@@ -246,10 +265,12 @@
             id_surat,
             nama_surat,
             lampiran,
+            image
         }) => {
 
             $("[name=nama_surat]").val(nama_surat)
             $("[name=file_icon]").val(lampiran)
+            $(".image-upload").css("background-image", `url(${image})`)
 
         }
 
@@ -260,7 +281,7 @@
             const countInput = $(dynamicFields).children(".form-group").length
             formGroup.innerHTML = `
             <div class="mt-3">
-            <label>Data ${countInput+1}</label>
+            <label class="mb-2">Lampiran ${countInput+1}</label>
             <div class="d-flex  ms-3 ">
                  <select name="fields[]" class="form-select" required>
                     <option value="">Pilih Opsi</option>
@@ -268,7 +289,7 @@
                     <option value="<?= $datas->id ?>"><?= $datas->nama_lampiran ?></option>
                     <?php endforeach; ?>
                 </select>
-                    ${countInput > 0 ? '<button type="button" class="btn btn-danger ms-2" onclick="removeField(this)"><i class="fa-solid fa-trash"></i></button>':""}
+                    ${countInput > 0 ? '<button type="button" class="btn btn-danger text-white ms-2" onclick="removeField(this)"><i class="fa-solid fa-trash"></i></button>':""}
                 </div></div>
             `;
             dynamicFields.appendChild(formGroup);

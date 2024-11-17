@@ -46,28 +46,26 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Judul</th>
-                                <th>Sub Judul</th>
-                                <th>Deskripsi</th>
                                 <th>Gambar</th>
+                                <th>Judul</th>
+                                <th>Keterangan</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($data->data  as $index => $kk) : ?>
+                            <?php foreach ($data->data  as $index => $berita) : ?>
                                 <tr>
                                     <td><?= $index + 1 ?></td>
-                                    <td><?= $kk->judul ?></td>
-                                    <td><?= $kk->sub_judul ?></td>
-                                    <td><?= $kk->deskripsi ?></td>
-                                    <td><?= $kk->gambar ?></td>
+                                    <td> <img src="<?= url("/admin/assetsberita/$berita->gambar") ?>" width="32" height="32" alt="a"></td>
+                                    <td><?= $berita->judul ?></td>
+                                    <td><?= $berita->sub_judul ?></td>
 
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Action buttons">
-                                            <button data-id="<?= $kk->id ?>" title="Edit" class="btn editBtn text-white btn-warning btn-sm">
+                                            <button data-id="<?= $berita->id ?>" title="Edit" class="btn editBtn text-white btn-warning btn-sm">
                                                 <i class="fa fa-pencil"></i>
                                             </button>
-                                            <button data-id="<?= $kk->id ?>" title="Hapus" class="btn btnDelete text-white btn-danger btn-sm">
+                                            <button data-id="<?= $berita->id ?>" title="Hapus" class="btn btnDelete text-white btn-danger btn-sm">
                                                 <i class="fa fa-trash"></i>
                                             </button>
 
@@ -94,32 +92,45 @@
 
 
                         <form action="" method="POST" enctype="multipart/form-data">
-                            <div class="form-group mt-3 mx-3">
-                                <label>Judul </label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Masukan Judul Berita" name="judul" id="judul">
+                            <div class="row">
+                                <div class="form-group col-md-6 col-12 ">
+                                    <label class="">Thumbnail</label>
+                                    <div class="input-group ">
+                                        <label for=""></label>
+                                        <label class="image-upload w-100 rounded mt-2 flex-column d-flex justify-content-center align-items-center border border-dashed p-4">
+                                            <input type="file" class="  form-control d-none image-upload-file" accept="image/*" placeholder="file_berita" name="file_berita" id="file_berita">
+                                            <i class="fa fa-image fs-1 "></i>
+                                            <span>Upload File</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-group mb-2">
+                                        <label>Judul </label>
+                                        <div class="input-group mt-2">
+                                            <input type="text" class="form-control" placeholder="Masukan Judul Berita" name="judul" id="judul">
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label>Keterangan</label>
+                                        <div class="input-group mt-2">
+                                            <input type="text" class="form-control" placeholder="Masukan SubJudul Berita" name="subjudul" id="subjudul">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group  mt-2">
+                                    <label class="mb-2">Konten</label>
+                                    <textarea name="deskripsi" id="deskripsi" class="deskripsi"></textarea>
                                 </div>
                             </div>
-                            <div class="form-group mt-3 mx-3">
-                                <label>Keterangan</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Masukan SubJudul Berita" name="subjudul" id="subjudul">
-                                </div>
-                            </div>
-                            <div class="form-group mt-3 mx-3">
-                                <label class="">Konten</label>
-                                <textarea name="deskripsi" id="deskripsi" class="deskripsi"></textarea>
-                            </div>
-                            <div class="form-group mt-3 mx-3">
-                                <label class="">Thumbbnail</label>
-                                <div class="input-group ">
-                                    <input type="file" class="form-control-file" name="file_berita" accept="image/*" id="file_berita">
-                                </div>
-                            </div>
+
 
 
                             <br><br>
-                            <button type="submit" class="btn btn-success mx-3 mb-3">Simpan</button>
+                            <div class="d-flex justify-content-end gap-2">
+                                <button type="submit" class="btn btn-primary fw-normal" id="btn-simpan">Simpan</button>
+                                <button type="button" data-bs-dismiss="modal" class="btn btn-secondary" id="btn-simpan">Batal</button>
+                            </div>
                         </form>
                     </div>
 
@@ -163,6 +174,8 @@
                 height: 0,
                 opacity: 0
             })
+            $(".image-upload").css("background-image", `url("")`)
+
         })
         $(".editBtn").on("click", function() {
             const id = $(this).attr("data-id")
@@ -193,6 +206,8 @@
 
             $("[name=judul]").val(judul)
             $("[name=subjudul]").val(sub_judul)
+            $(".image-upload").css("background-image", `url(${gambar})`)
+
             if (editorInstance) {
                 editorInstance.setData(deskripsi); // Mengatur konten CKEditor 5
             } else {

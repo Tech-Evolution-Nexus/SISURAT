@@ -106,6 +106,7 @@ class SuratController extends Controller
         $datasurat = $this->model->jsurat->where("id", "=", $id)->first();
         $data = $this->model->lampiransurat->select("id_surat", "lampiran.id", "nama_lampiran")
             ->join("lampiran", "lampiran.id", "id_lampiran")->where("id_surat", "=", $id)->get();
+        $datasurat->image = url("/admin/assetssurat/" . $datasurat->image);
         $params = [
             "datasurat" => $datasurat,
             "datalampiran" => $data,
