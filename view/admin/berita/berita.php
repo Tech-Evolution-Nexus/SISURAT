@@ -48,7 +48,7 @@
                                 <th>No</th>
                                 <th>Gambar</th>
                                 <th>Judul</th>
-                                <th>Sub Judul</th>
+                                <th>Keterangan</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>

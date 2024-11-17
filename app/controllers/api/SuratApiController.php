@@ -50,4 +50,52 @@ class SuratApiController
         $data = $this->model->psurat->select()->where("nik", "=", $nik)->where("status", "=", $status)->get();
         return response(["data" => ["msg" => "ad", "datariwayat" => $data]], 200);
     }
+    public function getListPengajuan($nik)
+    {
+
+        $user = $this->model->masyarakat
+            ->select("rw,rt,role")
+            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+            ->join("users", "masyarakat.nik", "users.nik")
+            ->where("masyarakat.nik", "=", $nik)
+            ->first();
+        if ($user->role != "rw" && $user->role != "rt") {
+            return response(["message" => "Anda tidak memiliki akses "], 404);
+        }
+        $statusAwal = $user->role == "rw" ? "di_terima_rt" : "pending";
+        $statusAkhir = $user->role == "rw" ? "di_terima_rw" : "pending";
+        $data1 = $this->model->psurat
+            ->select("pengajuan_surat.*,pengajuan_surat.created_at as tanggal_pengajuan,nama_surat,nama_lengkap")
+            ->join("surat", "pengajuan_surat.id_surat", "surat.id")
+            ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
+            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+            ->where("rw", "=", $user->rw)
+            ->where("rt", "=", $user->rt)
+            ->where("status", "=", $statusAwal)
+            ->orderBy("pengajuan_surat.created_at", "desc")
+            ->get();
+
+        $data2 = $this->model->psurat
+            ->select("pengajuan_surat.*,pengajuan_surat.created_at as tanggal_pengajuan,nama_surat,nama_lengkap,rw,rt")
+            ->join("surat", "pengajuan_surat.id_surat", "surat.id")
+            ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
+            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+            ->where("rw", "=", $user->rw)
+            ->where("rt", "=", $user->rt)
+            ->orderBy("pengajuan_surat.created_at", "desc");
+
+        if ($user->role === "rw") {
+            $data2->where("status", "<>", "pending");
+            $data2->where("status", "<>", "di_terima_rt");
+        } else {
+            $data2->where("status", "<>", "pending");
+        }
+        $data2 =  $data2->get();
+        return response(["data" => [
+            "msg" => "test",
+            "totalData" => count($data1),
+            "datapengajuanpending" => $data1,
+            "datapengajuanselesai" => $data2
+        ]], 200);
+    }
 }
