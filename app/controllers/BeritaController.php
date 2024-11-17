@@ -116,7 +116,9 @@ class BeritaController
             $uploader->setTarget(storagePath("private", "/berita/" . $nameFile));
             $uploader->setAllowedFileTypes($allowedFileTypes);
             $uploadStatus = $uploader->upload();
+            $uploader->delete(storagePath("private", "/berita/" . $d->gambar));
             if ($uploadStatus !== true) {
+
                 return redirect()->with("error", "$uploadStatus")->back();
             }
 
@@ -138,7 +140,7 @@ class BeritaController
         }
 
         // Perform the update
-        $this->model->beritamodel->update($updateData);
+        $this->model->beritamodel->where("id", "=", $id)->update($updateData);
 
         return redirect()->with("success", "Data berhasil diperbarui.")->back();
     }
@@ -154,6 +156,7 @@ class BeritaController
     public function getedit($id)
     {
         $datasurat = $this->model->beritamodel->where("id", "=", $id)->first();
+        $datasurat->gambar = url("/admin/assetsberita/" . $datasurat->gambar);
 
         $params = [
             "data" => $datasurat,
