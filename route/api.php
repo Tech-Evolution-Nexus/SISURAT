@@ -10,9 +10,10 @@ use app\services\Router;
 //surat
 // Router::addRoute("GET", "/getform/:id", [SuratApiController::class, "getform"]);
 Router::addRoute("GET", "/jenissurat", [SuratApiController::class, "getdataall"]);
-Router::addRoute("GET", "/jenissurat/{id}/{ids}", [SuratApiController::class, "getform"]);
+Router::addRoute("GET", "/jenissurat/{nik}/{ids}", [SuratApiController::class, "getform"]);
 Router::addRoute("GET", "/getpengajuan/{nik}/{status}", [SuratApiController::class, "getPengajuan"]);
 Router::addRoute("GET", "/list-pengajuan/{nik}", [SuratApiController::class, "getListPengajuan"]);
+Router::addRoute("GET", "/detailhistory/{idpengajuan}", [SuratApiController::class, "detailhistory"]);
 
 Router::addRoute("GET", "/getlistkk/{id}", [KkApiController::class, "getdatakk"]);
 Router::addRoute("GET", "/getlistsurat", [KkApiController::class, "getdatasurat"]);

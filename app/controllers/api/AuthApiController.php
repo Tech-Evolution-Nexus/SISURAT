@@ -19,11 +19,15 @@ class AuthApiController
         $this->model->KartuKeluargaModel = new KartuKeluargaModel();
     }
     public function Login(){
-        $nik = request("nik");
-        $password = request("password");
-        
-        $users = $this->model->UserModel->where("nik", "=", $nik)->first();
+        $jsonData = json_decode(file_get_contents("php://input"), true);
+        if (!$jsonData) {
+            return response($jsonData, 200);
+        }
+        $nik = $jsonData["nik"];
+        $password = $jsonData["password"];
 
+        $users = $this->model->UserModel->where("nik", "=", $nik)->first();
+        return response( $users,200);      
         if ($users) {
 
             if (password_verify($password, $users->password)) {
