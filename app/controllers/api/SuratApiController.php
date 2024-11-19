@@ -119,6 +119,7 @@ class SuratApiController
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->join("users", "masyarakat.nik", "users.nik")
             ->where("masyarakat.nik", "=", $nik)
+            ->whereIn("role", ["rw", "rt"])
             ->first();
         if ($user->role != "rw" && $user->role != "rt") {
             return response(["message" => "Anda tidak memiliki akses "], 404);
