@@ -182,9 +182,9 @@ class Model
             foreach ($this->wheres as $index => $where) {
                 $prefix = $index === 0 ? "WHERE" : $where['type'];
                 $placeholder = ":{$where['column']}";
-             
-                $whereClauses[] = "$prefix {$where['column']} {$where['operator']} '{$where['value']}' ";
-         
+                $value = $where["operator"] == "IN" ? "{$where['value']}" : "'{$where['value']}'";
+                $whereClauses[] = "$prefix {$where['column']} {$where['operator']} {$value} ";
+
                 $this->bindings[$placeholder] = $where['value'];
             }
 
@@ -202,7 +202,6 @@ class Model
         if (isset($this->limit)) { // Add limit if it's set
             $this->query .= " LIMIT {$this->limit}";
         }
-
         $this->resetQuery();
     }
 
@@ -263,18 +262,16 @@ class Model
 
         $placeholders = [];
         foreach ($values as $index => $value) {
-            $placeholder = ":{$column}_in_{$index}";
+            $placeholder = "'{$value}'";
             $placeholders[] = $placeholder;
             $this->bindings[$placeholder] = $value;
         }
-
         $this->wheres[] = [
             'type' => 'AND',
             'column' => $column,
             'operator' => 'IN',
             'value' => '(' . implode(',', $placeholders) . ')',
         ];
-
         return $this;
     }
 }

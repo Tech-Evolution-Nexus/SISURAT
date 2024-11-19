@@ -13,7 +13,7 @@
             overflow: hidden;
             position: relative;
             color: white;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); */
         }
 
         /* Container for the wave SVG positioned at the bottom */

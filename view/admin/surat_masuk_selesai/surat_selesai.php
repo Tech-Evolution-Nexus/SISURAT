@@ -33,12 +33,11 @@
                             <tr>
                                 <th>No</th>
                                 <th>NOMOR SURAT</th>
-                                <th>NIK</th>
                                 <th>NAMA</th>
                                 <th>JENIS SURAT</th>
                                 <th>WAKTU PENGAJUAN</th>
                                 <th>STATUS</th>
-                                <th>NO HP</th>
+
                                 <th>AKSI</th>
 
 
@@ -49,12 +48,10 @@
                                 <tr>
                                     <td><?= $index + 1 ?></td>
                                     <td><?= $kk->nomor_surat ?></td>
-                                    <td><?= $kk->nik ?></td>
                                     <td><?= $kk->nama_lengkap ?></td>
                                     <td><?= $kk->nama_surat ?></td>
-                                    <td><?= $kk->created_at ?></td>
-                                    <td><?= $kk->status ?></td>
-                                    <td><?= $kk->no_hp ?></td>
+                                    <td><?= formatDate($kk->created_at) ?></td>
+                                    <td><?= formatStatusPengajuan($kk->status) ?></td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Action buttons">
                                             <button data-id="<?= $kk->nomor_surat ?>" title="Detail" class="btn detailBtn  text-white btn-success btn-sm">
@@ -128,7 +125,7 @@
                     });
 
                     const suratFieldRow = document.createElement("div");
-                    suratFieldRow.classList.add("row", "mt-3","ms-3");
+                    suratFieldRow.classList.add("row", "mt-3", "ms-3");
                     dynamicFields.appendChild(suratFieldRow);
 
                     data.datasurat.forEach((surat) => {
