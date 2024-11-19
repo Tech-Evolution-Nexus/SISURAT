@@ -38,4 +38,14 @@ class KomponenController extends Controller
             return;
         }
     }
+    public function getImageLampiran($url)
+    {
+        $filePath = __DIR__ . '/../../upload/lampiran/' . $url;
+        if (file_exists($filePath) && is_file($filePath)) {
+            $mimeType = mime_content_type($filePath);
+            header('Content-Type: ' . $mimeType);
+            readfile($filePath);
+            return;
+        }
+    }
 }

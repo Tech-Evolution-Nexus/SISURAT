@@ -4,6 +4,7 @@ namespace app\controllers\api;
 
 use app\models\JenisSuratModel;
 use app\models\KartuKeluargaModel;
+use app\models\LampiranPengajuanModel;
 use app\models\LampiranSuratModel;
 use app\models\MasyarakatModel;
 use app\models\PengajuanSuratModel;
@@ -20,6 +21,7 @@ class SuratApiController
         $this->model =  (object)[];
         $this->model->jsurat  = new JenisSuratModel();
         $this->model->lampiransurat  = new LampiranSuratModel();
+        $this->model->lampiranpengajuan  = new LampiranPengajuanModel();
         $this->model->kartuKeluarga = new KartuKeluargaModel();
         $this->model->masyarakat = new MasyarakatModel();
         $this->model->psurat = new PengajuanSuratModel();
@@ -50,9 +52,8 @@ class SuratApiController
         $data = $this->model->psurat->select()->where("nik", "=", $nik)->where("status", "=", $status)->get();
         return response(["data" => ["msg" => "ad", "datariwayat" => $data]], 200);
     }
-    public function getListPengajuan($nik)
+    public function getListPengajuan($nik, $status)
     {
-
         $user = $this->model->masyarakat
             ->select("rw,rt,role")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
@@ -63,7 +64,8 @@ class SuratApiController
             return response(["message" => "Anda tidak memiliki akses "], 404);
         }
         $statusAwal = $user->role == "rw" ? "di_terima_rt" : "pending";
-        $statusAkhir = $user->role == "rw" ? "di_terima_rw" : "pending";
+
+        //mengambil data yang menunggu persetujuan berdasarkan status
         $data1 = $this->model->psurat
             ->select("pengajuan_surat.*,pengajuan_surat.created_at as tanggal_pengajuan,nama_surat,nama_lengkap")
             ->join("surat", "pengajuan_surat.id_surat", "surat.id")
@@ -91,11 +93,42 @@ class SuratApiController
             $data2->where("status", "<>", "pending");
         }
         $data2 =  $data2->get();
-        return response(["data" => [
-            "msg" => "test",
-            "totalData" => count($data1),
-            "datapengajuanpending" => $data1,
-            "datapengajuanselesai" => $data2
-        ]], 200);
+        return response([
+            "status" => "success",
+            "message" => null,
+            "data" => [
+                "dataPengajuan" => $status === "pending" ? $data1 : $data2
+            ]
+        ], 200);
+    }
+
+
+    public function getDetailPengajuan($id_pengajuan)
+    {
+        $surat = $this->model->psurat
+            ->select("nama_lengkap,nama_surat,pengajuan_surat.*,pengajuan_surat.created_at as tanggal_pengajuan,rw,rt")
+            ->join("surat", "pengajuan_surat.id_surat", "surat.id")
+            ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
+            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+            ->where("surat.id", "=", $id_pengajuan)
+            ->first();
+        $lampiran = $this->model->lampiranpengajuan
+            ->select("nama_lampiran,url")
+            ->join("lampiran", "lampiran_pengajuan.id_lampiran", "lampiran.id")
+            ->where("id_pengajuan", "=", $id_pengajuan)
+            ->get();
+        if (!$surat) {
+            return response(["message" => "Surat tidak ditemukan "], 404);
+        }
+
+        $surat->lampiran = $lampiran;
+
+        return response([
+            "status" => "success",
+            "message" => null,
+            "data" => [
+                "dataPengajuan" => $surat
+            ]
+        ], 200);
     }
 }

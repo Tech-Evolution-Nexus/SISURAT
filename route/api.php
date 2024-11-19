@@ -12,7 +12,8 @@ use app\services\Router;
 Router::addRoute("GET", "/jenissurat", [SuratApiController::class, "getdataall"]);
 Router::addRoute("GET", "/jenissurat/{id}/{ids}", [SuratApiController::class, "getform"]);
 Router::addRoute("GET", "/getpengajuan/{nik}/{status}", [SuratApiController::class, "getPengajuan"]);
-Router::addRoute("GET", "/list-pengajuan/{nik}", [SuratApiController::class, "getListPengajuan"]);
+Router::addRoute("GET", "/list-pengajuan/{nik}/{status}", [SuratApiController::class, "getListPengajuan"]);
+Router::addRoute("GET", "/pengajuan-detail/{id_pengajuan}", [SuratApiController::class, "getDetailPengajuan"]);
 
 Router::addRoute("GET", "/getlistkk/{id}", [KkApiController::class, "getdatakk"]);
 Router::addRoute("GET", "/getlistsurat", [KkApiController::class, "getdatasurat"]);
