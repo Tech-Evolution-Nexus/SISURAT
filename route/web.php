@@ -110,3 +110,4 @@ Router::addRoute("GET", "/admin/assetssurat/{name}", [KomponenController::class,
 Router::addRoute("GET", "/admin/assetsberita/{name}", [KomponenController::class, "getImageBerita"]);
 Router::addRoute("GET", "/admin/assets-kartu-keluarga/{name}", [KomponenController::class, "getImageKartuKeluarga"]);
 Router::addRoute("GET", "/admin/assets-lampiran/{name}", [KomponenController::class, "getImageLampiran"]);
+Router::addRoute("GET", "/admin/assetsmasyarakat/{name}", [KomponenController::class, "getImagemasyarakat"]);

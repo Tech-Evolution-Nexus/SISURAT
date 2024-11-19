@@ -56,14 +56,16 @@ class PengajuanSuratApiController
             ]);
             $fileName = $img['name'][$key];
             $fileTmpName = $img['tmp_name'][$key];
-
+            $fileExt = pathinfo($fileName , PATHINFO_EXTENSION);
             $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-            $uploader = new FileUploader($fileName,$fileTmpName,"",  "../upload/", $allowedFileTypes,);
-
+            $nameFile  = uniqid() . "." . $fileExt;
+            $uploader = new FileUploader();
+            $uploader->setFile( $fileTmpName);
+            $uploader->setTarget(storagePath("private", "/masyarakat/" . $nameFile));
+            $uploader->setAllowedFileTypes($allowedFileTypes);
             $uploadStatus = $uploader->upload();
             if ($uploadStatus !== true) {
-                return response(["data"=>null,"msg"=>"gagal"], 400);
-        
+                return response(["data"=>$uploadStatus,"msg"=>"gaga Menambahkan"], 200);
             }
         }
         return response(["data"=>$idsurat,$keterangan,"msg"=>"Berhasil Menambahkan"], 200);

@@ -11,26 +11,24 @@ class KomponenController extends Controller
     public function getImageSurat($url)
     {
         $filePath = __DIR__ . '/../../upload/surat/' . $url;
-        if (file_exists($filePath) && is_file($filePath)) {
-            $mimeType = mime_content_type($filePath);
-            header('Content-Type: ' . $mimeType);
-            readfile($filePath);
-            return;
-        }
+        $this->proses($filePath);
     }
     public function getImageBerita($url)
     {
         $filePath = __DIR__ . '/../../upload/berita/' . $url;
-        if (file_exists($filePath) && is_file($filePath)) {
-            $mimeType = mime_content_type($filePath);
-            header('Content-Type: ' . $mimeType);
-            readfile($filePath);
-            return;
-        }
+        $this->proses($filePath);
     }
     public function getImageKartuKeluarga($url)
     {
         $filePath = __DIR__ . '/../../upload/kartu_keluarga/' . $url;
+        $this->proses($filePath);
+    }
+    public function getImageMasyarakat($url)
+    {
+        $filePath = __DIR__ . '/../../upload/masyarakat/' . $url;
+        $this->proses($filePath);
+    }
+    private function proses($filePath=""){
         if (file_exists($filePath) && is_file($filePath)) {
             $mimeType = mime_content_type($filePath);
             header('Content-Type: ' . $mimeType);
