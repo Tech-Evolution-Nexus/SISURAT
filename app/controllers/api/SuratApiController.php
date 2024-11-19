@@ -73,7 +73,7 @@ class SuratApiController
         // Buat filter status
         $statusFilter = [];
         if ($status) {
-            $statusFilter = is_array($status) ? $status : explode('|', $status);
+            $statusFilter = is_array($status) ? $status : explode(',', $status);
         }
 
         // Query data
@@ -95,19 +95,12 @@ class SuratApiController
             "id_surat",
             "nama_surat",
             "image"
-        )->join("surat", "surat.id", "=", "id_surat")->where("nik", "=", $nik);
+        )->join("surat", "surat.id", "id_surat")->where("nik", "=", $nik)->whereIn('status', $statusFilter)->get();
 
-        if (!empty($statusFilter)) {
-            $data->whereIn('status', $statusFilter);
-        }
-
-        $result = $data->get();
-
-        // Kembalikan respons
         return response([
             "data" => [
-                "msg" => "Data retrieved successfully",
-                "datariwayat" => $result
+                "msg" => $status    ,
+                "datariwayat" =>$data
             ]
         ], 200);
     }
