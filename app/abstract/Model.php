@@ -199,7 +199,7 @@ class Model
             $this->query .= ' ORDER BY ' . implode(', ', $orderClauses);
         }
 
-        if (isset($this->limit)) { // Add limit if it's set
+        if (isset($this->limit)) {
             $this->query .= " LIMIT {$this->limit}";
         }
         $this->resetQuery();

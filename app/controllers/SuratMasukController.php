@@ -64,9 +64,11 @@ class SuratMasukController extends Controller
 
     public function updateStatus($idPengajuan)
     {
-
         try {
             $status = request("status");
+            $no_surat = request("no_surat");
+            $no_surat_tambahan = request("no_surat_tambahan");
+            $no_kelurahan = request("no_kelurahan");
             $this->model->pengajuan_surat->where("id", "=", $idPengajuan)->update(["status" => "selesai"]);
             return redirect()->with("success", "Pengajuan surat berhasil disetujui")->back();
         } catch (\Throwable $th) {
