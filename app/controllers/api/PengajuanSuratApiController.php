@@ -34,12 +34,14 @@ class PengajuanSuratApiController
 
         // }
         // return response(["data"=>$_POST['lampiran_info'],"msg"=>"behasil"], 200);
+        header("Access-Control-Allow-Origin: *");
+
         $nik = request("nik");
         $idsurat = request("idsurat");
         $img = request("images");
         $keterangan = request("keterangan");
         $datalampiran = $this->model->lampiransuratModel->where("id_surat","=",$idsurat)->get();
-        
+       
         $data = $this->model->pengajuansurModel->create([
             "nik"=>$nik,
             "id_surat"=>$idsurat,
@@ -47,23 +49,26 @@ class PengajuanSuratApiController
             "status"=>"pendding",
             "kode_kelurahan"=>"123312"
         ]);
-
+    
         foreach ($img['name'] as $key => $tmp_name) {
+          
+            $fileName = $img['name'][$key];
+            $fileTmpName = $img['tmp_name'][$key];
+            $fileExt = pathinfo($fileName , PATHINFO_EXTENSION);
+            $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
+            $nameFile  = uniqid() . "." . $fileExt;
             $this->model->lampiranpengajuanModel->create([
                 'id_pengajuan' => $data,
                 'id_lampiran' => $datalampiran[$key]->id_lampiran,
-                'url'=>$img['name'][$key]
+                'url'=>$nameFile
             ]);
-            $fileName = $img['name'][$key];
-            $fileTmpName = $img['tmp_name'][$key];
-
-            $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-            $uploader = new FileUploader($fileName,$fileTmpName,"",  "../upload/", $allowedFileTypes,);
-
+            $uploader = new FileUploader();
+            $uploader->setFile( $fileTmpName);
+            $uploader->setTarget(storagePath("private", "/masyarakat/" . $nameFile));
+            $uploader->setAllowedFileTypes($allowedFileTypes);
             $uploadStatus = $uploader->upload();
             if ($uploadStatus !== true) {
-                return response(["data"=>null,"msg"=>"gagal"], 400);
-        
+                return response(["data"=>$uploadStatus,"msg"=>"gaga Menambahkan"], 200);
             }
         }
         return response(["data"=>$idsurat,$keterangan,"msg"=>"Berhasil Menambahkan"], 200);

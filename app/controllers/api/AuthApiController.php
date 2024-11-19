@@ -19,7 +19,6 @@ class AuthApiController
         $this->model->KartuKeluargaModel = new KartuKeluargaModel();
     }
 
-
     public function Login() {
         // Membaca data JSON dari request body
         $jsonData = json_decode(file_get_contents("php://input"), true);
@@ -122,9 +121,6 @@ class AuthApiController
     }
     
     
-    
-
-
     public function Aktivasi() {
         // Membaca data JSON dari request body
         $jsonData = json_decode(file_get_contents("php://input"), true);
@@ -295,6 +291,6 @@ class AuthApiController
     }
     
     
-    
+
 }
 
