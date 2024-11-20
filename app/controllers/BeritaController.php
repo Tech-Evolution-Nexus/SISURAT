@@ -74,7 +74,7 @@ class BeritaController
                 "gambar" => $nameFile,
             ]
         );
-
+        pushnotifikasiall("✨ Halo! Ada berita menarik yang mungkin Anda sukai. Yuk, cek sekarang","Berita baru, suasana baru! Klik untuk melihat Berita terkini.");
 
         return redirect()->with("success", "Data berhasil ditambahkan.")->back();
     }
@@ -118,7 +118,6 @@ class BeritaController
             $uploadStatus = $uploader->upload();
             $uploader->delete(storagePath("private", "/berita/" . $d->gambar));
             if ($uploadStatus !== true) {
-
                 return redirect()->with("error", "$uploadStatus")->back();
             }
 

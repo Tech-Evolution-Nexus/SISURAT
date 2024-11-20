@@ -9,6 +9,7 @@ use app\models\LampiranPengajuanModel;
 use app\models\LampiranSuratModel;
 use app\models\MasyarakatModel;
 use app\models\PengajuanSuratModel;
+use app\models\UserModel;
 use app\services\Database;
 use PDO;
 use Exception;
@@ -23,6 +24,10 @@ class PengajuanSuratApiController
         $this->model->pengajuansurModel = new PengajuanSuratModel();
         $this->model->lampiranpengajuanModel = new LampiranPengajuanModel();
         $this->model->lampiransuratModel = new LampiranSuratModel();
+        $this->model->masyarakat = new MasyarakatModel();
+        $this->model->user = new UserModel();
+
+
 
     }
     public function sendsurmas()
@@ -41,13 +46,11 @@ class PengajuanSuratApiController
         $img = request("images");
         $keterangan = request("keterangan");
         $datalampiran = $this->model->lampiransuratModel->where("id_surat","=",$idsurat)->get();
-       
         $data = $this->model->pengajuansurModel->create([
             "nik"=>$nik,
             "id_surat"=>$idsurat,
             "keterangan"=>$keterangan,
             "status"=>"pendding",
-            "kode_kelurahan"=>"123312"
         ]);
     
         foreach ($img['name'] as $key => $tmp_name) {
@@ -71,24 +74,13 @@ class PengajuanSuratApiController
                 return response(["data"=>$uploadStatus,"msg"=>"gaga Menambahkan"], 200);
             }
         }
+        $data = $this->model->masyarakat->select("nik,kartu_keluarga.rt")->join("kartu_keluarga","masyarakat.no_kk","kartu_keluarga.no_kk")->where("masyarakat.nik","=",$nik)->first();
+        $data2 = $this->model->user->select("rt,role,fcm_token")->join("masyarakat","masyarakat.nik","users.nik")->join("kartu_keluarga","masyarakat.no_kk","kartu_keluarga.no_kk")->where("kartu_keluarga.rt","=",$data->rt)->where("users.role","=","rt")->first();
+        if($data2){
+            if($data2->fcm_token != null){
+                pushnotifikasito($data2->fcm_token,"Ada Surat Baru Masuk","Silahkan Klik Untuk Melakukan Persetujuan");
+            }
+        }
         return response(["data"=>$idsurat,$keterangan,"msg"=>"Berhasil Menambahkan"], 200);
-
-
-
-        // $nokelurahan = request("nokelurahan");
-        // $lampengajuan = request("lampiran_pengajuan");
-        // $idpengajuan = request("id_pengajuan");
-        // $idlampiran = request("id_lampiran");
-        // $fileimg = request("fileimg");
-
-
-     
-
-       
-        // if($data){
-        //     return response(["data"=>["msg"=>"ad","databerita" => null]], 200);
-        // }else{
-        //     return response(["data"=>["msg"=>"ad","databerita" => null]], 400);
-        // }
     }
 }
