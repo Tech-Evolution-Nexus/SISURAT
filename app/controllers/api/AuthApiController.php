@@ -21,128 +21,215 @@ class AuthApiController
     public function Login()
     {
         $jsonData = json_decode(file_get_contents("php://input"), true);
+
+        // Memeriksa apakah data JSON valid
         if (!$jsonData) {
-            return response($jsonData, 200);
+            // Mengirimkan respons error jika data tidak valid
+            header('Content-Type: application/json');
+            echo json_encode([
+                "data" => [
+                    "msg" => "Data tidak valid",
+                    "status" => false
+                ]
+            ]);
+            exit;
         }
+
+        // Mengambil NIK dan password dari data yang dikirim
         $nik = $jsonData["nik"];
         $password = $jsonData["password"];
 
+        // Mencari pengguna berdasarkan NIK
         $users = $this->model->UserModel->where("nik", "=", $nik)->first();
-        return response($users, 200);
-        if ($users) {
 
+        // Menentukan respons berdasarkan apakah NIK ditemukan
+        header('Content-Type: application/json'); // Menetapkan header untuk JSON
+        if ($users) {
+            // Jika pengguna ditemukan, memeriksa kecocokan password
             if (password_verify($password, $users->password)) {
-                return response(["data" => ["msg" => "User ditemukan", "dataUserLogin" => $users->id, "status" => true]], 200);
+                echo json_encode([
+                    "data" => [
+                        "msg" => "Login berhasil",
+                        "status" => true,
+                        "dataUserLogin" => $users->id
+                    ]
+                ]);
             } else {
-                return response(["data" => ["msg" => "Password salah", "dataUserlogin" => null, "status" => false]], 401);
+                // Jika password tidak cocok
+                echo json_encode([
+                    "data" => [
+                        "msg" => "Password salah",
+                        "status" => false
+                    ]
+                ]);
             }
         } else {
-            return response(["data" => ["msg" => "User tidak Ditemukan", "dataUserlogin" => null, "status" => false]], 401);
+            // Jika NIK tidak ditemukan
+            echo json_encode([
+                "data" => [
+                    "msg" => "NIK belum terdaftar. Silakan lakukan registrasi terlebih dahulu",
+                    "status" => false
+                ]
+            ]);
         }
+
+        exit; // Menghentikan eksekusi script setelah mengirimkan respons
     }
-
-
 
     public function Veriv()
     {
-        $nik = request("nik");
-        // return response($nik);
-        $users = $this->model->masyarakatModel->where("nik", "=", $nik)->first();
-        if (isset($users)) {
-            return response(["data" => ["msg" => "Nik ditemukan", "datanik" => $users->nik, "status" => true]], 200);
-        } else {
-            return response(["data" => ["msg" => "Nik tidak ditemukan", "datanik" => null, "status" => true]], 401);
-        }
-    }
+        // Membaca data JSON dari request body
+        $jsonData = json_decode(file_get_contents("php://input"), true);
 
+        // Memeriksa apakah data JSON valid
+        if (!$jsonData) {
+            // Mengirimkan respons error jika data tidak valid
+            header('Content-Type: application/json');
+            echo json_encode([
+                "msg" => "Data tidak valid"
+            ]);
+            exit;
+        }
+
+        // Mengambil NIK dari data yang dikirim
+        $nik = $jsonData["nik"];
+
+        // Mencari pengguna berdasarkan NIK
+        $users = $this->model->UserModel->where("nik", "=", $nik)->first();
+
+        // Menentukan respons berdasarkan apakah NIK ditemukan
+        header('Content-Type: application/json'); // Menetapkan header untuk JSON
+        if ($users) {
+            // Jika pengguna ditemukan
+            echo json_encode([
+                "data" => [
+                    "msg" => "Nik ditemukan",
+                    "status" => true
+                ]
+            ]);
+        } else {
+            // Jika pengguna tidak ditemukan
+            echo json_encode([
+                "data" => [
+                    "msg" => "Nik belum terdaftar",
+                    "status" => false
+                ]
+            ]);
+        }
+
+        exit; // Menghentikan eksekusi script setelah mengirimkan respons
+    }
 
 
     public function Aktivasi()
     {
-        $nik = request("nik");
-        $no_hp = request("no_hp");
-        $password = request("password");
+        // Membaca data JSON dari request body
+        $jsonData = json_decode(file_get_contents("php://input"), true);
+
+        // Memeriksa apakah data JSON valid
+        if (!$jsonData) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                "msg" => "Data tidak valid"
+            ]);
+            exit;
+        }
+
+        // Mengambil data dari JSON
+        $nik = $jsonData["nik"] ?? null;
+        $no_hp = $jsonData["no_hp"] ?? null;
+        $password = $jsonData["password"] ?? null;
 
         // Validasi input
         if (empty($nik) || empty($no_hp) || empty($password)) {
-            return response([
+            header('Content-Type: application/json');
+            echo json_encode([
                 "data" => [
                     "msg" => "Semua field wajib diisi.",
-                    "status" => false,
+                    "status" => false
                 ]
-            ], 400);
+            ]);
+            exit;
         }
 
         // Periksa apakah NIK ada di tabel masyarakat
         $users = $this->model->masyarakatModel->where("nik", "=", $nik)->first();
 
-        if (isset($users)) {
-            // Periksa apakah NIK sudah terdaftar di tabel users
+        header('Content-Type: application/json');
+        if ($users) {
+            // Periksa apakah NIK sudah diaktivasi
             $userExists = $this->model->UserModel->where("nik", "=", $nik)->first();
             if ($userExists) {
-                return response([
-                    "datanik" => [
+                echo json_encode([
+                    "data" => [
                         "msg" => "NIK sudah diaktivasi sebelumnya. Silakan login.",
-                        "status" => false,
+                        "status" => false
                     ]
-                ], 409); // 409 = Conflict
+                ]);
+            } else {
+                // Hash password sebelum menyimpan
+                $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+                // Simpan data ke tabel users
+                $this->model->UserModel->create([
+                    "nik" => $nik,
+                    "no_hp" => $no_hp,
+                    "password" => $hashedPassword
+                ]);
+
+                echo json_encode([
+                    "data" => [
+                        "msg" => "Aktivasi berhasil. Silakan login.",
+                        "status" => true
+                    ]
+                ]);
             }
-
-            // Hash password sebelum menyimpan
-            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-
-            // Simpan data ke tabel users
-            $this->model->UserModel->create([
-                "nik" => $nik, // Ambil NIK dari masyarakat
-                "no_hp" => $no_hp,
-                "password" => $hashedPassword,
-            ]);
-
-            return response([
-                "datanik" => [
-                    "msg" => "Aktivasi berhasil. Silakan login.",
-                    "redirectTo" => "login",
-                    "status" => true,
-                ]
-            ], 201); // 201 = Created
         } else {
-            return response([
+            // Jika NIK tidak ditemukan di data masyarakat
+            echo json_encode([
                 "data" => [
                     "msg" => "NIK tidak ditemukan di data masyarakat.",
-                    "status" => false,
+                    "status" => false
                 ]
-            ], 404); // 404 = Not Found
+            ]);
         }
+
+        exit;
     }
+
 
     public function Register()
     {
-        $nik = request("nik");
-        $password = request("password");
-        $no_hp = request("no_hp");
-        $nama_lengkap = request("nama_lengkap");
-        $role = "masyarakat"; // Role default
-        $jenis_kelamin = request("jenis_kelamin");
-        $tempat_lahir = request("tempat_lahir");
-        $tgl_lahir = request("tgl_lahir");
-        $agama = request("agama");
-        $pendidikan = request("pendidikan");
-        $pekerjaan = request("pekerjaan");
-        $status_perkawinan = request("status_perkawinan");
-        $status_keluarga = request("status_keluarga");
-        $kewarganegaraan = request("kewarganegaraan");
-        $nama_ayah = request("nama_ayah");
-        $nama_ibu = request("nama_ibu");
-        $no_kk = request("no_kk");
-        $alamat = request("alamat");
-        $rt = request("rt");
-        $rw = request("rw");
-        $kode_pos = request("kode_pos");
-        $kelurahan = request("kelurahan");
-        $kecamatan = request("kecamatan");
-        $kabupaten = request("kabupaten");
-        $provinsi = request("provinsi");
-        $kk_tgl = request("kk_tgl");
+        $jsonData = json_decode(file_get_contents("php://input"), true);
+        if (!$jsonData) {
+            return response($jsonData, 200);
+        }
+        $nik = $jsonData["nik"] ?? null;
+        $password = $jsonData["password"] ?? null;
+        $no_hp = $jsonData["no_hp"] ?? null;
+        $nama_lengkap = $jsonData["nama_lengkap"] ?? null;
+        $role = $jsonData["role"] ?? "masyarakat"; // Role default jika tidak disediakan
+        $jenis_kelamin = $jsonData["jenis_kelamin"] ?? null;
+        $tempat_lahir = $jsonData["tempat_lahir"] ?? null;
+        $tgl_lahir = $jsonData["tgl_lahir"] ?? null;
+        $agama = $jsonData["agama"] ?? null;
+        $pendidikan = $jsonData["pendidikan"] ?? null;
+        $pekerjaan = $jsonData["pekerjaan"] ?? null;
+        $status_perkawinan = $jsonData["status_perkawinan"] ?? null;
+        $status_keluarga = $jsonData["status_keluarga"] ?? null;
+        $kewarganegaraan = $jsonData["kewarganegaraan"] ?? null;
+        $nama_ayah = $jsonData["nama_ayah"] ?? null;
+        $nama_ibu = $jsonData["nama_ibu"] ?? null;
+        $no_kk = $jsonData["no_kk"] ?? null;
+        $alamat = $jsonData["alamat"] ?? null;
+        $rt = $jsonData["rt"] ?? null;
+        $rw = $jsonData["rw"] ?? null;
+        $kode_pos = $jsonData["kode_pos"] ?? null;
+        $kelurahan = $jsonData["kelurahan"] ?? null;
+        $kecamatan = $jsonData["kecamatan"] ?? null;
+        $kabupaten = $jsonData["kabupaten"] ?? null;
+        $provinsi = $jsonData["provinsi"] ?? null;
+        $kk_tgl = $jsonData["kk_tgl"] ?? null;
 
         // Validasi wajib diisi
         if (empty($nik) || empty($nama_lengkap) || empty($password) || empty($no_hp) || empty($no_kk)) {
