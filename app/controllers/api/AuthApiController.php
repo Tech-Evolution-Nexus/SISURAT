@@ -39,15 +39,18 @@ class AuthApiController
         // Mengambil NIK dan password dari data yang dikirim
         $nik = $jsonData["nik"];
         $password = $jsonData["password"];
-    
-        // Mencari pengguna berdasarkan NIK
-        $users = $this->model->UserModel->where("nik", "=", $nik)->first();
-    
-        // Menentukan respons berdasarkan apakah NIK ditemukan
-        header('Content-Type: application/json'); // Menetapkan header untuk JSON
+        $fcm = $jsonData["fcm_token"];
+        
+        $users = $this->model->UserModel->select("masyarakat.nik,password,role,masyarakat.no_kk")->join("masyarakat","masyarakat.nik","users.nik")->where("users.nik", "=", $nik)->first();
+        header('Content-Type: application/json'); 
         if ($users) {
-            // Jika pengguna ditemukan, memeriksa kecocokan password
+         
             if (password_verify($password, $users->password)) {
+                if($fcm!=null || !empty($fcm)){
+                    $updateData = ["fcm_token"=>$fcm];
+                    $this->model->UserModel->where("nik", "=", $nik)->update($updateData);
+                }
+               
                 echo json_encode([
                     "data" => [
                         "msg" => "Login berhasil",
