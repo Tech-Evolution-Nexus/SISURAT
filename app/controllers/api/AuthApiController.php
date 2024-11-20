@@ -52,7 +52,7 @@ class AuthApiController
                     "data" => [
                         "msg" => "Login berhasil",
                         "status" => true,
-                        "dataUserLogin" => $users->id
+                        "dataUserLogin" => $users
                     ]
                 ]);
             } else {
