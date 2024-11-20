@@ -68,5 +68,4 @@ class SuratApiController
         $placeholders = implode(',', array_fill(0, count($statusFilter), '?'));
         return $placeholders;
     }
-    
 }

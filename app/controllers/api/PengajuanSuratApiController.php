@@ -34,6 +34,15 @@ class PengajuanSuratApiController
     }
     public function sendsurmas()
     {
+
+        // $jsonData = json_decode(file_get_contents("php://input"), true);
+        // if (!$jsonData) {
+        //     return response(["data"=>"d","msg"=>"gagal"], 200);
+
+        // }
+        // return response(["data"=>$_POST['lampiran_info'],"msg"=>"behasil"], 200);
+        header("Access-Control-Allow-Origin: *");
+
         $nik = request("nik");
         $idsurat = request("idsurat");
         $img = request("images");
@@ -44,7 +53,7 @@ class PengajuanSuratApiController
             "nik" => $nik,
             "id_surat" => $idsurat,
             "keterangan" => $keterangan,
-            "status" => "pendding",
+            "status" => "pending",
             "kode_kelurahan" => "123312"
         ]);
 
@@ -59,6 +68,11 @@ class PengajuanSuratApiController
             $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
             $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
             $nameFile  = uniqid() . "." . $fileExt;
+            $this->model->lampiranpengajuanModel->create([
+                'id_pengajuan' => $data,
+                'id_lampiran' => $datalampiran[$key]->id_lampiran,
+                'url' => $nameFile
+            ]);
             $uploader = new FileUploader();
             $uploader->setFile($fileTmpName);
             $uploader->setTarget(storagePath("private", "/masyarakat/" . $nameFile));
@@ -77,7 +91,7 @@ class PengajuanSuratApiController
         // Buat filter status
         $statusFilter = [];
         if ($status) {
-            $statusFilter = is_array($status) ? $status : explode('|', $status);
+            $statusFilter = is_array($status) ? $status : explode(',', $status);
         }
 
         // Query data
@@ -99,22 +113,16 @@ class PengajuanSuratApiController
             "id_surat",
             "nama_surat",
             "image"
-        )->join("surat", "surat.id", "=", "id_surat")->where("nik", "=", $nik);
+        )->join("surat", "surat.id", "id_surat")->where("nik", "=", $nik)->whereIn('status', $statusFilter)->get();
 
-        if (!empty($statusFilter)) {
-            $data->whereIn('status', $statusFilter);
-        }
-
-        $result = $data->get();
-
-        // Kembalikan respons
         return response([
             "data" => [
-                "msg" => "Data retrieved successfully",
-                "datariwayat" => $result
+                "msg" => $status,
+                "datariwayat" => $data
             ]
         ], 200);
     }
+
 
     public function getListPengajuan($nik, $status)
     {
