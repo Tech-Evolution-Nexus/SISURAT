@@ -18,7 +18,8 @@ class AuthApiController
         $this->model->masyarakatModel = new MasyarakatModel();
         $this->model->KartuKeluargaModel = new KartuKeluargaModel();
     }
-    public function Login(){
+    public function Login()
+    {
         $jsonData = json_decode(file_get_contents("php://input"), true);
         if (!$jsonData) {
             return response($jsonData, 200);
@@ -27,32 +28,31 @@ class AuthApiController
         $password = $jsonData["password"];
 
         $users = $this->model->UserModel->where("nik", "=", $nik)->first();
-        return response( $users,200);      
+        return response($users, 200);
         if ($users) {
 
             if (password_verify($password, $users->password)) {
-                return response(["data"=>["msg"=>"User ditemukan","dataUserLogin"=>$users->id,"status"=>true]],200);      
+                return response(["data" => ["msg" => "User ditemukan", "dataUserLogin" => $users->id, "status" => true]], 200);
             } else {
-                return response(["data"=>["msg"=>"Password salah","dataUserlogin"=>null,"status"=>false]],401);
+                return response(["data" => ["msg" => "Password salah", "dataUserlogin" => null, "status" => false]], 401);
             }
         } else {
-            return response(["data"=>["msg"=>"User tidak Ditemukan","dataUserlogin"=>null,"status"=>false]],401);      
+            return response(["data" => ["msg" => "User tidak Ditemukan", "dataUserlogin" => null, "status" => false]], 401);
         }
-    
     }
 
-    
 
-    public function Veriv(){
+
+    public function Veriv()
+    {
         $nik = request("nik");
         // return response($nik);
         $users = $this->model->masyarakatModel->where("nik", "=", $nik)->first();
-        if(isset($users)){
-            return response(["data"=>["msg"=>"Nik ditemukan","datanik"=>$users->nik,"status"=>true]],200);      
-        }else{
-            return response(["data"=>["msg"=>"Nik tidak ditemukan","datanik"=>null,"status"=>true]],401);      
+        if (isset($users)) {
+            return response(["data" => ["msg" => "Nik ditemukan", "datanik" => $users->nik, "status" => true]], 200);
+        } else {
+            return response(["data" => ["msg" => "Nik tidak ditemukan", "datanik" => null, "status" => true]], 401);
         }
-
     }
 
 
@@ -62,7 +62,7 @@ class AuthApiController
         $nik = request("nik");
         $no_hp = request("no_hp");
         $password = request("password");
-    
+
         // Validasi input
         if (empty($nik) || empty($no_hp) || empty($password)) {
             return response([
@@ -72,7 +72,7 @@ class AuthApiController
                 ]
             ], 400);
         }
-    
+
         // Periksa apakah NIK ada di tabel masyarakat
         $users = $this->model->masyarakatModel->where("nik", "=", $nik)->first();
 
@@ -87,17 +87,17 @@ class AuthApiController
                     ]
                 ], 409); // 409 = Conflict
             }
-    
+
             // Hash password sebelum menyimpan
             $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-    
+
             // Simpan data ke tabel users
             $this->model->UserModel->create([
                 "nik" => $nik, // Ambil NIK dari masyarakat
                 "no_hp" => $no_hp,
                 "password" => $hashedPassword,
             ]);
-    
+
             return response([
                 "datanik" => [
                     "msg" => "Aktivasi berhasil. Silakan login.",
@@ -114,7 +114,7 @@ class AuthApiController
             ], 404); // 404 = Not Found
         }
     }
-    
+
     public function Register()
     {
         $nik = request("nik");
@@ -143,7 +143,7 @@ class AuthApiController
         $kabupaten = request("kabupaten");
         $provinsi = request("provinsi");
         $kk_tgl = request("kk_tgl");
-    
+
         // Validasi wajib diisi
         if (empty($nik) || empty($nama_lengkap) || empty($password) || empty($no_hp) || empty($no_kk)) {
             return response([
@@ -153,7 +153,7 @@ class AuthApiController
                 ]
             ], 400);
         }
-    
+
         // Simpan data ke tabel kartu keluarga
         $this->model->KartuKeluargaModel->create([
             "no_kk" => $no_kk,
@@ -167,7 +167,7 @@ class AuthApiController
             "provinsi" => $provinsi,
             "kk_tgl" => $kk_tgl,
         ]);
-    
+
         // Simpan data ke tabel masyarakat
         $this->model->masyarakatModel->create([
             "nik" => $nik,
@@ -185,7 +185,7 @@ class AuthApiController
             "nama_ibu" => $nama_ibu,
             "no_kk" => $no_kk, // Relasi dengan tabel kartu keluarga
         ]);
-    
+
         // Simpan data ke tabel user
         $this->model->UserModel->create([
             "nik" => $nik,
@@ -193,7 +193,7 @@ class AuthApiController
             "no_hp" => $no_hp,
             "role" => $role,
         ]);
-    
+
         // Kirim respons sukses
         return response([
             "data" => [
@@ -202,8 +202,4 @@ class AuthApiController
             ]
         ], 201);
     }
-    
-    
-    
 }
-

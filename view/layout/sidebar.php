@@ -69,6 +69,12 @@
                         <span class="d-inline-block ms-3">RT & RW</span>
                     </a>
                 </li>
+                <li>
+                    <a class="text-body-secondary sidebar-subitem side-link d-flex align-items-center px-3 rounded py-2 text-decoration-none" href="<?= url("/admin/format-surat") ?>">
+                        <i class="fa fa-users"></i>
+                        <span class="d-inline-block ms-3">Format Surat</span>
+                    </a>
+                </li>
             </ul>
         </li>
         <hr class="my-1">

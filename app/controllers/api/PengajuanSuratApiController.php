@@ -197,9 +197,9 @@ class PengajuanSuratApiController
         $surat->lampiran = $lampiran;
 
         return response([
-            "status" => "success",
-            "message" => null,
             "data" => [
+                "status" => "success",
+                "message" => null,
                 "dataPengajuan" => $surat
             ]
         ], 200);

@@ -47,6 +47,7 @@ class DashController
     }
     public  function index()
     {
+
         $currentDate = date("Y-m-d");
         $jenisSurat = $this->model->jenisSurat->get();
         $kartuKeluarga = $this->model->kartuKeluarga->get();
@@ -62,11 +63,14 @@ class DashController
             ->where("DATE(pengajuan_surat.created_at)", "=", $currentDate)
             ->orderBy("pengajuan_surat.created_at", "desc")
             ->get();
-
+        $listRt = $this->model->kartuKeluarga->select("rt")->groupBy("rt")->orderBy("rt")->get();
+        $listRw = $this->model->kartuKeluarga->select("rw")->groupBy("rw")->orderBy("rw")->get();
         $chart = $this->formatChartData();
         $params["data"] = (object)[
             "title" => "Dashboard",
             "description" => "Selamat datang di dashboard admin",
+            "listRt" => $listRt,
+            "listRw" => $listRw,
             "jenis_surat" => count($jenisSurat),
             "users" => count($users),
             "pengajuan" => $pengajuan,
@@ -87,20 +91,40 @@ class DashController
     private function formatChartData()
     {
 
-
+        $filterRw = request("rw");
+        $filterRt = request("rt");
         $tmpChartData = [];
         $maxDay = date("t");
         for ($i = 1; $i <= $maxDay; $i++) {
             $date = sprintf("%s-%02d", date("Y-m"), $i);
             $tmpPengajuanSuratMasuk = $this->model->pengajuan
-                ->where("DATE(created_at)", "=", $date)
-                ->where("status", "=", "di_terima_rw")
-                ->get();
-            $tmpPengajuanSuratSelesai = $this->model->pengajuan
-                ->where("DATE(created_at)", "=", $date)
-                ->where("status", "=", "selesai")
-                ->get();
+                ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
+                ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+                ->where("DATE(pengajuan_surat.created_at)", "=", $date)
+                ->where("status", "=", "di_terima_rw");
 
+            if ($filterRw) {
+                $tmpPengajuanSuratMasuk->where("rw", "=", $filterRw);
+            }
+            if ($filterRt) {
+                $tmpPengajuanSuratMasuk->where("rt", "=", $filterRt);
+            }
+            $tmpPengajuanSuratMasuk = $tmpPengajuanSuratMasuk->get();
+            $tmpPengajuanSuratSelesai = $this->model->pengajuan
+                ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
+                ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+                ->where("DATE(pengajuan_surat.created_at)", "=", $date)
+                ->where("status", "=", "selesai");
+
+
+            if ($filterRw) {
+                $tmpPengajuanSuratSelesai->where("rw", "=", $filterRw);
+            }
+            if ($filterRt) {
+                $tmpPengajuanSuratSelesai->where("rt", "=", $filterRt);
+            }
+
+            $tmpPengajuanSuratSelesai = $tmpPengajuanSuratSelesai->get();
             $tmpChartData["label"][] = $i;
             $tmpChartData["surat_masuk"][] = count($tmpPengajuanSuratMasuk);
             $tmpChartData["surat_selesai"][] = count($tmpPengajuanSuratSelesai);
