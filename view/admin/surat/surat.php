@@ -46,8 +46,8 @@
                         <thead>
                             <tr>
                                 <th>No</th>
+                                <th>Gambar</th>
                                 <th>Jenis Surat</th>
-                                <th>Icon</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -55,8 +55,8 @@
                             <?php foreach ($data->datasurat  as $index => $kk) : ?>
                                 <tr>
                                     <td><?= $index + 1 ?></td>
+                                    <td> <img class="rounded" src="<?= url("/admin/assetssurat/$kk->image") ?>" width="50" height="50" alt="a"></td>
                                     <td><?= $kk->nama_surat ?></td>
-                                    <td> <img src="<?= url("/admin/assetssurat/$kk->image") ?>" width="32" height="32" alt="a"></td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Action buttons">
                                             <button data-id="<?= $kk->id ?>" title="Edit" class="btn editBtn text-white btn-warning btn-sm">

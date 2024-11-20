@@ -18,11 +18,10 @@ class AuthApiController
         $this->model->masyarakatModel = new MasyarakatModel();
         $this->model->KartuKeluargaModel = new KartuKeluargaModel();
     }
-
-    public function Login() {
-        // Membaca data JSON dari request body
+    public function Login()
+    {
         $jsonData = json_decode(file_get_contents("php://input"), true);
-    
+
         // Memeriksa apakah data JSON valid
         if (!$jsonData) {
             // Mengirimkan respons error jika data tidak valid
@@ -35,7 +34,7 @@ class AuthApiController
             ]);
             exit;
         }
-    
+
         // Mengambil NIK dan password dari data yang dikirim
         $nik = $jsonData["nik"];
         $password = $jsonData["password"];
@@ -76,14 +75,15 @@ class AuthApiController
                 ]
             ]);
         }
-    
+
         exit; // Menghentikan eksekusi script setelah mengirimkan respons
     }
-    
-    public function Veriv() {
+
+    public function Veriv()
+    {
         // Membaca data JSON dari request body
         $jsonData = json_decode(file_get_contents("php://input"), true);
-    
+
         // Memeriksa apakah data JSON valid
         if (!$jsonData) {
             // Mengirimkan respons error jika data tidak valid
@@ -93,13 +93,13 @@ class AuthApiController
             ]);
             exit;
         }
-    
+
         // Mengambil NIK dari data yang dikirim
         $nik = $jsonData["nik"];
-    
+
         // Mencari pengguna berdasarkan NIK
         $users = $this->model->UserModel->where("nik", "=", $nik)->first();
-    
+
         // Menentukan respons berdasarkan apakah NIK ditemukan
         header('Content-Type: application/json'); // Menetapkan header untuk JSON
         if ($users) {
@@ -119,15 +119,16 @@ class AuthApiController
                 ]
             ]);
         }
-    
+
         exit; // Menghentikan eksekusi script setelah mengirimkan respons
     }
-    
-    
-    public function Aktivasi() {
+
+
+    public function Aktivasi()
+    {
         // Membaca data JSON dari request body
         $jsonData = json_decode(file_get_contents("php://input"), true);
-    
+
         // Memeriksa apakah data JSON valid
         if (!$jsonData) {
             header('Content-Type: application/json');
@@ -136,12 +137,12 @@ class AuthApiController
             ]);
             exit;
         }
-    
+
         // Mengambil data dari JSON
         $nik = $jsonData["nik"] ?? null;
         $no_hp = $jsonData["no_hp"] ?? null;
         $password = $jsonData["password"] ?? null;
-    
+
         // Validasi input
         if (empty($nik) || empty($no_hp) || empty($password)) {
             header('Content-Type: application/json');
@@ -153,10 +154,10 @@ class AuthApiController
             ]);
             exit;
         }
-    
+
         // Periksa apakah NIK ada di tabel masyarakat
         $users = $this->model->masyarakatModel->where("nik", "=", $nik)->first();
-    
+
         header('Content-Type: application/json');
         if ($users) {
             // Periksa apakah NIK sudah diaktivasi
@@ -171,14 +172,14 @@ class AuthApiController
             } else {
                 // Hash password sebelum menyimpan
                 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-    
+
                 // Simpan data ke tabel users
                 $this->model->UserModel->create([
                     "nik" => $nik,
                     "no_hp" => $no_hp,
                     "password" => $hashedPassword
                 ]);
-    
+
                 echo json_encode([
                     "data" => [
                         "msg" => "Aktivasi berhasil. Silakan login.",
@@ -195,17 +196,16 @@ class AuthApiController
                 ]
             ]);
         }
-    
+
         exit;
     }
-    
-    
+
+
     public function Register()
     {
         $jsonData = json_decode(file_get_contents("php://input"), true);
         if (!$jsonData) {
             return response($jsonData, 200);
-
         }
         $nik = $jsonData["nik"] ?? null;
         $password = $jsonData["password"] ?? null;
@@ -233,7 +233,7 @@ class AuthApiController
         $kabupaten = $jsonData["kabupaten"] ?? null;
         $provinsi = $jsonData["provinsi"] ?? null;
         $kk_tgl = $jsonData["kk_tgl"] ?? null;
-    
+
         // Validasi wajib diisi
         if (empty($nik) || empty($nama_lengkap) || empty($password) || empty($no_hp) || empty($no_kk)) {
             return response([
@@ -243,7 +243,7 @@ class AuthApiController
                 ]
             ], 400);
         }
-    
+
         // Simpan data ke tabel kartu keluarga
         $this->model->KartuKeluargaModel->create([
             "no_kk" => $no_kk,
@@ -257,7 +257,7 @@ class AuthApiController
             "provinsi" => $provinsi,
             "kk_tgl" => $kk_tgl,
         ]);
-    
+
         // Simpan data ke tabel masyarakat
         $this->model->masyarakatModel->create([
             "nik" => $nik,
@@ -275,7 +275,7 @@ class AuthApiController
             "nama_ibu" => $nama_ibu,
             "no_kk" => $no_kk, // Relasi dengan tabel kartu keluarga
         ]);
-    
+
         // Simpan data ke tabel user
         $this->model->UserModel->create([
             "nik" => $nik,
@@ -283,7 +283,7 @@ class AuthApiController
             "no_hp" => $no_hp,
             "role" => $role,
         ]);
-    
+
         // Kirim respons sukses
         return response([
             "data" => [
@@ -292,8 +292,4 @@ class AuthApiController
             ]
         ], 201);
     }
-    
-    
-
 }
-
