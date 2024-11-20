@@ -85,6 +85,7 @@ class SuratMasukSelesaiController extends Controller
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->join("surat", "surat.id", "pengajuan_surat.id_surat")
             ->join("users", "users.nik", "pengajuan_surat.nik")
+            ->where("pengajuan_surat.id", "=", $idPengajuan)
             ->first();
         $html = $formatSurat->konten;
         $this->replaceValue($html, $data);
