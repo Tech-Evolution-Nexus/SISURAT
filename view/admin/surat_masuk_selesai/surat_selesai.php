@@ -54,7 +54,7 @@
                                     <td><?= formatStatusPengajuan($kk->status) ?></td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Action buttons">
-                                            <button data-id="<?= $kk->nomor_surat ?>" title="Detail" class="btn detailBtn  text-white btn-success btn-sm">
+                                            <button data-id="<?= $kk->id ?>" title="Detail" class="btn detailBtn  text-white btn-success btn-sm">
                                                 DETAIL
                                             </button>
                                             <a href="<?= url("/admin/surat-selesai/export/" . $kk->id) ?>">
@@ -80,10 +80,101 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="row" id="isi">
+                        <div class="card-body">
+                            <!-- <h5>Detail Informasi Surat</h5> -->
+                            <div class="row ms-2">
+                                <div class="col-md-3 col-12">
+                                    <p class="mb-1">Nomor Surat</p>
+                                </div>
+                                <div class="col-md-9 col-12 d-flex gap-2 align-items-center">
+                                    <h6 class="fw-bold" id="nosurat">: </h6>
+                                    <h6 class="fw-bold" id="no_surat">
+                                        /
+                                    </h6>
+                                    <h6 class="fw-bold" id="kdtambabhankelurahan"> </h6>
+                                </div>
+                                <div class="col-md-3 col-12">
+                                    <p class="mb-1">Kode Kelurahan</p>
+                                </div>
+                                <div class="col-md-9 col-12">
+                                    <h6 class="fw-bold" id="kdkelurahan">: </h6>
+                                </div>
 
+                                <div class="col-md-3 col-12">
+                                    <p class="mb-1">NIK</p>
+                                </div>
+                                <div class="col-md-9 col-12">
+                                    <h6 class="fw-bold" id="nik">: </h6>
+                                </div>
+
+                                <div class="col-md-3 col-12">
+                                    <p class="mb-1">Nama</p>
+                                </div>
+                                <div class="col-md-9 col-12">
+                                    <h6 class="fw-bold" id="nama">: </h6>
+                                </div>
+
+                                <div class="col-md-3 col-12">
+                                    <p class="mb-1">Tempat, Tanggal Lahir</p>
+                                </div>
+                                <div class="col-md-9 col-12">
+                                    <h6 class="fw-bold" id="tempat_tanggal_lahir">: </h6>
+                                </div>
+
+                                <div class="col-md-3 col-12">
+                                    <p class="mb-1">Jenis Kelamin</p>
+                                </div>
+                                <div class="col-md-9 col-12">
+                                    <h6 class="fw-bold" id="jk">: </h6>
+                                </div>
+
+                                <div class="col-md-3 col-12">
+                                    <p class="mb-1">Kebangsaan/Agama</p>
+                                </div>
+                                <div class="col-md-9 col-12">
+                                    <h6 class="fw-bold" id="kebangsaan_agama">: </h6>
+                                </div>
+
+                                <div class="col-md-3 col-12">
+                                    <p class="mb-1">Status</p>
+                                </div>
+                                <div class="col-md-9 col-12">
+                                    <h6 class="fw-bold" id="status">: </h6>
+                                </div>
+
+                                <div class="col-md-3 col-12">
+                                    <p class="mb-1">Pekerjaan</p>
+                                </div>
+                                <div class="col-md-9 col-12">
+                                    <h6 class="fw-bold" id="pekerjaan">: </h6>
+                                </div>
+
+                                <div class="col-md-3 col-12">
+                                    <p class="mb-1">Alamat</p>
+                                </div>
+                                <div class="col-md-9 col-12">
+                                    <h6 class="fw-bold" id="alamat">: </h6>
+                                </div>
+
+                                <div class="col-md-3 col-12">
+                                    <p class="mb-1">Tanggal Pengajuan</p>
+                                </div>
+                                <div class="col-md-9 col-12">
+                                    <h6 class="fw-bold" id="tanggal_pengajuan">: </h6>
+                                </div>
+
+                                <h5 class="mt-3">Dokumen Pendukung</h5>
+
+                                <div class="row col-12 " id="dokument_pendukung">
+                                    <div class="col-md-3 col-12">
+                                        <p class="mb-1">Bukti Pendukung</p>
+                                    </div>
+                                    <div class="col-md-9 col-12">
+                                        <img id="bukti_pendukung" src="" class="img-thumbnail" alt="Bukti Pendukung">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <br><br>
 
                     </div>
 
@@ -100,53 +191,81 @@
             console.log(id);
             $(".modal").modal("show")
             $.ajax({
-                url: "/SISURAT/admin/surat-selesai/" + id,
+                url: "/SISURAT/admin/surat-selesai/detail/" + id,
                 success: (data) => {
                     $('#fselect').hide();
                     $('.fselected').remove();
-
-                    const dynamicFields = document.getElementById("isi");
+                    setFormData(data)
+                    // const dynamicFields = document.getElementById("isi");
 
                     // Menambahkan biodata
-                    data.biodata.forEach((element, index) => {
-                        for (const [key, value] of Object.entries(element)) {
-                            const inputField = document.createElement("div");
-                            inputField.classList.add("col-6"); // Pastikan tidak ada spasi di sini
+                    //         data.biodata.forEach((element, index) => {
+                    //             for (const [key, value] of Object.entries(element)) {
+                    //                 const inputField = document.createElement("div");
+                    //                 inputField.classList.add("col-6"); // Pastikan tidak ada spasi di sini
 
-                            const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                    //                 const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 
-                            inputField.innerHTML = `
-                                <div class="form-group mt-3 ms-3">
-                                    <label>${label}</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" value="${value}" placeholder="${label}" name="${key}[]" readonly>
-                                    </div>
-                                </div>
-                            `;
-                            dynamicFields.appendChild(inputField);
-                        }
-                    });
+                    //                 inputField.innerHTML = `
+                    //                     <div class="form-group mt-3 ms-3">
+                    //                         <label>${label}</label>
+                    //                         <div class="input-group">
+                    //                             <input type="text" class="form-control" value="${value}" placeholder="${label}" name="${key}[]" readonly>
+                    //                         </div>
+                    //                     </div>
+                    //                 `;
+                    //                 dynamicFields.appendChild(inputField);
+                    //             }
+                    //         });
 
-                    const suratFieldRow = document.createElement("div");
-                    suratFieldRow.classList.add("row", "mt-3", "ms-3");
-                    dynamicFields.appendChild(suratFieldRow);
+                    //         const suratFieldRow = document.createElement("div");
+                    //         suratFieldRow.classList.add("row", "mt-3", "ms-3");
+                    //         dynamicFields.appendChild(suratFieldRow);
 
-                    data.datasurat.forEach((surat) => {
-                        const suratItem = document.createElement("div");
-                        suratItem.classList.add("col-6", "form-group", "mt-3");
+                    //         data.datasurat.forEach((surat) => {
+                    //             const suratItem = document.createElement("div");
+                    //             suratItem.classList.add("col-6", "form-group", "mt-3");
 
-                        suratItem.innerHTML = `
-                <label>${surat.nama_lampiran}</label>
-                <div class="input-group">
-                    <img src="${surat.url}" alt="${surat.nama_lampiran}" style="width: 100px; height: auto;"/>
-                </div>
-            `;
-                        suratFieldRow.appendChild(suratItem);
-                    });
+                    //             suratItem.innerHTML = `
+                    //     <label>${surat.nama_lampiran}</label>
+                    //     <div class="input-group">
+                    //         <img src="${surat.url}" alt="${surat.nama_lampiran}" style="width: 100px; height: auto;"/>
+                    //     </div>
+                    // `;
+                    //             suratFieldRow.appendChild(suratItem);
+                    //         });
                 }
             });
 
         })
+
+        const setFormData = (data) => {
+            $("#nosurat").text(`${data.nomor_surat ?? "-"}`)
+            $("#kdtambabhankelurahan").text(`${data.nomor_surat_tambahan ?? "-"}`)
+            $("#kdkelurahan").text(`${data.kode_kelurahan ?? "-"}`)
+            $("#nik").text(`${data.nik ?? "-"}`)
+            $("#nama").text(`${data.nama_lengkap ?? "-"}`)
+            $("#tempat_tanggal_lahir").text(`${data.tempat_lahir ?? "-"} / ${data.tgl_lahir ?? "-"}`)
+            $("#jk").text(`${data.jenis_kelamin ?? "-"}`)
+            $("#kebangsaan_agama").text(`${data.kewarganegaraan ?? "-"} / ${data.agama ?? "-"}`)
+            $("#status").text(`${data.status  ?? "-"}`)
+            $("#pekerjaan").text(`${data.pekerjaan ?? "-"}`)
+            $("#alamat").text(`${data.alamat ?? "-"}`)
+            $("#tanggal_pengajuan").text(`${data.tanggal_pengajuan ?? "-"}`)
+
+            let html = "";
+            data.lampiran.forEach(lampiran => {
+                $("#dokument_pendukung").empty();
+                html += `
+                <div class="col-md-3 col-12 ">
+                    <p>${lampiran.nama_lampiran}</p>
+                </div>
+                    <div class="col-md-9 col-12 mb-4">
+                    <img id="${lampiran.nama_lampiran}" src="<?= url("/admin/assets-lampiran") ?>/${lampiran.url}" class="img-thumbnail" alt="${lampiran.nama_lampiran}">
+                </div>`;
+            });
+            $("#dokument_pendukung").append(html);
+        }
     </script>
 </body>
 
