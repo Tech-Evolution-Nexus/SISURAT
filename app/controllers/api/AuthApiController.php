@@ -197,18 +197,15 @@ class AuthApiController
     }
     
     
-    public function Register()
+    public function register()
     {
-        $jsonData = json_decode(file_get_contents("php://input"), true);
-        if (!$jsonData) {
-            return response($jsonData, 200);
+        // Ambil data dari JSON
+        $jsonData = json_decode(file_get_contents('php://input'), true);
 
-        }
         $nik = $jsonData["nik"] ?? null;
         $password = $jsonData["password"] ?? null;
         $no_hp = $jsonData["no_hp"] ?? null;
         $nama_lengkap = $jsonData["nama_lengkap"] ?? null;
-        $role = $jsonData["role"] ?? "masyarakat"; // Role default jika tidak disediakan
         $jenis_kelamin = $jsonData["jenis_kelamin"] ?? null;
         $tempat_lahir = $jsonData["tempat_lahir"] ?? null;
         $tgl_lahir = $jsonData["tgl_lahir"] ?? null;
@@ -230,17 +227,19 @@ class AuthApiController
         $kabupaten = $jsonData["kabupaten"] ?? null;
         $provinsi = $jsonData["provinsi"] ?? null;
         $kk_tgl = $jsonData["kk_tgl"] ?? null;
-    
-        // Validasi wajib diisi
+
+        // Validasi input
         if (empty($nik) || empty($nama_lengkap) || empty($password) || empty($no_hp) || empty($no_kk)) {
-            return response([
+            header('Content-Type: application/json');
+            echo json_encode([
                 "data" => [
                     "msg" => "Field NIK, nama lengkap, password, nomor HP, dan No KK wajib diisi.",
-                    "status" => false,
+                    "status" => false
                 ]
-            ], 400);
+            ]);
+            exit;
         }
-    
+
         // Simpan data ke tabel kartu keluarga
         $this->model->KartuKeluargaModel->create([
             "no_kk" => $no_kk,
@@ -252,9 +251,9 @@ class AuthApiController
             "kecamatan" => $kecamatan,
             "kabupaten" => $kabupaten,
             "provinsi" => $provinsi,
-            "kk_tgl" => $kk_tgl,
+            "kk_tgl" => $kk_tgl
         ]);
-    
+
         // Simpan data ke tabel masyarakat
         $this->model->masyarakatModel->create([
             "nik" => $nik,
@@ -270,25 +269,30 @@ class AuthApiController
             "kewarganegaraan" => $kewarganegaraan,
             "nama_ayah" => $nama_ayah,
             "nama_ibu" => $nama_ibu,
-            "no_kk" => $no_kk, // Relasi dengan tabel kartu keluarga
+            "no_kk" => $no_kk
         ]);
-    
+
         // Simpan data ke tabel user
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
         $this->model->UserModel->create([
             "nik" => $nik,
-            "password" => password_hash($password, PASSWORD_BCRYPT),
+            "password" => $hashedPassword,
             "no_hp" => $no_hp,
-            "role" => $role,
+            "role" => "masyarakat"
         ]);
-    
+
         // Kirim respons sukses
-        return response([
+        header('Content-Type: application/json');
+        echo json_encode([
             "data" => [
                 "msg" => "Registrasi berhasil.",
-                "status" => true,
+                "status" => true
             ]
-        ], 201);
+        ]);
+        exit;
     }
+    
+
     
     
 
