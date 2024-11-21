@@ -4,7 +4,51 @@ use app\models\UserModel;
 use app\services\Redirector;
 use app\services\Request;
 use app\services\Session;
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\Messaging\CloudMessage;
 
+if (!function_exists("storagePath")) {
+    function storagePath($access = "public", $fileDir = "")
+    {
+        return ($access == "public" ? __DIR__ . "/../../public/" : __DIR__ . "/../../upload/") . ltrim($fileDir, "/");
+    }
+}
+if (!function_exists("pushnotifikasito")) {
+    function pushnotifikasito($token, $title, $desk)
+    {
+        $factory = (new Factory)->withServiceAccount(__DIR__ . "/../../sisuratmob.json");
+        $messaging = $factory->createMessaging();
+        $message = CloudMessage::withTarget('token', $token)
+            ->withNotification([
+                'title' => $title,
+                'body' => $desk
+            ]);
+        try {
+            $sendResponse = $messaging->send($message);
+            // echo 'Message sent successfully: ' . $sendResponse;
+        } catch (\Kreait\Firebase\Exception\MessagingException $e) {
+            echo 'Error sending message: ' . $e->getMessage();
+        }
+    }
+}
+if (!function_exists("pushnotifikasiall")) {
+    function pushnotifikasiall($title,$desk)
+    {
+        $factory = (new Factory)->withServiceAccount(__DIR__ . "/../../sisuratmob.json");
+        $messaging = $factory->createMessaging();
+        $message = CloudMessage::withTarget('topic', 'global')
+        ->withNotification([
+            'title' => $title,
+            'body' => $desk
+        ]);
+        try {
+            $sendResponse = $messaging->send($message);
+            // echo 'Message sent successfully: ' . $sendResponse;
+        } catch (\Kreait\Firebase\Exception\MessagingException $e) {
+            echo 'Error sending message: ' . $e->getMessage();
+        }
+    }
+}
 if (!function_exists("assets")) {
     function assets($path)
     {

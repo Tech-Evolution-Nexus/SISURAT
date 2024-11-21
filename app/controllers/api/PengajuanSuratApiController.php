@@ -47,14 +47,12 @@ class PengajuanSuratApiController
         $idsurat = request("idsurat");
         $img = request("images");
         $keterangan = request("keterangan");
-        $datalampiran = $this->model->lampiransuratModel->where("id_surat", "=", $idsurat)->get();
-
+        $datalampiran = $this->model->lampiransuratModel->where("id_surat","=",$idsurat)->get();
         $data = $this->model->pengajuansurModel->create([
-            "nik" => $nik,
-            "id_surat" => $idsurat,
-            "keterangan" => $keterangan,
-            "status" => "pending",
-            "kode_kelurahan" => "123312"
+            "nik"=>$nik,
+            "id_surat"=>$idsurat,
+            "keterangan"=>$keterangan,
+            "status"=>"pendding",
         ]);
 
         foreach ($img['name'] as $key => $tmp_name) {
@@ -82,7 +80,14 @@ class PengajuanSuratApiController
                 return response(["data" => $uploadStatus, "msg" => "gaga Menambahkan"], 200);
             }
         }
-        return response(["data" => $idsurat, $keterangan, "msg" => "Berhasil Menambahkan"], 200);
+        $data = $this->model->masyarakat->select("nik,kartu_keluarga.rt")->join("kartu_keluarga","masyarakat.no_kk","kartu_keluarga.no_kk")->where("masyarakat.nik","=",$nik)->first();
+        $data2 = $this->model->user->select("rt,role,fcm_token")->join("masyarakat","masyarakat.nik","users.nik")->join("kartu_keluarga","masyarakat.no_kk","kartu_keluarga.no_kk")->where("kartu_keluarga.rt","=",$data->rt)->where("users.role","=","rt")->first();
+        if($data2){
+            if($data2->fcm_token != null){
+                pushnotifikasito($data2->fcm_token,"Ada Surat Baru Masuk","Silahkan Klik Untuk Melakukan Persetujuan");
+            }
+        }
+        return response(["data"=>$idsurat,$keterangan,"msg"=>"Berhasil Menambahkan"], 200);
     }
 
 
