@@ -257,7 +257,7 @@ class Model
     }
     public function limit($value)
     {
-        $this->limit = (int) $value; // Ensure the limit is an integer
+        $this->limit = (int) $value;
         return $this;
     }
 

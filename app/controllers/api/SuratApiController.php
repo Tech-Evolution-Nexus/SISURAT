@@ -28,24 +28,40 @@ class SuratApiController
     }
     public function getdata()
     {
-        $data = $this->model->jsurat->select()->limit(6)->all();
+        $data = $this->model->jsurat->limit(6)->get();
         return response(["data" => $data,], 200);
     }
 
-    public function getdataall()
+    public function getdataall($limit)
     {
-        $data = $this->model->jsurat->select()->all();
-        return response(["data" => ["msg" => "ad", "datalampiran" => $data]], 200);
+        if ($limit == "all") {
+            $data = $this->model->jsurat->select()->orderBy("id", "DESC")->all();
+        } else {
+            $data = $this->model->jsurat->select()->limit(6)->orderBy("id", "DESC")->get();
+        }
+        if ($data) {
+            return response(["status" => true, "message" => "Data Berhasil Diambil", "data" => $data], 200);
+        } else {
+            return response(["status" => false, "message" => "Gagal Mengambil Data", "data" => $data], 400);
+        }
     }
     public function getform($nik, $idsurat)
     {
         $data = $this->model->kartuKeluarga
             ->select("kartu_keluarga.no_kk,nama_lengkap,kk_tgl,nik,alamat,rt,rw,kode_pos,kelurahan,kecamatan,kabupaten,provinsi")
             ->join("masyarakat", "kartu_keluarga.no_kk", "masyarakat.no_kk")->where("nik", "=", $nik)
-            ->get();
-        $data2 = $this->model->lampiransurat->select("id_surat", "lampiran.id", "nama_lampiran", "image")
-            ->join("lampiran", "lampiran.id", "id_lampiran")->join("surat", "surat.id", "id_surat")->where("id_surat", "=", $idsurat)->get();;
-        return response(["data" => ["msg" => "ad", "biodata" => $data, "datalampiran" => $data2]], 200);
+            ->first();
+        if ($data) {
+            $data2 = $this->model->lampiransurat->select("id_surat", "lampiran.id", "nama_lampiran", "image")
+                ->join("lampiran", "lampiran.id", "id_lampiran")->join("surat", "surat.id", "id_surat")->where("id_surat", "=", $idsurat)->get();
+            if ($data2) {
+                return response(["status" => true, "message" => "Data Berhasil Diambil", "data" => ["biodata" => $data, "datalampiran" => $data2]], 200);
+            } else {
+                return response(["status" => false, "message" => "Gagal Mengambil Data", "data" => ["biodata" => [], "datalampiran" => []]], 400);
+            }
+        } else {
+            return response(["status" => false, "message" => "Gagal Mengambil Data", "data" => ["biodata" => [$data], "datalampiran" => []]], 400);
+        }
     }
     public function detailhistory($idpengajuan)
     {
@@ -67,5 +83,16 @@ class SuratApiController
         }
         $placeholders = implode(',', array_fill(0, count($statusFilter), '?'));
         return $placeholders;
+    }
+    public function dibatalkan()
+    {
+        $jsonData = json_decode(file_get_contents("php://input"), true);
+        $dataa = ["status" => "dibatalkan"];
+        $data = $this->model->psurat->where("id", "=", $jsonData)->update($dataa);
+        if ($data) {
+            return response(["status" => true, "message" => "Berhasil Di Batalkan", "data" => $data], 200);
+        } else {
+            return response(["status" => false, "message" => "Gagal Di Batalkan", "data" => $data], 200);
+        }
     }
 }

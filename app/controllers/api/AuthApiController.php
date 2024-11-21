@@ -5,7 +5,7 @@ namespace app\controllers\api;
 use app\models\KartuKeluargaModel;
 use app\models\MasyarakatModel;
 use app\models\UserModel;
-
+use Exception;
 
 class AuthApiController
 {
@@ -19,65 +19,53 @@ class AuthApiController
         $this->model->KartuKeluargaModel = new KartuKeluargaModel();
     }
 
-        public function Login()
+    public function Login()
     {
-        $jsonData = json_decode(file_get_contents("php://input"), true);
-
-        // Memeriksa apakah data JSON valid
-        if (!$jsonData) {
-            // Mengirimkan respons error jika data tidak valid
-            header('Content-Type: application/json');
-            echo json_encode([
-                "data" => [
-                    "msg" => "Data tidak valid",
-                    "status" => false
-                ]
-            ]);
-            exit;
-        }
-
-        // Mengambil NIK dan password dari data yang dikirim
-        $nik = $jsonData["nik"];
-        $password = $jsonData["password"];
-        $fcm = $jsonData["fcm_token"];
-        
-        $users = $this->model->UserModel->select("masyarakat.nik,password,role,masyarakat.no_kk")->join("masyarakat","masyarakat.nik","users.nik")->where("users.nik", "=", $nik)->first();
-        header('Content-Type: application/json'); 
-        if ($users) {
-         
-            if (password_verify($password, $users->password)) {
-                if($fcm!=null || !empty($fcm)){
-                    $updateData = ["fcm_token"=>$fcm];
-                    $this->model->UserModel->where("nik", "=", $nik)->update($updateData);
-                }
-               
-                echo json_encode([
-                    "data" => [
-                        "msg" => "Login berhasil",
-                        "status" => true,
-                        "dataUserLogin" => $users
-                    ]
-                ]);
-            } else {
-                // Jika password tidak cocok
-                echo json_encode([
-                    "data" => [
-                        "msg" => "Password salah",
-                        "status" => false
-                    ]
-                ]);
+        try {
+            $jsonData = json_decode(file_get_contents("php://input"), true);
+            if (!$jsonData) {
+                return response([
+                    "message" => "Data tidak valid",
+                    "status" => false,
+                    "data" => []
+                ], 400);
             }
-        } else {
-            // Jika NIK tidak ditemukan
-            echo json_encode([
-                "data" => [
-                    "msg" => "NIK belum terdaftar. Silakan lakukan registrasi terlebih dahulu",
-                    "status" => false
-                ]
-            ]);
+            $nik = $jsonData["nik"];
+            $password = $jsonData["password"];
+            $fcm = $jsonData["fcm_token"];
+            $users = $this->model->UserModel->select("masyarakat.nik,password,role,masyarakat.no_kk")->join("masyarakat", "masyarakat.nik", "users.nik")->where("users.nik", "=", $nik)->first();
+            if ($users) {
+                if (password_verify($password, $users->password)) {
+                    if ($fcm != null || !empty($fcm)) {
+                        $updateData = ["fcm_token" => $fcm];
+                        $this->model->UserModel->where("nik", "=", $nik)->update($updateData);
+                    }
+                    return response([
+                        "message" => "Berhasil Login",
+                        "status" => true,
+                        "data" => $users
+                    ], 200);
+                } else {
+                    return response([
+                        "message" => "Password Salah",
+                        "status" => false,
+                        "data" => []
+                    ], 400);
+                }
+            } else {
+                return response([
+                    "message" => "NIK belum terdaftar. Silakan lakukan registrasi terlebih dahulu",
+                    "status" => false,
+                    "data" => []
+                ], 400);
+            }
+        } catch (Exception $th) {
+            return response([
+                "message" => "$th",
+                "status" => false,
+                "data" => []
+            ], 500);
         }
-
-        exit; // Menghentikan eksekusi script setelah mengirimkan respons
     }
 
     public function Veriv()
@@ -201,8 +189,8 @@ class AuthApiController
         exit;
     }
 
-    
-    
+
+
     public function register()
     {
         // Ambil data dari JSON
@@ -298,10 +286,3 @@ class AuthApiController
         exit;
     }
 }
-
-
-
-    
-
-
-
