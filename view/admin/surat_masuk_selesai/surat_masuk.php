@@ -94,15 +94,20 @@
                                         <div class="col-md-3 col-12">
                                             <p class="mb-1">Nomor Surat</p>
                                         </div>
-                                        <div class="col-md-9 col-12 d-flex">
-                                            <h6 class="fw-bold" id="no_surat">: / </h6>
+                                        <div class="col-md-9 col-12 d-flex gap-2 align-items-center">
+                                            <input type="text" class="form-control" name="no_surat" placeholder="Nomer Surat" id="" required>
+                                            <h6 class="fw-bold" id="no_surat">
+                                                /
+                                            </h6>
+                                            <input type="text" class="form-control" name="no_surat_tambahan" placeholder="Nomer Surat Tambahan" id="" required>
+
                                         </div>
 
                                         <div class="col-md-3 col-12">
                                             <p class="mb-1">Kode Kecamatan</p>
                                         </div>
                                         <div class="col-md-9 col-12">
-                                            <h6 class="fw-bold" id="kode_kecamatan">: </h6>
+                                            <input type="text" class="form-control my-2" name="no_kelurahan" placeholder="Nomer Kelurahan" id="" required>
                                         </div>
 
                                         <div class="col-md-3 col-12">
@@ -225,9 +230,6 @@
         }
 
         const setFormData = (data) => {
-
-            $("#no_surat").text(`${data.nomor_surat ?? "-"} / ${data.nomor_surat_tambahan ?? "-"}`)
-            $("#kode_kecamatan").text(`${data.kode_kelurahan ?? "-"}`)
             $("#nik").text(`${data.nik ?? "-"}`)
             $("#nama").text(`${data.nama_lengkap ?? "-"}`)
             $("#tempat_tanggal_lahir").text(`${data.tempat_lahir ?? "-"} / ${data.tgl_lahir ?? "-"}`)
@@ -241,7 +243,6 @@
             let html = "";
             data.lampiran.forEach(lampiran => {
                 $("#dokument_pendukung").empty();
-
                 html += `
                 <div class="col-md-3 col-12 ">
                     <p>${lampiran.nama_lampiran}</p>

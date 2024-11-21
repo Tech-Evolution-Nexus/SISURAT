@@ -17,6 +17,7 @@ class Model
     private $joins = [];
     private $bindings = [];
     private $orders = [];
+    private $groups = [];
     private $fields = "*";
     private $fetchMode = PDO::FETCH_OBJ;
     private $limit;
@@ -136,6 +137,19 @@ class Model
         ];
         return $this;
     }
+    public function groupBy($column)
+    {
+        if (is_array($column)) {
+            $this->groups = array_map(function ($item) {
+                return ["column" => $item];
+            }, $column);
+        } else {
+            $this->groups[] = [
+                'column' => $column,
+            ];
+        }
+        return $this;
+    }
 
     public function join($table, $field1, $field2)
     {
@@ -191,6 +205,13 @@ class Model
             $this->query .= ' ' . implode(' ', $whereClauses);
         }
 
+        if (!empty($this->groups)) {
+            $groupCluses = [];
+            foreach ($this->groups as $order) {
+                $groupCluses[] = "{$order['column']}";
+            }
+            $this->query .= ' GROUP BY ' . implode(', ', $groupCluses);
+        }
         if (!empty($this->orders)) {
             $orderClauses = [];
             foreach ($this->orders as $order) {
@@ -199,9 +220,11 @@ class Model
             $this->query .= ' ORDER BY ' . implode(', ', $orderClauses);
         }
 
-        if (isset($this->limit)) { // Add limit if it's set
+        if (isset($this->limit)) {
             $this->query .= " LIMIT {$this->limit}";
         }
+
+
         $this->resetQuery();
     }
 
@@ -213,7 +236,7 @@ class Model
 
             $stmt->execute($bindings);
         } catch (\Throwable $th) {
-            // dd($th);
+            dd($th);
             throw new \Exception("Database query error: " . $th->getMessage());
         }
         return $stmt;
@@ -252,6 +275,7 @@ class Model
         $this->joins = [];
         $this->orders = [];
         $this->bindings = [];
+        $this->groups = [];
         $this->fields = "*";
     }
     public function whereIn($column, array $values)

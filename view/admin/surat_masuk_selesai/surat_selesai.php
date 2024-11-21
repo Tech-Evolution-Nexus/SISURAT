@@ -57,6 +57,9 @@
                                             <button data-id="<?= $kk->nomor_surat ?>" title="Detail" class="btn detailBtn  text-white btn-success btn-sm">
                                                 DETAIL
                                             </button>
+                                            <a href="<?= url("/admin/surat-selesai/export/" . $kk->id) ?>">
+                                                Download
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>

@@ -4,7 +4,54 @@
 <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.ckeditor.com/ckeditor5/34.0.0/classic/ckeditor.js"></script>
+<script type="importmap">
+    {
+				"imports": {
+					"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.3.1/ckeditor5.js",
+					"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.3.1/"
+				}
+			}
+		</script>
+<script type="module">
+    import {
+        ClassicEditor,
+        Essentials,
+        Paragraph,
+        Bold,
+        Italic,
+        Font,
+        Alignment,
+        Image,
+        ImageUpload,
+        Table,
+        TableToolbar,
+        Heading,
+        Indent
+    } from 'ckeditor5';
+
+    ClassicEditor
+        .create(document.querySelector('.editor'), {
+            plugins: [Heading, Essentials, Paragraph, Bold, Italic, Font, Alignment, Image, ImageUpload, Table, TableToolbar, Indent],
+            toolbar: [
+                'undo', 'redo', '|',
+                'bold', 'italic', 'underline', 'strikethrough', '|',
+                'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+                'alignment', 'bulletedList', 'numberedList', '|',
+                'link', 'blockQuote', 'insertTable', 'imageUpload', '|',
+                'heading', 'indent', 'outdent', '|',
+                'code', 'codeBlock', '|',
+                'removeFormat'
+            ],
+        })
+        .then(editor => {
+            window.editor = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+
+
 <script>
     $(document).ready(function() {
         $(".nav-toggle").on("click", function() {
@@ -147,5 +194,9 @@
             $(this).parent().css("backgroundImage", `url(${imageUrl})`);
             $(this).parent().find("i,span").hide();
         })
+
+
+
+
     })
 </script>

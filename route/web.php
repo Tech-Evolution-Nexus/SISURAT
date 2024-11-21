@@ -5,6 +5,7 @@ use app\controllers\AnggotaKeluargaController;
 use app\controllers\AuthController;
 use app\controllers\BeritaController;
 use app\controllers\DashController;
+use app\controllers\FormatSuratController;
 use app\controllers\KartuKeluargaController;
 use app\controllers\KomponenController;
 use app\controllers\LandingController;
@@ -27,8 +28,19 @@ Router::addRoute("GET", "/admin/esurat/{id}", [SuratController::class, "getedit"
 Router::addRoute("POST", "/admin/dsurat/{id}", [SuratController::class, "deletedata"]);
 Router::addRoute("POST", "/admin/editsurat/{id}", [SuratController::class, "edit"]);
 
+//format surat
+Router::addRoute("GET", "/admin/format-surat", [FormatSuratController::class, "index"]);
+Router::addRoute("GET", "/admin/format-surat/create", [FormatSuratController::class, "create"]);
+Router::addRoute("POST", "/admin/format-surat", [FormatSuratController::class, "store"]);
+Router::addRoute("GET", "/admin/format-surat/{id}/edit", [FormatSuratController::class, "edit"]);
+Router::addRoute("POST", "/admin/format-surat/{id}", [FormatSuratController::class, "update"]);
+Router::addRoute("POST", "/admin/format-surat/{id}/delete", [FormatSuratController::class, "delete"]);
+
+
+//surat selesai
 Router::addRoute("GET", "/admin/surat-selesai", [SuratMasukSelesaiController::class, "index"]);
 Router::addRoute("GET", "/admin/surat-selesai/{id}", [SuratMasukSelesaiController::class, "getdata"]);
+Router::addRoute("GET", "/admin/surat-selesai/export/{id}", [SuratMasukSelesaiController::class, "exportPengajuan"]);
 
 //USER
 Router::addRoute("GET", "/admin/users", [UserController::class, "index"]);

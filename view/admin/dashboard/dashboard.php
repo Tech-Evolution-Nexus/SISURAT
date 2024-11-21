@@ -170,7 +170,38 @@
                 <div class="col-md-8 col-12">
                     <div class="card text-dark h-100">
                         <div class="card-body ">
-                            <h5 class="mb-2">Pengajuan Surat (Bulan <?= $data->bulan ?>)</h5>
+                            <div class="d-flex mb-2">
+                                <h5>Pengajuan Surat (Bulan <?= $data->bulan ?>)</h5>
+
+                                <div class="dropdown ms-auto">
+                                    <button class="btn btn-outline-dark ms-auto dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-filter"></i> Filter</button>
+
+                                    <div class="dropdown-menu p-3" style="min-width: 300px;">
+                                        <h5 class="fw-bold">Filter pengajuan surat</h5>
+                                        <form action="<?= url("/admin") ?>" method="get">
+                                            <div class="form-group mb-2">
+                                                <label for="" class="mb-1">Rw</label>
+                                                <select name="rw" id="" class="form-control">
+                                                    <option value="">Pilih Rw</option>
+                                                    <?php foreach ($data->listRw as $rw) : ?>
+                                                        <option <?= request("rw") == $rw->rw ? "selected" : "" ?> value="<?= $rw->rw ?>"><?= $rw->rw ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
+                                            <div class="form-group mb-2">
+                                                <label for="" class="mb-1">Rt <span>(optional)</span></label>
+                                                <select name="rt" id="" class="form-control">
+                                                    <option value="">Pilih Rt</option>
+                                                    <?php foreach ($data->listRt as $rt) : ?>
+                                                        <option <?= request("rt") == $rt->rt ? "selected" : "" ?> value="<?= $rt->rt ?>"><?= $rt->rt ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
+                                            <button class="btn btn-primary fw-normal w-100">Filter</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                             <canvas height="150" id="chart-pengajuan"></canvas>
                         </div>
                     </div>
@@ -276,6 +307,21 @@
         new Chart(ctx, {
             type: 'line',
             data: chartData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        ticks: {
+                            // Hanya menampilkan bilangan bulat
+                            callback: function(value) {
+                                return Number.isInteger(value) ? value : null;
+                            },
+                            stepSize: 1 // Jarak antar ticks diatur ke 1
+                        },
+                        beginAtZero: true // Memastikan mulai dari nol
+                    }
+                }
+            }
 
         });
         const ctx2 = document.getElementById('chart-users');

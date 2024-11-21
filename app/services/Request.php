@@ -10,6 +10,10 @@ class Request
         $result = $this->sanitize($this->format()[$key] ?? null);
         return $result === "" ? null : $result;
     }
+    public function getRaw($key)
+    {
+        return $this->format()[$key] ?? null;
+    }
 
     public function getAll()
     {
