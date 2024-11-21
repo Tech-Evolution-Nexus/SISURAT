@@ -41,6 +41,7 @@ Router::addRoute("POST", "/admin/format-surat/{id}/delete", [FormatSuratControll
 Router::addRoute("GET", "/admin/surat-selesai", [SuratMasukSelesaiController::class, "index"]);
 Router::addRoute("GET", "/admin/surat-selesai/{id}", [SuratMasukSelesaiController::class, "getdata"]);
 Router::addRoute("GET", "/admin/surat-selesai/export/{id}", [SuratMasukSelesaiController::class, "exportPengajuan"]);
+Router::addRoute("GET", "/admin/surat-selesai/detail/{idPengajuan}", [SuratMasukSelesaiController::class, "detail"]);
 
 //USER
 Router::addRoute("GET", "/admin/users", [UserController::class, "index"]);

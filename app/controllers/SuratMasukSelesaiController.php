@@ -7,6 +7,7 @@ use app\models\FormatSuratModel;
 use app\models\JenisSuratModel;
 use app\models\KartuKeluargaModel;
 use app\models\LampiranModel;
+use app\models\LampiranPengajuanModel;
 use app\models\LampiranSuratModel;
 use app\models\MasyarakatModel;
 use app\models\PengajuanSuratModel;
@@ -23,11 +24,13 @@ class SuratMasukSelesaiController extends Controller
         }
         $this->model =  (object)[];
         $this->model->psurat  = new PengajuanSuratModel();
+        $this->model->lpengajuan  = new LampiranPengajuanModel();
+
         $this->model->formatSurat  = new FormatSuratModel();
     }
     public function  index()
     {
-        $data = $this->model->psurat->select("pengajuan_surat.id", "nomor_surat", "masyarakat.nik", "nama_lengkap", "nama_surat", "pengajuan_surat.created_at", "status", "no_hp")->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")->join("surat", "surat.id", "pengajuan_surat.id_surat")->join("users", "users.nik", "pengajuan_surat.nik")->get();
+        $data = $this->model->psurat->select("pengajuan_surat.id", "nomor_surat", "masyarakat.nik", "nama_lengkap", "nama_surat", "pengajuan_surat.created_at", "status", "no_hp")->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")->join("surat", "surat.id", "pengajuan_surat.id_surat")->join("users", "users.nik", "pengajuan_surat.nik")->where("status","=","selesai")->get();
 
         $params["data"] = (object)[
             "title" => "Jenis Surat",
@@ -124,5 +127,27 @@ class SuratMasukSelesaiController extends Controller
         $html = str_replace("{kewarganegaraan}", $data->kewarganegaraan, $html);
         $html = str_replace("{alamat}", $data->alamat, $html);
         $html = str_replace("{tanggal_pengajuan}", formatDate($data->created_at), $html);
+    }
+    public function detail($id){
+        $data = $this->model->psurat
+        ->select("pengajuan_surat.nik,surat.id,nama_lengkap,nama_surat,surat.created_at as tanggal_pengajuan,pengajuan_surat.nomor_surat,no_pengantar_rw,jenis_kelamin,kewarganegaraan,agama,pekerjaan,alamat,tempat_lahir,tgl_lahir,status,nomor_surat_tambahan,kode_kelurahan")
+        ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
+        ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+        ->join("surat", "pengajuan_surat.id_surat", "surat.id")
+        ->where("surat.id", "=", $id)
+        ->first();
+
+   $lampiran = $this->model->lpengajuan
+        ->select("nama_lampiran,url")
+        ->where("id_pengajuan", "=",$data->id)
+        ->join("lampiran", "lampiran_pengajuan.id_lampiran", "lampiran.id")
+        ->get();
+
+    $data->tgl_lahir = formatDate($data->tgl_lahir);
+    $data->tanggal_pengajuan = formatDate($data->tanggal_pengajuan);
+    $data->status = formatStatusPengajuan($data->status);
+    $data->lampiran = $lampiran; 
+
+    return response($data, 200);
     }
 }
