@@ -6,6 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SISURAT | <?= $data->title ?></title>
     <?php includeFile("layout/css") ?>
+    <style>
+        .no-bootstrap,
+        .no-bootstrap * {
+            all: revert;
+            font-size: 7px;
+            /* Ukuran font lebih kecil */
+            line-height: 1.2;
+            /* Jarak antar baris */
+            max-height: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
 </head>
 
 <body class="admin d-flex">
@@ -42,14 +55,18 @@
                     </a>
                 </div>
             </div>
-            <div class="row">
+            <div class="row align-items-stretch">
                 <?php foreach ($data->data as $formatSurat): ?>
-                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-                        <article class="card">
+                    <div class="col-md-4 col-sm-6 col-12">
+                        <article class="card h-100">
                             <div class="card-body">
                                 <?= $formatSurat->nama ?>
-                                <div class="d-flex">
-                                    <a href=""></a>
+                                <pre class="preview no-bootstrap">
+                                    <?= $formatSurat->konten ?>
+                                </pre>
+                                <div class="d-flex mt-4 gap-2">
+                                    <a href="<?= url("/admin/format-surat/$formatSurat->id/edit") ?>" class="btn btn-warning text-white" title="Ubah"><i class="fa fa-pencil"></i></a>
+                                    <a href="<?= url("/admin/format-surat/$formatSurat->id/edit") ?>" class="btn btn-success text-white" title="Preview"><i class="fa fa-eye"></i></a>
                                 </div>
                             </div>
                         </article>

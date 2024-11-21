@@ -69,9 +69,7 @@
 
 
     <!--end yang perlu diubah -->
-
     <?php includeFile("layout/script") ?>
-
 </body>
 
 </html>
