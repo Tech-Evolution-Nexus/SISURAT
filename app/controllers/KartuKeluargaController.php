@@ -7,6 +7,7 @@ use app\import\KartuKeluargaImport;
 use app\models\KartuKeluargaModel;
 use app\models\MasyarakatModel;
 use app\models\UserModel;
+use FileUploader;
 
 class KartuKeluargaController extends Controller
 {
@@ -20,6 +21,7 @@ class KartuKeluargaController extends Controller
         $this->model =  (object)[];
         $this->model->kartuKeluarga = new KartuKeluargaModel();
         $this->model->masyarakat = new MasyarakatModel();
+        $this->model->user = new UserModel();
     }
     public  function index()
     {
@@ -36,6 +38,7 @@ class KartuKeluargaController extends Controller
             "data" => $data
         ];
 
+
         return $this->view("admin/kartu_keluarga/kartu_keluarga", $params);
     }
 
@@ -50,6 +53,7 @@ class KartuKeluargaController extends Controller
             "alamat" => "",
             "rt" => "",
             "rw" => "",
+            "foto_kartu_keluarga" => "",
             "kode_pos" => "68281",
             "kelurahan" => "Bataan Bunduh",
             "kecamatan" => "Tenggarang",
@@ -93,15 +97,9 @@ class KartuKeluargaController extends Controller
         $kabupaten = request("kabupaten");
         $provinsi = request("provinsi");
         $kecamatan = request("kecamatan");
+        $foto_kartu_keluarga = request("foto_kartu_keluarga");
 
 
-        $check = $this->model->kartuKeluarga
-            ->select("kartu_keluarga.no_kk,nik")
-            ->join("masyarakat", "kartu_keluarga.no_kk", "masyarakat.no_kk")
-            ->where("kartu_keluarga.no_kk", "=", $noKK)
-            ->where("nik", "=", $nik)
-            ->first();
-        if ($check) return redirect()->with("error", "Nik Kepala Keluarga dan No KK $noKK sudah terdaftar")->withInput(request()->getAll())->back();
 
         $check = $this->model->kartuKeluarga
             ->select("kartu_keluarga.no_kk,nik")
@@ -120,12 +118,31 @@ class KartuKeluargaController extends Controller
             ->first();
         if ($check2) {
             return redirect()
-                ->with("error", "Nik Kepala Keluarga $nik sudah terdaftar")
+                ->with("error", "Nik  $nik sudah terdaftar")
                 ->withInput(request()->getAll())
                 ->back();
         }
 
-        $idKK =  $this->model->kartuKeluarga->create(["no_kk" => $noKK, "alamat" => $alamat, "rt" => $rt, "rw" => $rw, "kode_pos" => $kode_pos, "kelurahan" => $kelurahan, "kecamatan" => $kecamatan, "kabupaten" => $kabupaten, "provinsi" => $provinsi, "kk_tgl" => $tanggalKK]);
+        $dataKK = [
+            "no_kk" => $noKK,
+            "alamat" => $alamat,
+            "rt" => $rt,
+            "rw" => $rw,
+            "kode_pos" => $kode_pos,
+            "kelurahan" => $kelurahan,
+            "kecamatan" => $kecamatan,
+            "kabupaten" => $kabupaten,
+            "provinsi" => $provinsi,
+            "kk_tgl" => $tanggalKK
+        ];
+        if ($foto_kartu_keluarga["name"] !== "") {
+            $file_extension = pathinfo($foto_kartu_keluarga['name'], PATHINFO_EXTENSION);
+            $randomName = uniqid() . '.' . $file_extension;
+            $fileUpload = new FileUploader($randomName, $foto_kartu_keluarga, "/kartu_keluarga");
+            $fileUpload->upload();
+            $dataKK["kk_file"] = $randomName;
+        }
+        $idKK =  $this->model->kartuKeluarga->create($dataKK);
         $this->model->masyarakat->create([
             "nik" => $nik,
             "nama_lengkap" => $nama,
@@ -154,7 +171,7 @@ class KartuKeluargaController extends Controller
     {
 
         $kartuKeluarga = $this->model->kartuKeluarga
-            ->select("kartu_keluarga.no_kk,nama_lengkap,kk_tgl,nik,alamat,rt,rw,kode_pos,kelurahan,kecamatan,kabupaten,provinsi")
+            ->select("kartu_keluarga.no_kk,nama_lengkap,kk_tgl,nik,alamat,rt,rw,kode_pos,kelurahan,kecamatan,kabupaten,provinsi,kk_file")
             ->join("masyarakat", "kartu_keluarga.no_kk", "masyarakat.no_kk")
             ->where("kartu_keluarga.no_kk", "=", $id)
             ->first();
@@ -168,6 +185,7 @@ class KartuKeluargaController extends Controller
             "alamat" => $kartuKeluarga->alamat ?? null,
             "rt" => $kartuKeluarga->rt ?? null,
             "rw" => $kartuKeluarga->rw ?? null,
+            "foto_kartu_keluarga" => url("/admin/assets-kartu-keluarga/" . $kartuKeluarga->kk_file) ?? null,
             "kode_pos" => $kartuKeluarga->kode_pos ?? null,
             "kelurahan" => $kartuKeluarga->kelurahan ?? null,
             "kecamatan" => $kartuKeluarga->kecamatan ?? null,
@@ -213,17 +231,13 @@ class KartuKeluargaController extends Controller
         $alamat = request("alamat");
         $rt = request("rt");
         $rw = request("rw");
-        $kelurahan = request("kelurahan");
-        $kode_pos = request("kode_pos");
-        $kabupaten = request("kabupaten");
-        $provinsi = request("provinsi");
-        $kecamatan = request("kecamatan");
+        $foto_kartu_keluarga = request("foto_kartu_keluarga");
+
 
         $check = $this->model->kartuKeluarga
             ->select("kartu_keluarga.no_kk,nik")
             ->join("masyarakat", "kartu_keluarga.no_kk", "masyarakat.no_kk")
             ->where("kartu_keluarga.no_kk", "=", $noKK)
-            ->where("nik", "=", $nik)
             ->where("kartu_keluarga.no_kk", "<>", $id)
             ->first();
         if ($check) {
@@ -239,38 +253,37 @@ class KartuKeluargaController extends Controller
             ->first();
         if ($check2) {
             return redirect()
-                ->with("error", "Nik Kepala Keluarga $nik sudah terdaftar")
+                ->with("error", "Nik  $nik sudah terdaftar")
                 ->withInput(request()->getAll())
                 ->back();
         }
         $idMasyarakat = $this->model->masyarakat->where("no_kk", "=", $id)->first()->nik;
 
 
-        $this->model->kartuKeluarga->where("no_kk", "=", $id)->update([
+        $dataKK = [
             "no_kk" => $noKK,
             "alamat" => $alamat,
             "kk_tgl" => $tanggalKK,
             "rt" => $rt,
             "rw" => $rw
-        ]);
+        ];
+
+        $kk  =  $this->model->kartuKeluarga->where("no_kk", "=", $id)->first();
+        if ($foto_kartu_keluarga["name"] !== "") {
+            $file_extension = pathinfo($foto_kartu_keluarga['name'], PATHINFO_EXTENSION);
+            $randomName = uniqid() . '.' . $file_extension;
+            $fileUpload = new FileUploader();
+            $fileUpload->setFile($foto_kartu_keluarga);
+            $fileUpload->setTarget(storagePath("private", "/kartu_keluarga/" . $randomName));
+            $fileUpload->upload();
+            $fileUpload->delete(storagePath("private", "/kartu_keluarga/" . $kk->kk_file));
+            $dataKK["kk_file"] = $randomName;
+        }
+        $this->model->kartuKeluarga->where("no_kk", "=", $id)->update($dataKK);
 
         $this->model->masyarakat->where("nik", "=", $idMasyarakat)->update([
             "nik" => $nik,
             "nama_lengkap" => $nama,
-            "jenis_kelamin" => "laki-laki",
-            "tempat_lahir" => "-",
-            "tgl_lahir" => date("Y-m-d"),
-            "agama" => "-",
-            "pendidikan" => "-",
-            "pekerjaan" => "-",
-            "golongan_darah" => "-",
-            "status_keluarga" => "KK",
-            "status_perkawinan" => "-",
-            "kewarganegaraan" => "-",
-            "no_paspor" => "-",
-            "no_kitap" => "-",
-            "nama_ayah" => "-",
-            "nama_ibu" => "-",
             "no_kk" => $noKK
         ]);
 
@@ -281,21 +294,23 @@ class KartuKeluargaController extends Controller
 
     public function delete($id)
     {
+
         try {
-            $check = $this->model->kartuKeluarga->find($id);
-            if (!$check) {
-                return redirect()
-                    ->with("error", "Kartu keluarga tidak ditemukan")
-                    ->back();
+            $kk = $this->model->kartuKeluarga->find($id);
+            if (!$kk) {
+                return response("Kartu keluarga tidak ditemukan", 404);
             }
 
-            $masyarakat = $this->model->masyarakat->where("no_kk", "=", $check->no_kk)->get();
+            $masyarakat = $this->model->masyarakat->where("no_kk", "=", $kk->no_kk)->get();
             foreach ($masyarakat as $msy) {
-                $this->model->masyarakat->delete($msy->nik);
+                $this->model->user->where("nik", "=", $msy->nik)->delete();
+                $this->model->masyarakat->where("nik", "=", $msy->nik)->delete();
             }
-            $this->model->kartuKeluarga->delete($id);
+            $fileUpload = new FileUploader();
+            $fileUpload->delete(storagePath("private", "/kartu_keluarga/" . $kk->kk_file));
+
+            $this->model->kartuKeluarga->where("no_kk", "=", $id)->delete();
             return response("Kartu keluarga berhasil dihapus", 200);
-            // return redirect()->with("success", "Kartu keluarga berhasil dihapus")->to("/admin/kartu-keluarga");
         } catch (\Throwable $th) {
             return response("Kartu keluarga gagal dihapus", 500);
 

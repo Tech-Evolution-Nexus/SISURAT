@@ -20,9 +20,8 @@ class AuthController
     }
     public  function index()
     {
-       
+
         return view("auth/login");
-        
     }
 
 
@@ -40,20 +39,23 @@ class AuthController
 
         $user = $this->model->users->where("email", "=", $email)->first();
 
-        if ($user) {
-
-            if (password_verify($password, $user->password)) {
-                session()->set("user_id", $user->id);
-                return redirect("/admin");
-            } else {
-                return redirect()->with("error", "Password salah")->back();
-            }
-        } else {
+        if (!$user) {
             return redirect()->with("error", "User tidak ditemukan")->back();
         }
+
+        if ($user->role !== "admin") {
+            return redirect()->with("error", "akun Anda tidak memiliki hak akses ke fitur ini.")->back();
+        }
+
+        if (!password_verify($password, $user->password)) {
+            return redirect()->with("error", "Password salah")->back();
+        }
+
+        session()->set("user_id", $user->id);
+        return redirect("/admin");
     }
 
-    
+
 
     public function lupaPassword()
     {

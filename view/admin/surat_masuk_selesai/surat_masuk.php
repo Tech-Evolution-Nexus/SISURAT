@@ -204,14 +204,12 @@
         // handle edit data
         $(".editBtn").on("click", function() {
             const id = $(this).attr("data-id")
-            setupForm("Detail Pengajuan Surat", "/admin/surat-masuk")
+            setupForm("Detail Pengajuan Surat", '<?= url("/admin/surat-masuk") ?>/' + id)
 
             $(".modal").modal("show")
             $.ajax({
-                url: "/admin/surat-masuk/ajax/" + id,
+                url: "<?= url("/admin/surat-masuk/ajax/") ?>" + id,
                 success: (data) => {
-                    console.log(data);
-
                     setFormData(data)
                 },
                 error: (error) => {
@@ -249,7 +247,7 @@
                     <p>${lampiran.nama_lampiran}</p>
                 </div>
                     <div class="col-md-9 col-12 mb-4">
-                    <img id="${lampiran.nama_lampiran}" src="${lampiran.url}" class="img-thumbnail" alt="${lampiran.nama_lampiran}">
+                    <img id="${lampiran.nama_lampiran}" src="<?= url("/admin/assets-lampiran") ?>/${lampiran.url}" class="img-thumbnail" alt="${lampiran.nama_lampiran}">
                 </div>`;
             });
             $("#dokument_pendukung").append(html);

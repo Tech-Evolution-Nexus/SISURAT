@@ -26,7 +26,7 @@ class SuratMasukController extends Controller
             ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
             ->join("surat", "pengajuan_surat.id_surat", "surat.id")
             ->where("status", "=", "di_terima_rw")
-            ->orderBy("created_at", "desc")
+            ->orderBy("pengajuan_surat.created_at", "desc")
             ->get();
         $params["data"] = (object)[
             "title" => "Surat Masuk",
@@ -64,7 +64,13 @@ class SuratMasukController extends Controller
 
     public function updateStatus($idPengajuan)
     {
-        $status = request("status");
-        return redirect()->with("success", "Pengajuan surat berhasil disetujui");
+
+        try {
+            $status = request("status");
+            $this->model->pengajuan_surat->where("id", "=", $idPengajuan)->update(["status" => "selesai"]);
+            return redirect()->with("success", "Pengajuan surat berhasil disetujui")->back();
+        } catch (\Throwable $th) {
+            return redirect()->with("error", "Pengajuan surat gagal disetujui")->back();
+        }
     }
 }

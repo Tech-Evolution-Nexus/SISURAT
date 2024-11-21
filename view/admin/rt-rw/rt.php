@@ -104,8 +104,10 @@
 
                                             </div>
                                         </div>
+                                        <h6 class="mb-2  fw-bold mt-4">Masa Jabatan</h6>
+
                                         <div class="col-md-6 col-12">
-                                            <div class="form-group mb-2">
+                                            <div class="form-group mb-2  ms-3">
                                                 <label for="masa_jabatan_awal">Masa Jabatan Awal</label>
                                                 <input type="date" class="  form-control" name="masa_jabatan_awal" id="masa_jabatan_awal" required>
                                             </div>
@@ -194,7 +196,7 @@
                 opacity: 1
             })
             $.ajax({
-                url: "/admin/master-rw/ajax-masyarakat/" + data.id,
+                url: '<?= url("/admin/master-rw/ajax-masyarakat/") ?>' + data.id,
                 success: (data) => {
                     setFormData(data)
                 },
@@ -212,7 +214,7 @@
 
         // handle add data
         $("#add-btn").on("click", function() {
-            setupForm("Tambah RT", "/admin/master-rw/<?= $data->rw ?>/master-rt")
+            setupForm("Tambah RT", "<?= url("/admin/master-rw/$data->rw/master-rt") ?>")
             $(".search-section").show();
             $(".required-password").show();
             $("[name=password]").attr('required');
@@ -227,7 +229,7 @@
         $(".editBtn").on("click", function() {
             const nik = $(this).attr("data-nik")
 
-            setupForm("Ubah RT", "/admin/master-rw/<?= $data->rw ?>/master-rt/" + nik)
+            setupForm("Ubah RT", "<?= url("/admin/master-rw/$data->rw/master-rt/") ?>" + nik)
             $(".search-section").hide();
             $(".required-password").hide();
             $("[name=password]").removeAttr('required');
@@ -238,7 +240,7 @@
 
             $(".modal").modal("show")
             $.ajax({
-                url: "/admin/master-rw/<?= $data->rw ?>/master-rt/ajax-rt/" + nik,
+                url: "<?= url("/admin/master-rw/$data->rw/master-rt/ajax-rt/") ?>" + nik,
                 success: (data) => {
                     const formData = data;
                     console.log(formData);
@@ -261,7 +263,9 @@
             rt,
             rw,
             no_hp,
-            id
+            id,
+            masa_jabatan_akhir,
+            masa_jabatan_awal
         }) => {
 
 
@@ -271,6 +275,10 @@
             $("[name=rt]").val(rt)
             $("[name=rw]").val(rw)
             $("[name=no_hp]").val(no_hp)
+            masa_jabatan_akhir = masa_jabatan_akhir.split(' ')[0]; // '2024-11-30'
+            masa_jabatan_awal = masa_jabatan_awal.split(' ')[0];
+            $("[name=masa_jabatan_akhir]").val(masa_jabatan_akhir)
+            $("[name=masa_jabatan_awal]").val(masa_jabatan_awal)
         }
     </script>
 </body>

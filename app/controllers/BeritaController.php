@@ -54,11 +54,16 @@ class BeritaController
         if ($d) {
             return redirect()->with("error", "Data Sudah Terdaftar.")->back();
         }
+        $fileExt = pathinfo($ficon['name'], PATHINFO_EXTENSION);
         $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-        $uploader = new FileUploader($jud . "." . $fileType, $ficon, "../upload/berita/", $allowedFileTypes);
-        $uploadSs = $uploader->isAllowedFileType();
-        if ($uploadSs !== true) {
-            return redirect()->with("error", "$uploadSs")->back();
+        $nameFile  = uniqid() . "." . $fileExt;
+        $uploader = new FileUploader();
+        $uploader->setFile($ficon);
+        $uploader->setTarget(storagePath("private", "/berita/" . $nameFile));
+        $uploader->setAllowedFileTypes($allowedFileTypes);
+        $uploadStatus = $uploader->upload();
+        if ($uploadStatus !== true) {
+            return redirect()->with("error", "$uploadStatus")->back();
         }
 
         $idsur = $this->model->beritamodel->create(
@@ -66,14 +71,11 @@ class BeritaController
                 "judul" => $jud,
                 "sub_judul" => $sub,
                 "deskripsi" => $des,
-                "gambar" => $jud . "." . $fileType,
+                "gambar" => $nameFile,
             ]
         );
 
-        $uploadStatus = $uploader->upload();
-        if ($uploadStatus !== true) {
-            return redirect()->with("success", "$uploadStatus")->back();
-        }
+
         return redirect()->with("success", "Data berhasil ditambahkan.")->back();
     }
     public function update($id)
@@ -105,24 +107,28 @@ class BeritaController
             }
 
             // File type validation
-            $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-            $uploader = new FileUploader($jud . "." . $fileType, $ficon, "../upload/berita/", $allowedFileTypes);
-            $uploadSs = $uploader->isAllowedFileType();
-            if ($uploadSs !== true) {
-                return redirect()->with("error", "$uploadSs")->back();
-            }
 
-            // Upload file
+            $fileExt = pathinfo($ficon['name'], PATHINFO_EXTENSION);
+            $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
+            $nameFile  = uniqid() . "." . $fileExt;
+            $uploader = new FileUploader();
+            $uploader->setFile($ficon);
+            $uploader->setTarget(storagePath("private", "/berita/" . $nameFile));
+            $uploader->setAllowedFileTypes($allowedFileTypes);
             $uploadStatus = $uploader->upload();
+            $uploader->delete(storagePath("private", "/berita/" . $d->gambar));
             if ($uploadStatus !== true) {
+
                 return redirect()->with("error", "$uploadStatus")->back();
             }
+
+
             // Update with new file name
             $updateData = [
                 "judul" => $jud,
                 "sub_judul" => $sub,
                 "deskripsi" => $des,
-                "gambar" => $jud . "." . $fileType
+                "gambar" => $nameFile
             ];
         } else {
             // Update without changing the file
@@ -134,19 +140,24 @@ class BeritaController
         }
 
         // Perform the update
-        $this->model->beritamodel->update($updateData);
+        $this->model->beritamodel->where("id", "=", $id)->update($updateData);
 
         return redirect()->with("success", "Data berhasil diperbarui.")->back();
     }
 
     public function delete($id)
     {
+        $berita = $this->model->beritamodel->where("id", "=", $id)->first();
         $this->model->beritamodel->where("id", "=", $id)->delete();
+        $fileUpload = new FileUploader();
+        $fileUpload->delete(storagePath("private", "/berita/" . $berita->gambar));
         return redirect("/admin/berita");
     }
     public function getedit($id)
     {
         $datasurat = $this->model->beritamodel->where("id", "=", $id)->first();
+        $datasurat->gambar = url("/admin/assetsberita/" . $datasurat->gambar);
+
         $params = [
             "data" => $datasurat,
         ];

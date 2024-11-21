@@ -37,7 +37,7 @@
             </div>
 
 
-            <form action="<?= $data->action_form ?>" method="post" class="card">
+            <form action="<?= $data->action_form ?>" method="post" class="card" enctype="multipart/form-data">
                 <div class="card-body">
                     <div class="row">
 
@@ -62,7 +62,20 @@
                                     <?php endif; ?>
                                 </div>
                             </div>
-                            <h6 class="mb-2 col-md-6 col-12 fw-bold">Informasi Kepala Keluarga</h6>
+                            <div class="col-md-6 col-12 mb-2 ms-3">
+                                <div class="form-group mb-2 ">
+                                    <label for="foto_kartu_keluarga">Foto Kartu Keluarga</label>
+                                    <label style="background-image: url(<?= $data->data->foto_kartu_keluarga ?>);" class="image-upload rounded mt-2 flex-column d-flex justify-content-center align-items-center border border-dashed p-4">
+                                        <input value="<?= old("foto_kartu_keluarga", $data->data->foto_kartu_keluarga) ?>" type="file" class="  form-control d-none image-upload-file" accept="image/*" placeholder="foto_kartu_keluarga" name="foto_kartu_keluarga" id="foto_kartu_keluarga">
+                                        <i class="fa fa-image fs-1 "></i>
+                                        <span>Upload File</span>
+                                    </label>
+                                    <?php if (session()->has("foto_kartu_keluarga")): ?>
+                                        <small class="text-danger text-capitalize"><?= session()->error("foto_kartu_keluarga") ?></small>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <h6 class="mb-2  col-12 fw-bold">Informasi Kepala Keluarga</h6>
                             <div class="col-12">
                                 <div class="form-group mb-2 ms-3">
                                     <label for="no_kk">NIK Kepala Keluarga<span class="text-danger only-number">*</span></label>

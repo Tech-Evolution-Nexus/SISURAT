@@ -12,6 +12,14 @@ if (!function_exists("assets")) {
         return baseUrl() . "/" . $path;
     }
 }
+if (!function_exists("storagePath")) {
+    function storagePath($access = "public", $fileDir = "")
+    {
+        return ($access == "public" ? __DIR__ . "/../../public/" : __DIR__ . "/../../upload/") . ltrim($fileDir, "/");
+    }
+}
+
+
 if (!function_exists("session")) {
     function session()
     {

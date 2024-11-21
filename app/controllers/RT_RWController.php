@@ -57,7 +57,7 @@ class RT_RWController extends Controller
     public  function ajaxRw($nik)
     {
         $data = $this->model->masyarakat
-            ->select("masyarakat.nik,nama_lengkap,alamat,rw,rt")
+            ->select("masyarakat.nik,nama_lengkap,alamat,rw,rt,masa_jabatan_akhir,masa_jabatan_awal")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->join("users", "masyarakat.nik", "users.nik")
             ->where("role", "=", "rw")
@@ -69,10 +69,13 @@ class RT_RWController extends Controller
 
     public  function storeRW()
     {
+
         try {
 
             $nik = request("nik");
             $rw = request("rw");
+            $masa_jabatan_awal = request("masa_jabatan_awal");
+            $masa_jabatan_akhir = request("masa_jabatan_akhir");
             $user = $this->model->users->where("nik", "=", $nik)->first();
             if (!$user) {
                 return redirect()->with("error", "Data user belum melakukan aktivasi. Harap lakukan aktivasi terlebih dahulu untuk mendaftarkan ketua RW")->back();
@@ -89,7 +92,9 @@ class RT_RWController extends Controller
                 return redirect()->with("error", "RW $rw sudah memiliki Ketua RW terdaftar. Harap periksa data dan coba lagi.")->back();
             }
             $this->model->users->where("id", "=", $user->id)->update([
-                "role" => "rw"
+                "role" => "rw",
+                "masa_jabatan_awal" => $masa_jabatan_awal,
+                "masa_jabatan_akhir" => $masa_jabatan_akhir
             ]);
             return redirect()->with("success", "Berhasil menambahkan ketua RW $rw")->back();
         } catch (\Throwable $th) {
@@ -118,7 +123,9 @@ class RT_RWController extends Controller
                 return redirect()->with("error", "RW $rw sudah memiliki Ketua RW terdaftar. Harap periksa data dan coba lagi.")->back();
             }
             $this->model->users->where("id", "=", $user->id)->update([
-                "role" => "masyarakat"
+                "role" => "masyarakat",
+                "masa_jabatan_awal" => null,
+                "masa_jabatan_akhir" => null
             ]);
             return redirect()->with("success", "Berhasil mengubah ketua RW $rw")->back();
         } catch (\Throwable $th) {
@@ -160,7 +167,7 @@ class RT_RWController extends Controller
     public  function ajaxRT($rw, $nik)
     {
         $data = $this->model->masyarakat
-            ->select("masyarakat.nik,nama_lengkap,alamat,rw,rt")
+            ->select("masyarakat.nik,nama_lengkap,alamat,rw,rt,masa_jabatan_akhir,masa_jabatan_awal")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->join("users", "masyarakat.nik", "users.nik")
             ->where("role", "=", "rt")
@@ -177,6 +184,8 @@ class RT_RWController extends Controller
 
             $nik = request("nik");
             $rt = request("rt");
+            $masa_jabatan_awal = request("masa_jabatan_awal");
+            $masa_jabatan_akhir = request("masa_jabatan_akhir");
             $user = $this->model->users->where("nik", "=", $nik)->first();
             if (!$user) {
                 return redirect()->with("error", "Data user belum melakukan aktivasi. Harap lakukan aktivasi terlebih dahulu untuk mendaftarkan ketua RW")->back();
@@ -191,12 +200,14 @@ class RT_RWController extends Controller
                 ->get();
 
             if ($rwExist) {
-                return redirect()->with("error", "RW $rw sudah memiliki Ketua RW terdaftar. Harap periksa data dan coba lagi.")->back();
+                return redirect()->with("error", "RT $rt sudah memiliki Ketua RT terdaftar. Harap periksa data dan coba lagi.")->back();
             }
             $this->model->users->where("id", "=", $user->id)->update([
-                "role" => "rt"
+                "role" => "rt",
+                "masa_jabatan_awal" => $masa_jabatan_awal,
+                "masa_jabatan_akhir" => $masa_jabatan_akhir
             ]);
-            return redirect()->with("success", "Berhasil menambahkan ketua RW $rw")->back();
+            return redirect()->with("success", "Berhasil menambahkan ketua RT $rt")->back();
         } catch (\Throwable $th) {
             throw new \InvalidArgumentException($th);
         }
@@ -222,13 +233,15 @@ class RT_RWController extends Controller
                 ->get();
 
             if ($rwExist) {
-                return redirect()->with("error", "RW $rw sudah memiliki Ketua RW terdaftar. Harap periksa data dan coba lagi.")->back();
+                return redirect()->with("error", "RT $rt sudah memiliki Ketua RT terdaftar. Harap periksa data dan coba lagi.")->back();
             }
 
             $this->model->users->where("id", "=", $user->id)->update([
-                "role" => "masyarakat"
+                "role" => "masyarakat",
+                "masa_jabatan_awal" => null,
+                "masa_jabatan_akhir" => null
             ]);
-            return redirect()->with("success", "Berhasil mengubah ketua RW $rw")->back();
+            return redirect()->with("success", "Berhasil mengubah ketua RT $rt")->back();
         } catch (\Throwable $th) {
             throw new \InvalidArgumentException($th);
         }

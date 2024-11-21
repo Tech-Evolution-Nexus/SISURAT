@@ -38,6 +38,9 @@
                     <p class="text-white text-small"><?= $data->description ?> </p>
                 </div>
                 <div class="ms-auto">
+                    <button data-bs-target="#modal" data-bs-toggle="modal" class="btn btn-success me-2 text-white">
+                        Foto KK
+                    </button>
                     <a href="<?= url("/admin/kartu-keluarga/$data->no_kk/anggota-keluarga/create") ?>" class="btn btn-warning">
                         Tambah Anggota Keluarga
                     </a>
@@ -93,6 +96,24 @@
         </div>
     </main>
 
+
+    <!-- FORM MODAL -->
+    <div id="modal" class="modal hide fade " role="dialog" aria-labelledby="modal" aria-hidden="true">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="titleForm">Foto Kartu Keluarga</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-content">
+                    <img src="<?= $data->kk_file ?>" alt="">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!--end yang perlu diubah -->
 

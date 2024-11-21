@@ -182,9 +182,9 @@ class Model
             foreach ($this->wheres as $index => $where) {
                 $prefix = $index === 0 ? "WHERE" : $where['type'];
                 $placeholder = ":{$where['column']}";
-                // Make sure to use the placeholder for the value in the query
-                $whereClauses[] = "$prefix {$where['column']} {$where['operator']} '{$where['value']}' ";
-                // Now bind the value properly
+                $value = $where["operator"] == "IN" ? "{$where['value']}" : "'{$where['value']}'";
+                $whereClauses[] = "$prefix {$where['column']} {$where['operator']} {$value} ";
+
                 $this->bindings[$placeholder] = $where['value'];
             }
 
@@ -202,7 +202,6 @@ class Model
         if (isset($this->limit)) { // Add limit if it's set
             $this->query .= " LIMIT {$this->limit}";
         }
-
         $this->resetQuery();
     }
 
@@ -254,5 +253,25 @@ class Model
         $this->orders = [];
         $this->bindings = [];
         $this->fields = "*";
+    }
+    public function whereIn($column, array $values)
+    {
+        if (empty($values)) {
+            throw new InvalidArgumentException("Values for whereIn cannot be empty.");
+        }
+
+        $placeholders = [];
+        foreach ($values as $index => $value) {
+            $placeholder = "'{$value}'";
+            $placeholders[] = $placeholder;
+            $this->bindings[$placeholder] = $value;
+        }
+        $this->wheres[] = [
+            'type' => 'AND',
+            'column' => $column,
+            'operator' => 'IN',
+            'value' => '(' . implode(',', $placeholders) . ')',
+        ];
+        return $this;
     }
 }

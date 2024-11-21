@@ -169,8 +169,7 @@
                                             </button>
 
 
-
-                                            <a href="/admin/master-rw/<?= $kk->rw ?>/master-rt" title="Detail" class="btn  text-white btn-success btn-sm">
+                                            <a href="<?= url("/admin/master-rw/$kk->rw/master-rt") ?>" title="Detail" class="btn  text-white btn-success btn-sm">
                                                 <i class="fa fa-users"></i>
                                             </a>
                                         </div>
@@ -222,7 +221,7 @@
 
         // handle add data
         $("#add-btn").on("click", function() {
-            setupForm("Tambah RW", "/admin/master-rw")
+            setupForm("Tambah RW", '<?= url("/admin/master-rw/") ?>')
             $(".search-section").show();
             $(".required-password").show();
             $("[name=password]").attr('required');
@@ -237,7 +236,7 @@
         $(".editBtn").on("click", function() {
             const nik = $(this).attr("data-nik")
 
-            setupForm("Ubah RW", "/admin/master-rw/" + nik)
+            setupForm("Ubah RW", '<?= url("/admin/master-rw/") ?>' + nik)
             $(".search-section").hide();
             $(".required-password").hide();
             $("[name=password]").removeAttr('required');
@@ -248,11 +247,9 @@
 
             $(".modal").modal("show")
             $.ajax({
-                url: "/admin/master-rw/ajax-rw/" + nik,
+                url: '<?= url("/admin/master-rw/ajax-rw/") ?>' + nik,
                 success: (data) => {
                     const formData = data;
-                    console.log(formData);
-
                     setFormData(formData)
                 }
             })
@@ -271,7 +268,9 @@
             rt,
             rw,
             no_hp,
-            id
+            id,
+            masa_jabatan_akhir,
+            masa_jabatan_awal
         }) => {
 
 
@@ -281,6 +280,10 @@
             $("[name=rt]").val(rt)
             $("[name=rw]").val(rw)
             $("[name=no_hp]").val(no_hp)
+            masa_jabatan_akhir = masa_jabatan_akhir.split(' ')[0]; // '2024-11-30'
+            masa_jabatan_awal = masa_jabatan_awal.split(' ')[0];
+            $("[name=masa_jabatan_akhir]").val(masa_jabatan_akhir)
+            $("[name=masa_jabatan_awal]").val(masa_jabatan_awal)
         }
     </script>
 </body>
