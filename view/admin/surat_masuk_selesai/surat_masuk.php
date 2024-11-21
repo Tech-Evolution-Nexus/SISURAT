@@ -99,7 +99,7 @@
                                             <h6 class="fw-bold" id="no_surat">
                                                 /
                                             </h6>
-                                            <input type="text" class="form-control" name="no_surat_tambahan" placeholder="Nomer Surat Tambahan" id="" required>
+                                            <input type="text" class="form-control" name="no_surat_tambahan" placeholder="Nomer Surat Tambahan" id="">
 
                                         </div>
 

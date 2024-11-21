@@ -81,7 +81,7 @@ class SuratMasukSelesaiController extends Controller
             ->where("pengajuan_surat.id", "=", $idPengajuan)
             ->first();
 
-        $data = $this->model->psurat->select("nama_lengkap,nomor_surat,pengajuan_surat.nik,rw,rt,kecamatan,kelurahan,kabupaten,tempat_lahir,tgl_lahir,jenis_kelamin,pekerjaan,agama,status_perkawinan,kewarganegaraan,alamat,pengajuan_surat.created_at,nama_surat,pendidikan,kartu_keluarga.no_kk,alamat")
+        $data = $this->model->psurat->select("nama_lengkap,nomor_surat,pengajuan_surat.nik,rw,rt,kecamatan,kelurahan,kabupaten,tempat_lahir,tgl_lahir,jenis_kelamin,pekerjaan,agama,status_perkawinan,kewarganegaraan,alamat,pengajuan_surat.created_at,nama_surat,pendidikan,kartu_keluarga.no_kk,alamat,nomor_surat_tambahan")
             ->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->join("surat", "surat.id", "pengajuan_surat.id_surat")
@@ -97,9 +97,11 @@ class SuratMasukSelesaiController extends Controller
             ->where("status_keluarga", "=", "istri")
             ->where("no_kk", "=", $data->no_kk)
             ->first();
+
         $html = "<style>
                 @page { margin:10px 50px; }
                 </style>";
+
         $html .= $formatSurat->konten;
         $this->replaceValue($html, $data);
         $dompdf = new Dompdf();
@@ -117,6 +119,7 @@ class SuratMasukSelesaiController extends Controller
 
     private function replaceValue(&$html, $data)
     {
+        $noSurat = $data->nomor_surat . "/" . $data->nomor_surat_tambahan;
         $html = str_replace("{no_surat}", $data->nomor_surat ?? "", $html);
         $html = str_replace("{nama}", $data->nama_lengkap ?? "", $html);
         $html = str_replace("{nik}", $data->nik ?? "", $html);

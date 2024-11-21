@@ -11,10 +11,17 @@
         .no-bootstrap * {
             all: revert;
             font-size: 7px;
-            /* Ukuran font lebih kecil */
             line-height: 1.2;
-            /* Jarak antar baris */
             max-height: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .preview,
+        .preview * {
+            all: revert;
+            font-size: 16px;
+            line-height: 1.2;
             overflow: hidden;
             text-overflow: ellipsis;
         }
@@ -43,7 +50,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             <?php endif; ?>
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center flex-wrap mb-4">
                 <div>
                     <h2 class="mb-0 text-white"><?= $data->title ?></h2>
                     <p class="text-white text-small"><?= $data->description ?></p>
@@ -55,29 +62,48 @@
                     </a>
                 </div>
             </div>
-            <div class="row align-items-stretch">
+            <div class="row align-items-stretch g-4">
                 <?php foreach ($data->data as $formatSurat): ?>
-                    <div class="col-md-4 col-sm-6 col-12">
-                        <article class="card h-100">
-                            <div class="card-body">
-                                <?= $formatSurat->nama ?>
-                                <pre class="preview no-bootstrap">
+                    <div class="col-md-4 col-sm-6 col-12 overflow-hidden">
+                        <article class="card h-100" style="max-width: 100%;">
+                            <div class="card-body ">
+                                <div class=" no-bootstrap">
                                     <?= $formatSurat->konten ?>
-                                </pre>
+                                </div>
+
+                                <h6 class="mt-4 fw-bold"><?= $formatSurat->nama ?></h6>
                                 <div class="d-flex mt-4 gap-2">
                                     <a href="<?= url("/admin/format-surat/$formatSurat->id/edit") ?>" class="btn btn-warning text-white" title="Ubah"><i class="fa fa-pencil"></i></a>
-                                    <a href="<?= url("/admin/format-surat/$formatSurat->id/edit") ?>" class="btn btn-success text-white" title="Preview"><i class="fa fa-eye"></i></a>
+                                    <button data-bs-toggle="modal" data-bs-target="#modal<?= $formatSurat->id ?>" class="btn btn-success text-white" title="Preview"><i class="fa fa-eye"></i></>
                                 </div>
                             </div>
                         </article>
+                        <div id="modal<?= $formatSurat->id ?>" class="modal hide fade " role="dialog" aria-labelledby="modal" aria-hidden="true">
+                            <div class="modal-dialog  modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="titleForm">Preview Surat</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body ">
+                                        <div class="preview">
+                                            <?= $formatSurat->konten ?>
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 <?php endforeach; ?>
             </div>
-
-
-
         </div>
     </main>
+
+
 
 
 

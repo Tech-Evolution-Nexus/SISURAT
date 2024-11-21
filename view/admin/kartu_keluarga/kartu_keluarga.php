@@ -30,7 +30,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             <?php endif; ?>
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center flex-wrap  mb-4">
                 <div>
                     <h2 class="mb-0 text-white"><?= $data->title ?></h2>
                     <p class="text-white text-small"><?= $data->description ?></p>
@@ -49,8 +49,7 @@
             </div>
 
 
-
-            <div class="card">
+            <div class="card ">
                 <div class="card-body ">
                     <table class="table data-table ">
                         <thead>
@@ -82,9 +81,6 @@
                                             <button data-url="<?= url("/admin/kartu-keluarga/$kk->no_kk/delete") ?>" title="Hapus" class="btn deleteBtn  text-white btn-danger btn-sm">
                                                 <i class="fa fa-trash"></i>
                                             </button>
-                                            <!-- <a  href="<?= url("/admin/kartu-keluarga/$kk->no_kk/delete") ?>" title="Hapus" class="btn  text-white btn-danger btn-sm">
-                                                <i class="fa fa-trash"></i>
-                                            </a> -->
 
 
                                             <a href="<?= url("/admin/kartu-keluarga/$kk->no_kk/anggota-keluarga") ?>" title="Detail" class="btn  text-white btn-success btn-sm">
