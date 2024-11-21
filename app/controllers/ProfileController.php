@@ -2,43 +2,42 @@
 
 namespace app\controllers;
 
-use app\services\Database as ServicesDatabase;
-use services\Database;
-use PDO;
+use app\abstract\Controller;
+use app\models\MasyarakatModel;
+use app\models\ProfilModel;
+use app\models\UserModel;
 use FileUploader;
 
 
-class ProfileController
+class ProfileController extends Controller
 {
 
-    public  function profile()
+    private $model;
+    public  function __construct()
     {
-        return view("admin/setting/profile");
+
+        // if (!auth()->check()) {
+        //     redirect()->to('/login');
+        // }
+
+        $this->model = (object)[];
+        $this->model->profile = new ProfilModel();
+        $this->model->masyarakat = new MasyarakatModel();
+        $this->model->user = new UserModel();
+
     }
 
-    public function profmin()
+    public function profile()
     {
         // var_dump(password_hash("admin",PASSWORD_BCRYPT));
         // die();
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-        $hasError = false;
-        if (empty($email)) {
-            $_SESSION["usernameErr"] = 'email tidak boleh kosong';
-            $hasError = true;
-        }
+        // $user = $this ->model->user->where('id','=',auth()->user()->nik)->first();
+        // dd(auth()->user());
+        return view("admin/setting/profile");
 
-        if (empty($password)) {
-            $_SESSION["passwordErr"] = 'Kata sandi tidak boleh kosong';
-            $hasError = true;
-        } else if (strlen($password) < 8) {
-            $_SESSION["passwordErr"] = 'Kata sandi minimal 8 karakter';
-            $hasError = true;
-        }
-        if ($hasError) {
-            return redirect("admin/profile");
-        }
     }
+
+    
     
     public function uploadPP() {
         $ficon = $_FILES['file_icon'] ?? null;
@@ -61,35 +60,47 @@ class ProfileController
         }
         return redirect()->with("success", "Data berhasil ditambahkan.")->back();
 
+        $fileExt = pathinfo($ficon['name'], PATHINFO_EXTENSION);
+        $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
+        $nameFile  = uniqid() . "." . $fileExt;
+        $uploader = new FileUploader();
+        $uploader->setFile($ficon);
+        $uploader->setTarget(storagePath("private", "/berita/" . $nameFile));
+        $uploader->setAllowedFileTypes($allowedFileTypes);
+        $uploadStatus = $uploader->upload();
+        if ($uploadStatus !== true) {
+            return redirect()->with("error", "$uploadStatus")->back();
+        }
     }
 
-    // public function photo_profile() {
-    //     session_start();
-    //     require 'database_connection.php'; // Sambungkan ke database
+    public function update_profile() {
+        $dataKK = [
+            "email" => $email,
+            "no_hp" => $noHP,
+            "password" => $kataSandi,
 
-    //     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_picture'])) {
-    //         $file = $_FILES['profile_picture'];
-    //         $targetDir = "uploads/";
-    //         $fileName = uniqid() . "-" . basename($file['name']);
-    //         $targetFilePath = $targetDir . $fileName;
-    //         $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
+        ];
 
-    //         // Memeriksa jenis file
-    //         $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
-    //         if (in_array(strtolower($fileType), $allowedTypes)) {
-    //             if (move_uploaded_file($file['tmp_name'], $targetFilePath)) {
-    //                 // Simpan URL gambar ke database
-    //                 $userId = $_SESSION['user_id'];
-    //                 $query = "UPDATE users SET profile_picture = ? WHERE id = ?";
-    //                 $stmt = $conn->prepare($query);
-    //                 $stmt->bind_param("si", $targetFilePath, $userId);
-    //                 if ($stmt->execute()) {
-    //                     echo json_encode(['success' => true, 'imageUrl' => $targetFilePath]);
-    //                     exit;
-    //                 }
-    //             }
-    //         }
-    //         echo json_encode(['success' => false]);
-    //     }
-    // }
+        $kk  =  $this->model->profile->where("no_nik", "=", $id)->first();
+        if ($foto_kartu_keluarga["name"] !== "") {
+            $file_extension = pathinfo($foto_kartu_keluarga['name'], PATHINFO_EXTENSION);
+            $randomName = uniqid() . '.' . $file_extension;
+            $fileUpload = new FileUploader();
+            $fileUpload->setFile($foto_kartu_keluarga);
+            $fileUpload->setTarget(storagePath("private", "/kartu_keluarga/" . $randomName));
+            $fileUpload->upload();
+            $fileUpload->delete(storagePath("private", "/kartu_keluarga/" . $kk->kk_file));
+            $dataKK["kk_file"] = $randomName;
+        }
+        $this->model->kartuKeluarga->where("no_kk", "=", $id)->update($dataKK);
+
+        $this->model->masyarakat->where("nik", "=", $idMasyarakat)->update([
+            "nik" => $nik,
+            "nama_lengkap" => $nama,
+            "no_kk" => $noKK
+        ]);
+
+
+        return redirect()->with("success", "Kartu keluarga berhasil diubah")->to("/admin/kartu-keluarga");
+    }
 }
