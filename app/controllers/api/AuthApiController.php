@@ -75,41 +75,42 @@ class AuthApiController
 
         // Memeriksa apakah data JSON valid
         if (!$jsonData) {
-            // Mengirimkan respons error jika data tidak valid
-            header('Content-Type: application/json');
-            echo json_encode([
-                "msg" => "Data tidak valid"
-            ]);
-            exit;
+            return response([
+                "message" => "Data tidak valid",
+                "status" => false,
+                "data" => []
+            ], 400);
         }
-
-        // Mengambil NIK dari data yang dikirim
         $nik = $jsonData["nik"];
+        $masyarakat = $this->model->masyarakatModel->where("nik", "=", $nik)->first();
 
-        // Mencari pengguna berdasarkan NIK
-        $users = $this->model->UserModel->where("nik", "=", $nik)->first();
-
-        // Menentukan respons berdasarkan apakah NIK ditemukan
-        header('Content-Type: application/json'); // Menetapkan header untuk JSON
-        if ($users) {
-            // Jika pengguna ditemukan
-            echo json_encode([
-                "data" => [
-                    "msg" => "Nik ditemukan",
-                    "status" => true
-                ]
-            ]);
-        } else {
-            // Jika pengguna tidak ditemukan
-            echo json_encode([
-                "data" => [
-                    "msg" => "Nik belum terdaftar",
-                    "status" => false
-                ]
-            ]);
+        if (!$masyarakat) {
+            // Jika NIK belum terdaftar di masyarakat
+            return response([
+                "message" => "NIK belum terdaftar di masyarakat. Silakan registrasi.",
+                "status" => false,
+                "data" => []
+            ], 200);
         }
-
-        exit; // Menghentikan eksekusi script setelah mengirimkan respons
+        
+        // Jika NIK ditemukan di masyarakat
+        $user = $this->model->UserModel->where("nik", "=", $nik)->first();
+        
+        if (!$user) {
+            // Jika NIK ditemukan di masyarakat tetapi belum terdaftar di user
+            return response([
+                "message" => "NIK ditemukan di masyarakat. Lanjutkan ke verifikasi.",
+                "status" => true,
+                "data" => []
+            ], 200);
+        }
+        
+        // Jika NIK ditemukan di kedua tabel (masyarakat dan user)
+        return response([
+            "message" => "NIK sudah terdaftar di masyarakat dan user.",
+            "status" => null,
+            "data" => []
+        ], 200);
     }
 
 
@@ -120,11 +121,11 @@ class AuthApiController
 
         // Memeriksa apakah data JSON valid
         if (!$jsonData) {
-            header('Content-Type: application/json');
-            echo json_encode([
-                "msg" => "Data tidak valid"
-            ]);
-            exit;
+            return response([
+                "message" => "Data tidak valid",
+                "status" => false,
+                "data" => []
+            ], 400);
         }
 
         // Mengambil data dari JSON
@@ -134,30 +135,25 @@ class AuthApiController
 
         // Validasi input
         if (empty($nik) || empty($no_hp) || empty($password)) {
-            header('Content-Type: application/json');
-            echo json_encode([
-                "data" => [
-                    "msg" => "Semua field wajib diisi.",
-                    "status" => false
-                ]
-            ]);
-            exit;
+            return response([
+                "message" => "semua field harus di isi.",
+                "status" => false,
+                "data" => []
+            ], 200);
         }
 
         // Periksa apakah NIK ada di tabel masyarakat
         $users = $this->model->masyarakatModel->where("nik", "=", $nik)->first();
-
-        header('Content-Type: application/json');
         if ($users) {
             // Periksa apakah NIK sudah diaktivasi
             $userExists = $this->model->UserModel->where("nik", "=", $nik)->first();
             if ($userExists) {
-                echo json_encode([
-                    "data" => [
-                        "msg" => "NIK sudah diaktivasi sebelumnya. Silakan login.",
-                        "status" => false
-                    ]
-                ]);
+                return response([
+                    "message" => "NIK sudah diaktivasi sebelumnya. Silakan login.",
+                    "status" => true,
+                    "data" => []
+                ], 200);
+            
             } else {
                 // Hash password sebelum menyimpan
                 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
@@ -169,21 +165,19 @@ class AuthApiController
                     "password" => $hashedPassword
                 ]);
 
-                echo json_encode([
-                    "data" => [
-                        "msg" => "Aktivasi berhasil. Silakan login.",
-                        "status" => true
-                    ]
-                ]);
+                return response([
+                    "message" => "Aktivasi berhasil. Silakan login.",
+                    "status" => true,
+                    "data" => []
+                ], 200);
             }
         } else {
             // Jika NIK tidak ditemukan di data masyarakat
-            echo json_encode([
-                "data" => [
-                    "msg" => "NIK tidak ditemukan di data masyarakat.",
-                    "status" => false
-                ]
-            ]);
+            return response([
+                "message" => "NIK tidak ditemukan di data masyarakat.",
+                "status" => false,
+                "data" => []
+            ], 200);
         }
 
         exit;
