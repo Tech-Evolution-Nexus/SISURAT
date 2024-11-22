@@ -187,7 +187,7 @@
 
 
             $.ajax({
-                url: "/admin/master-rw/ajax-masyarakat/" + data.id,
+                url: "<?= url("/admin/master-rw/ajax-masyarakat/") ?>" + data.id,
                 success: (data) => {
                     setFormData(data)
                 },

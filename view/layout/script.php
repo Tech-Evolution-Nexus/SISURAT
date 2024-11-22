@@ -123,6 +123,7 @@
             $(".alert").removeClass("d-flex").hide();
         }, 3000);
 
+
         const showSwalDelete = () => {
             const deleteUrl = $(".deleteBtn").attr("data-url");
             Swal.fire({
