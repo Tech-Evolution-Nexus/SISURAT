@@ -5,6 +5,7 @@ use app\controllers\api\BeritaApiController;
 use app\controllers\api\KkApiController;
 use app\controllers\api\PengajuanSuratApiController;
 use app\controllers\api\SuratApiController;
+use app\controllers\SuratMasukSelesaiController;
 use app\services\Router;
 
 //surat
@@ -28,3 +29,6 @@ Router::addRoute("POST", "/login", [AuthApiController::class, "login"]);
 Router::addRoute("POST", "/register", [AuthApiController::class, "register"]);
 Router::addRoute("POST", "/veriv", [AuthApiController::class, "veriv"]);
 Router::addRoute("POST", "/aktivasi", [AuthApiController::class, "aktivasi"]);
+
+
+Router::addRoute("GET", "/surat-selesai/export/{id}", [SuratMasukSelesaiController::class, "exportPengajuan"]);

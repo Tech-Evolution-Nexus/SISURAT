@@ -19,7 +19,9 @@ class SuratMasukSelesaiController extends Controller
     private $model;
     function __construct()
     {
-        if (!auth()->check()) {
+        $url = $_SERVER["REQUEST_URI"];
+        // dd($url);
+        if (!auth()->check()  && strpos($url, "api") === false) {
             redirect("/login");
         }
         $this->model =  (object)[];
@@ -31,7 +33,7 @@ class SuratMasukSelesaiController extends Controller
     }
     public function  index()
     {
-        $data = $this->model->psurat->select("pengajuan_surat.id", "nomor_surat", "masyarakat.nik", "nama_lengkap", "nama_surat", "pengajuan_surat.created_at", "status", "no_hp")->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")->join("surat", "surat.id", "pengajuan_surat.id_surat")->join("users", "users.nik", "pengajuan_surat.nik")->where("status","=","selesai")->get();
+        $data = $this->model->psurat->select("pengajuan_surat.id", "nomor_surat", "masyarakat.nik", "nama_lengkap", "nama_surat", "pengajuan_surat.created_at", "status", "no_hp")->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")->join("surat", "surat.id", "pengajuan_surat.id_surat")->join("users", "users.nik", "pengajuan_surat.nik")->where("status", "=", "selesai")->get();
 
         $params["data"] = (object)[
             "title" => "Jenis Surat",
@@ -75,7 +77,6 @@ class SuratMasukSelesaiController extends Controller
         return response($params, 200);
     }
 
-
     public function exportPengajuan($idPengajuan)
     {
         $formatSurat = $this->model->formatSurat
@@ -115,7 +116,7 @@ class SuratMasukSelesaiController extends Controller
         $dompdf->setOptions($options);
         $dompdf->render();
         $dompdf->stream("Surat_" . $data->nama_surat . ".pdf", [
-            "Attachment" => false // Ubah ke false jika ingin ditampilkan di browser
+            "Attachment" => true // Ubah ke false jika ingin ditampilkan di browser
         ]);
     }
 
@@ -173,26 +174,27 @@ class SuratMasukSelesaiController extends Controller
         $html = str_replace("{kabupaten}", $data->kabupaten ?? "", $html);
         $html = str_replace("{tanggal_pengajuan}", formatDate($data->created_at) ?? "", $html);
     }
-    public function detail($id){
+    public function detail($id)
+    {
         $data = $this->model->psurat
-        ->select("pengajuan_surat.nik,surat.id,nama_lengkap,nama_surat,surat.created_at as tanggal_pengajuan,pengajuan_surat.nomor_surat,no_pengantar_rw,jenis_kelamin,kewarganegaraan,agama,pekerjaan,alamat,tempat_lahir,tgl_lahir,status,nomor_surat_tambahan,kode_kelurahan")
-        ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
-        ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
-        ->join("surat", "pengajuan_surat.id_surat", "surat.id")
-        ->where("surat.id", "=", $id)
-        ->first();
+            ->select("pengajuan_surat.nik,surat.id,nama_lengkap,nama_surat,surat.created_at as tanggal_pengajuan,pengajuan_surat.nomor_surat,no_pengantar_rw,jenis_kelamin,kewarganegaraan,agama,pekerjaan,alamat,tempat_lahir,tgl_lahir,status,nomor_surat_tambahan,kode_kelurahan")
+            ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
+            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+            ->join("surat", "pengajuan_surat.id_surat", "surat.id")
+            ->where("surat.id", "=", $id)
+            ->first();
 
-   $lampiran = $this->model->lpengajuan
-        ->select("nama_lampiran,url")
-        ->where("id_pengajuan", "=",$data->id)
-        ->join("lampiran", "lampiran_pengajuan.id_lampiran", "lampiran.id")
-        ->get();
+        $lampiran = $this->model->lpengajuan
+            ->select("nama_lampiran,url")
+            ->where("id_pengajuan", "=", $data->id)
+            ->join("lampiran", "lampiran_pengajuan.id_lampiran", "lampiran.id")
+            ->get();
 
-    $data->tgl_lahir = formatDate($data->tgl_lahir);
-    $data->tanggal_pengajuan = formatDate($data->tanggal_pengajuan);
-    $data->status = formatStatusPengajuan($data->status);
-    $data->lampiran = $lampiran; 
+        $data->tgl_lahir = formatDate($data->tgl_lahir);
+        $data->tanggal_pengajuan = formatDate($data->tanggal_pengajuan);
+        $data->status = formatStatusPengajuan($data->status);
+        $data->lampiran = $lampiran;
 
-    return response($data, 200);
+        return response($data, 200);
     }
 }
