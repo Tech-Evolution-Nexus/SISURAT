@@ -47,47 +47,61 @@ class PengajuanSuratApiController
         $idsurat = request("idsurat");
         $img = request("images");
         $keterangan = request("keterangan");
-        $datalampiran = $this->model->lampiransuratModel->where("id_surat","=",$idsurat)->get();
-        $data = $this->model->pengajuansurModel->create([
-            "nik"=>$nik,
-            "id_surat"=>$idsurat,
-            "keterangan"=>$keterangan,
-            "status"=>"pendding",
-        ]);
 
-        foreach ($img['name'] as $key => $tmp_name) {
-            $this->model->lampiranpengajuanModel->create([
-                'id_pengajuan' => $data,
-                'id_lampiran' => $datalampiran[$key]->id_lampiran,
-                'url' => $img['name'][$key]
+        $datalampiran = $this->model->lampiransuratModel->where("id_surat", "=", $idsurat)->get();
+        if ($datalampiran) {
+            $data = $this->model->pengajuansurModel->create([
+                "nik" => $nik,
+                "id_surat" => $idsurat,
+                "keterangan" => $keterangan,
+                "status" => "pending",
             ]);
-            $fileName = $img['name'][$key];
-            $fileTmpName = $img['tmp_name'][$key];
-            $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
-            $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-            $nameFile  = uniqid() . "." . $fileExt;
-            $this->model->lampiranpengajuanModel->create([
-                'id_pengajuan' => $data,
-                'id_lampiran' => $datalampiran[$key]->id_lampiran,
-                'url' => $nameFile
-            ]);
-            $uploader = new FileUploader();
-            $uploader->setFile($fileTmpName);
-            $uploader->setTarget(storagePath("private", "/masyarakat/" . $nameFile));
-            $uploader->setAllowedFileTypes($allowedFileTypes);
-            $uploadStatus = $uploader->upload();
-            if ($uploadStatus !== true) {
-                return response(["data" => $uploadStatus, "msg" => "gaga Menambahkan"], 200);
+            if ($data) {
+                foreach ($img['name'] as $key => $tmp_name) {
+                    $this->model->lampiranpengajuanModel->create([
+                        'id_pengajuan' => $data,
+                        'id_lampiran' => $datalampiran[$key]->id_lampiran,
+                        'url' => $img['name'][$key]
+                    ]);
+                    $fileName = $img['name'][$key];
+                    $fileTmpName = $img['tmp_name'][$key];
+                    $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
+                    $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
+                    $nameFile  = uniqid() . "." . $fileExt;
+                    $this->model->lampiranpengajuanModel->create([
+                        'id_pengajuan' => $data,
+                        'id_lampiran' => $datalampiran[$key]->id_lampiran,
+                        'url' => $nameFile
+                    ]);
+                    $uploader = new FileUploader();
+                    $uploader->setFile($fileTmpName);
+                    $uploader->setTarget(storagePath("private", "/masyarakat/" . $nameFile));
+                    $uploader->setAllowedFileTypes($allowedFileTypes);
+                    $uploadStatus = $uploader->upload();
+                    if ($uploadStatus !== true) {
+                        return response(["status" => false, "message" => "Gagal Menambahkan Data", "data" => $data], 400);
+                    }
+                }
+                $data = $this->model->masyarakat->select("nik,kartu_keluarga.rt")->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")->where("masyarakat.nik", "=", $nik)->first();
+                if ($data) {
+                    $data2 = $this->model->users->select("rt,role,fcm_token")->join("masyarakat", "masyarakat.nik", "users.nik")->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")->where("kartu_keluarga.rt", "=", $data->rt)->where("users.role", "=", "rt")->first();
+                    if ($data2) {
+                        if ($data2->fcm_token != null) {
+                            pushnotifikasito($data2->fcm_token, "Ada Surat Baru Masuk", "Silahkan Klik Untuk Melakukan Persetujuan");
+                        }
+                        return response(["status" => true, "message" => "Berhasil Menambahkan Data", "data" => []], 200);
+                    } else {
+                        return response(["status" => false, "message" => "Ketua Rt Tidak ditemukan", "data" => []], 400);
+                    }
+                } else {
+                    return response(["status" => false, "message" => "Rt Tidak ditemukan", "data" => []], 400);
+                }
+            } else {
+                return response(["status" => false, "message" => "Masyarakat Tidak Ditemukan", "data" => []], 400);
             }
+        } else {
+            return response(["status" => false, "message" => "Gagal Menambahkan Data", "data" => []], 400);
         }
-        $data = $this->model->masyarakat->select("nik,kartu_keluarga.rt")->join("kartu_keluarga","masyarakat.no_kk","kartu_keluarga.no_kk")->where("masyarakat.nik","=",$nik)->first();
-        $data2 = $this->model->user->select("rt,role,fcm_token")->join("masyarakat","masyarakat.nik","users.nik")->join("kartu_keluarga","masyarakat.no_kk","kartu_keluarga.no_kk")->where("kartu_keluarga.rt","=",$data->rt)->where("users.role","=","rt")->first();
-        if($data2){
-            if($data2->fcm_token != null){
-                pushnotifikasito($data2->fcm_token,"Ada Surat Baru Masuk","Silahkan Klik Untuk Melakukan Persetujuan");
-            }
-        }
-        return response(["data"=>$idsurat,$keterangan,"msg"=>"Berhasil Menambahkan"], 200);
     }
 
 
@@ -103,13 +117,11 @@ class PengajuanSuratApiController
         $data = $this->model->psurat->select(
             "pengajuan_surat.id",
             "nomor_surat",
-            "no_pengantar",
+            "no_pengantar_rt",
+            "no_pengantar_rw",
             "status",
             "keterangan",
             "keterangan_ditolak",
-            "file_pdf",
-            "pengantar_rt",
-            "pengantar_rw",
             "nik",
             "kode_kelurahan",
             "nomor_surat_tambahan",
@@ -120,12 +132,11 @@ class PengajuanSuratApiController
             "image"
         )->join("surat", "surat.id", "id_surat")->where("nik", "=", $nik)->whereIn('status', $statusFilter)->get();
 
-        return response([
-            "data" => [
-                "msg" => $status,
-                "datariwayat" => $data
-            ]
-        ], 200);
+        if($data){
+            return response(["status" => true, "message" => "Data Berhasil Diambil", "data" => $data], 200);
+        }else{
+            return response(["status" => false, "message" => "Data Gagal Diambil", "data" => []], 400);
+        }
     }
 
 

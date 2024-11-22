@@ -24,10 +24,9 @@ if (!function_exists("pushnotifikasito")) {
                 'body' => $desk
             ]);
         try {
-            $sendResponse = $messaging->send($message);
-            // echo 'Message sent successfully: ' . $sendResponse;
+           return $messaging->send($message);
         } catch (\Kreait\Firebase\Exception\MessagingException $e) {
-            echo 'Error sending message: ' . $e->getMessage();
+           return 'Error sending message: ' . $e->getMessage();
         }
     }
 }
@@ -42,10 +41,10 @@ if (!function_exists("pushnotifikasiall")) {
             'body' => $desk
         ]);
         try {
-            $sendResponse = $messaging->send($message);
+            return $messaging->send($message);
             // echo 'Message sent successfully: ' . $sendResponse;
         } catch (\Kreait\Firebase\Exception\MessagingException $e) {
-            echo 'Error sending message: ' . $e->getMessage();
+            return 'Error sending message: ' . $e->getMessage();
         }
     }
 }
