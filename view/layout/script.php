@@ -26,29 +26,34 @@
         Table,
         TableToolbar,
         Heading,
-        Indent
+        Indent,
+        HorizontalLine,
+        Underline,
+        HtmlEmbed
     } from 'ckeditor5';
 
-    ClassicEditor
-        .create(document.querySelector('.editor'), {
-            plugins: [Heading, Essentials, Paragraph, Bold, Italic, Font, Alignment, Image, ImageUpload, Table, TableToolbar, Indent],
-            toolbar: [
-                'undo', 'redo', '|',
-                'bold', 'italic', 'underline', 'strikethrough', '|',
-                'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
-                'alignment', 'bulletedList', 'numberedList', '|',
-                'link', 'blockQuote', 'insertTable', 'imageUpload', '|',
-                'heading', 'indent', 'outdent', '|',
-                'code', 'codeBlock', '|',
-                'removeFormat'
-            ],
-        })
-        .then(editor => {
-            window.editor = editor;
-        })
-        .catch(error => {
-            console.error(error);
-        });
+    if (document.querySelector('.editor')) {
+        ClassicEditor
+            .create(document.querySelector('.editor'), {
+                plugins: [HtmlEmbed, Heading, Essentials, Paragraph, Bold, Italic, Font, Alignment, Image, ImageUpload, Table, TableToolbar, Indent, HorizontalLine, Underline],
+                toolbar: [
+                    'undo', 'redo', '|', 'underline', 'htmlEmbed',
+                    'bold', 'italic', 'underline', 'strikethrough', '|',
+                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+                    'alignment', 'bulletedList', 'numberedList', '|',
+                    'link', 'blockQuote', 'insertTable', 'imageUpload', '|',
+                    'heading', 'indent', 'outdent', '|',
+                    'code', 'codeBlock', '|',
+                    'removeFormat', 'horizontalLine'
+                ],
+            })
+            .then(editor => {
+                window.editor = editor;
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
 </script>
 
 
@@ -117,6 +122,7 @@
         setTimeout(() => {
             $(".alert").removeClass("d-flex").hide();
         }, 3000);
+
 
         const showSwalDelete = () => {
             const deleteUrl = $(".deleteBtn").attr("data-url");

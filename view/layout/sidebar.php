@@ -71,8 +71,14 @@
                 </li>
                 <li>
                     <a class="text-body-secondary sidebar-subitem side-link d-flex align-items-center px-3 rounded py-2 text-decoration-none" href="<?= url("/admin/format-surat") ?>">
-                        <i class="fa fa-users"></i>
+                        <i class="fa fa-rectangle-list"></i>
                         <span class="d-inline-block ms-3">Format Surat</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="text-body-secondary sidebar-subitem side-link d-flex align-items-center px-3 rounded py-2 text-decoration-none" href="<?= url("/admin/berita") ?>">
+                        <i class="fa fa-newspaper"></i>
+                        <span class="d-inline-block ms-3">Berita</span>
                     </a>
                 </li>
             </ul>
@@ -84,12 +90,7 @@
                 <span class="d-inline-block text-uppercase fw-bold">PENGATURAN</span>
             </a>
             <ul class="list-unstyled ps-2">
-                <li>
-                    <a class="text-body-secondary sidebar-subitem side-link d-flex align-items-center px-3 rounded py-2 text-decoration-none" href="<?= url("/admin/berita") ?>">
-                        <i class="fa fa-users"></i>
-                        <span class="d-inline-block ms-3">Berita</span>
-                    </a>
-                </li>
+
                 <li>
                     <a class="text-body-secondary sidebar-subitem side-link d-flex align-items-center px-3 rounded py-2 text-decoration-none" href="<?= url("/admin/tentang") ?>">
                         <i class="fa fa-envelopes-bulk"></i>

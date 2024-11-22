@@ -19,7 +19,9 @@ class SuratMasukSelesaiController extends Controller
     private $model;
     function __construct()
     {
-        if (!auth()->check()) {
+        $url = $_SERVER["REQUEST_URI"];
+        // dd($url);
+        if (!auth()->check()  && strpos($url, "api") === false) {
             redirect("/login");
         }
         $this->model =  (object)[];
@@ -27,10 +29,11 @@ class SuratMasukSelesaiController extends Controller
         $this->model->lpengajuan  = new LampiranPengajuanModel();
 
         $this->model->formatSurat  = new FormatSuratModel();
+        $this->model->masyarakat  = new MasyarakatModel();
     }
     public function  index()
     {
-        $data = $this->model->psurat->select("pengajuan_surat.id", "nomor_surat", "masyarakat.nik", "nama_lengkap", "nama_surat", "pengajuan_surat.created_at", "status", "no_hp")->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")->join("surat", "surat.id", "pengajuan_surat.id_surat")->join("users", "users.nik", "pengajuan_surat.nik")->where("status","=","selesai")->get();
+        $data = $this->model->psurat->select("pengajuan_surat.id", "nomor_surat", "masyarakat.nik", "nama_lengkap", "nama_surat", "pengajuan_surat.created_at", "status", "no_hp")->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")->join("surat", "surat.id", "pengajuan_surat.id_surat")->join("users", "users.nik", "pengajuan_surat.nik")->where("status", "=", "selesai")->get();
 
         $params["data"] = (object)[
             "title" => "Jenis Surat",
@@ -74,7 +77,6 @@ class SuratMasukSelesaiController extends Controller
         return response($params, 200);
     }
 
-
     public function exportPengajuan($idPengajuan)
     {
         $formatSurat = $this->model->formatSurat
@@ -83,71 +85,116 @@ class SuratMasukSelesaiController extends Controller
             ->where("pengajuan_surat.id", "=", $idPengajuan)
             ->first();
 
-        $data = $this->model->psurat->select("nama_lengkap,nomor_surat,pengajuan_surat.nik,rw,rt,kecamatan,kelurahan,kabupaten,tempat_lahir,tgl_lahir,jenis_kelamin,pekerjaan,agama,status_perkawinan,kewarganegaraan,alamat,pengajuan_surat.created_at")
+        $data = $this->model->psurat->select("nama_lengkap,nomor_surat,pengajuan_surat.nik,rw,rt,kecamatan,kelurahan,kabupaten,tempat_lahir,tgl_lahir,jenis_kelamin,pekerjaan,agama,status_perkawinan,kewarganegaraan,alamat,pengajuan_surat.created_at,nama_surat,pendidikan,kartu_keluarga.no_kk,alamat,nomor_surat_tambahan")
             ->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->join("surat", "surat.id", "pengajuan_surat.id_surat")
             ->join("users", "users.nik", "pengajuan_surat.nik")
+            ->where("pengajuan_surat.id", "=", $idPengajuan)
             ->first();
-        $html = $formatSurat->konten;
+
+        $data->bapak = $this->model->masyarakat
+            ->where("status_keluarga", "=", "kk")
+            ->where("no_kk", "=", $data->no_kk)
+            ->first();
+        $data->ibu = $this->model->masyarakat
+            ->where("status_keluarga", "=", "istri")
+            ->where("no_kk", "=", $data->no_kk)
+            ->first();
+
+        $html = "<style>
+                @page { margin:10px 50px; }
+                </style>";
+
+        $html .= $formatSurat->konten;
         $this->replaceValue($html, $data);
         $dompdf = new Dompdf();
         $dompdf->loadHtml($html);
-
-        // Set opsi untuk orientasi dan ukuran kertas
         $dompdf->setPaper('A4', 'portrait');
-
-        // Render HTML menjadi PDF
+        $options = $dompdf->getOptions();
+        $options->set('isHtml5ParserEnabled', true);
+        $dompdf->setOptions($options);
         $dompdf->render();
-
-        // Output PDF untuk diunduh oleh pengguna
-        $dompdf->stream("Surat_" . $idPengajuan . ".pdf", [
-            "Attachment" => false // Ubah ke false jika ingin ditampilkan di browser
+        $dompdf->stream("Surat_" . $data->nama_surat . ".pdf", [
+            "Attachment" => true // Ubah ke false jika ingin ditampilkan di browser
         ]);
-        // dd($html);
     }
 
 
     private function replaceValue(&$html, $data)
     {
-        $html = str_replace("{nama}", $data->nama_lengkap, $html);
-        $html = str_replace("{no_surat}", $data->nomor_surat, $html);
-        $html = str_replace("{nik}", $data->nik, $html);
-        $html = str_replace("{rw}", $data->rw, $html);
-        $html = str_replace("{rt}", $data->rt, $html);
-        $html = str_replace("{kecamatan}", $data->kecamatan, $html);
-        $html = str_replace("{desa}", $data->kelurahan, $html);
-        $html = str_replace("{kabupaten}", $data->kabupaten, $html);
-        $html = str_replace("{tempat_lahir}", $data->tempat_lahir, $html);
-        $html = str_replace("{tanggal_lahir}", $data->tgl_lahir, $html);
-        $html = str_replace("{jenis_kelamin}", $data->jenis_kelamin, $html);
-        $html = str_replace("{pekerjaan}", $data->pekerjaan, $html);
-        $html = str_replace("{agama}", $data->agama, $html);
-        $html = str_replace("{status_perkawinan}", $data->status_perkawinan, $html);
-        $html = str_replace("{kewarganegaraan}", $data->kewarganegaraan, $html);
-        $html = str_replace("{alamat}", $data->alamat, $html);
-        $html = str_replace("{tanggal_pengajuan}", formatDate($data->created_at), $html);
+        $noSurat = $data->nomor_surat . "/" . $data->nomor_surat_tambahan;
+        $html = str_replace("{no_surat}", $data->nomor_surat ?? "", $html);
+        $html = str_replace("{nama}", $data->nama_lengkap ?? "", $html);
+        $html = str_replace("{nik}", $data->nik ?? "", $html);
+        $html = str_replace("{tempat_lahir}", $data->tempat_lahir ?? "", $html);
+        $html = str_replace("{tanggal_lahir}", $data->tgl_lahir ?? "", $html);
+        $html = str_replace("{jenis_kelamin}", $data->jenis_kelamin ?? "", $html);
+        $html = str_replace("{pekerjaan}", $data->pekerjaan ?? "", $html);
+        $html = str_replace("{agama}", $data->agama ?? "", $html);
+        $html = str_replace("{status_perkawinan}", $data->status_perkawinan ?? "", $html);
+        $html = str_replace("{kewarganegaraan}", $data->kewarganegaraan ?? "", $html);
+        $html = str_replace("{pendidikan}", $data->pendidikan ?? "", $html);
+        $html = str_replace("{alamat}", $data->alamat ?? "", $html);
+        $html = str_replace("{rw}", $data->rw ?? "", $html);
+
+        if ($data->bapak) {
+            $html = str_replace("{nama_bapak}", $data->bapak->nama_lengkap ?? "", $html);
+            $html = str_replace("{nik_bapak}", $data->bapak->nik ?? "", $html);
+            $html = str_replace("{tempat_lahir_bapak}", $data->bapak->tempat_lahir ?? "", $html);
+            $html = str_replace("{tanggal_lahir_bapak}", $data->bapak->tgl_lahir ?? "", $html);
+            $html = str_replace("{jenis_kelamin_bapak}", $data->bapak->jenis_kelamin ?? "", $html);
+            $html = str_replace("{pekerjaan_bapak}", $data->bapak->pekerjaan ?? "", $html);
+            $html = str_replace("{agama_bapak}", $data->bapak->agama ?? "", $html);
+            $html = str_replace("{status_perkawinan_bapak}", $data->bapak->status_perkawinan ?? "", $html);
+            $html = str_replace("{kewarganegaraan_bapak}", $data->bapak->kewarganegaraan ?? "", $html);
+            $html = str_replace("{pendidikan_bapak}", $data->bapak->pendidikan ?? "", $html);
+            $html = str_replace("{alamat_bapak}", $data->bapak->alamat ?? "", $html);
+        }
+
+        if ($data->ibu) {
+            $html = str_replace("{nama_ibu}", $data->ibu->nama_lengkap ?? "", $html);
+            $html = str_replace("{nik_ibu}", $data->ibu->nik ?? "", $html);
+            $html = str_replace("{tempat_lahir_ibu}", $data->ibu->tempat_lahir ?? "", $html);
+            $html = str_replace("{tanggal_lahir_ibu}", $data->ibu->tgl_lahir ?? "", $html);
+            $html = str_replace("{jenis_kelamin_ibu}", $data->ibu->jenis_kelamin ?? "", $html);
+            $html = str_replace("{pekerjaan_ibu}", $data->ibu->pekerjaan ?? "", $html);
+            $html = str_replace("{agama_ibu}", $data->ibu->agama ?? "", $html);
+            $html = str_replace("{status_perkawinan_ibu}", $data->ibu->status_perkawinan ?? "", $html);
+            $html = str_replace("{kewarganegaraan_ibu}", $data->ibu->kewarganegaraan ?? "", $html);
+            $html = str_replace("{pendidikan_ibu}", $data->ibu->pendidikan ?? "", $html);
+            $html = str_replace("{alamat_ibu}", $data->ibu->alamat ?? "", $html);
+        }
+
+
+        $html = str_replace("{rw}", $data->rw ?? "", $html);
+        $html = str_replace("{rt}", $data->rt ?? "", $html);
+        $html = str_replace("{kecamatan}", $data->kecamatan ?? "", $html);
+        $html = str_replace("{desa}", $data->kelurahan ?? "", $html);
+        $html = str_replace("{kabupaten}", $data->kabupaten ?? "", $html);
+        $html = str_replace("{tanggal_pengajuan}", formatDate($data->created_at) ?? "", $html);
     }
-    public function detail($id){
+    public function detail($id)
+    {
         $data = $this->model->psurat
-        ->select("pengajuan_surat.nik,surat.id,nama_lengkap,nama_surat,surat.created_at as tanggal_pengajuan,pengajuan_surat.nomor_surat,no_pengantar_rw,jenis_kelamin,kewarganegaraan,agama,pekerjaan,alamat,tempat_lahir,tgl_lahir,status,nomor_surat_tambahan,kode_kelurahan")
-        ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
-        ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
-        ->join("surat", "pengajuan_surat.id_surat", "surat.id")
-        ->where("surat.id", "=", $id)
-        ->first();
+            ->select("pengajuan_surat.nik,surat.id,nama_lengkap,nama_surat,surat.created_at as tanggal_pengajuan,pengajuan_surat.nomor_surat,no_pengantar_rw,jenis_kelamin,kewarganegaraan,agama,pekerjaan,alamat,tempat_lahir,tgl_lahir,status,nomor_surat_tambahan,kode_kelurahan")
+            ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
+            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+            ->join("surat", "pengajuan_surat.id_surat", "surat.id")
+            ->where("surat.id", "=", $id)
+            ->first();
 
-   $lampiran = $this->model->lpengajuan
-        ->select("nama_lampiran,url")
-        ->where("id_pengajuan", "=",$data->id)
-        ->join("lampiran", "lampiran_pengajuan.id_lampiran", "lampiran.id")
-        ->get();
+        $lampiran = $this->model->lpengajuan
+            ->select("nama_lampiran,url")
+            ->where("id_pengajuan", "=", $data->id)
+            ->join("lampiran", "lampiran_pengajuan.id_lampiran", "lampiran.id")
+            ->get();
 
-    $data->tgl_lahir = formatDate($data->tgl_lahir);
-    $data->tanggal_pengajuan = formatDate($data->tanggal_pengajuan);
-    $data->status = formatStatusPengajuan($data->status);
-    $data->lampiran = $lampiran; 
+        $data->tgl_lahir = formatDate($data->tgl_lahir);
+        $data->tanggal_pengajuan = formatDate($data->tanggal_pengajuan);
+        $data->status = formatStatusPengajuan($data->status);
+        $data->lampiran = $lampiran;
 
-    return response($data, 200);
+        return response($data, 200);
     }
 }

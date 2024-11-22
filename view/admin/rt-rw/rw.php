@@ -115,21 +115,6 @@
                                                 <input type="date" class="  form-control" name="masa_jabatan_akhir" id="masa_jabatan_akhir" required>
                                             </div>
                                         </div>
-                                        <!-- <div class="col-12">
-                                            <div class="form-group mb-2 ms-3">
-                                                <label for="no_hp">Nomor Telepon<span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control phone-format" placeholder="Contoh: 08123456789" name="no_hp" id="no_hp" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="form-group mb-2 ms-3 position-relative">
-                                                <label for="password">Kata Sandi<span class="text-danger required-password">*</span></label>
-                                                <input type="password" class="form-control password" placeholder="Masukkan kata sandi" name="password" id="password" required>
-                                                <span class="toggle-password position-absolute" style="right: 10px; top: 50%; cursor: pointer;">
-                                                    <i class="fa fa-eye"></i>
-                                                </span>
-                                            </div>
-                                        </div> -->
                                     </div>
 
                                 </div>
@@ -202,7 +187,7 @@
 
 
             $.ajax({
-                url: "/admin/master-rw/ajax-masyarakat/" + data.id,
+                url: "<?= url("/admin/master-rw/ajax-masyarakat/") ?>" + data.id,
                 success: (data) => {
                     setFormData(data)
                 },
