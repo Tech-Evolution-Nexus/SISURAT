@@ -35,3 +35,48 @@ Router::addRoute("POST", "/aktivasi", [AuthApiController::class, "aktivasi"]);
 
 
 Router::addRoute("GET", "/surat-selesai/export/{id}", [SuratMasukSelesaiController::class, "exportPengajuan"]);
+
+
+Router::addRoute("GET", "/kos", function () {
+    return response([
+        "status" => "Success",
+        "data" => [
+            [
+                "id_kos" => 2024115250,
+                "nama_kos" => "Kost Putra Dekat Poltek Bondowoso",
+                "alamat" => "Sumbersari, Jember, Jawa Timur, Jawa, 68124, Indonesia",
+                "tipe_kos" => "Laki-Laki",
+                "harga" => 123,
+                "gambar" => null,
+                "avg_rating" => null,
+                "review_count" => 0,
+                "waktu_penyewaan" => "Harian",
+                "status_kamar" => "Laki-Laki"
+            ],
+            [
+                "id_kos" => 2024115250,
+                "nama_kos" => "Kost Putra Dekat Poltek Bondowoso",
+                "alamat" => "Sumbersari, Jember, Jawa Timur, Jawa, 68124, Indonesia",
+                "tipe_kos" => "Laki-Laki",
+                "harga" => 123,
+                "gambar" => null,
+                "avg_rating" => null,
+                "review_count" => 0,
+                "waktu_penyewaan" => "Harian",
+                "status_kamar" => "Laki-Laki"
+            ],
+            [
+                "id_kos" => 2024115250,
+                "nama_kos" => "Kost Putra Dekat Poltek Bondowoso",
+                "alamat" => "Sumbersari, Jember, Jawa Timur, Jawa, 68124, Indonesia",
+                "tipe_kos" => "Laki-Laki",
+                "harga" => 123,
+                "gambar" => null,
+                "avg_rating" => null,
+                "review_count" => 0,
+                "waktu_penyewaan" => "Harian",
+                "status_kamar" => "Laki-Laki"
+            ]
+        ]
+    ]);
+});
