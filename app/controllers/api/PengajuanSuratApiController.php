@@ -135,7 +135,7 @@ class PengajuanSuratApiController
         if($data){
             return response(["status" => true, "message" => "Data Berhasil Diambil", "data" => $data], 200);
         }else{
-            return response(["status" => false, "message" => "Data Gagal Diambil", "data" => []], 400);
+            return response(["status" => false, "message" => "Data Gagal Diambil / Data Masih Kosong", "data" => []], 200);
         }
     }
 
