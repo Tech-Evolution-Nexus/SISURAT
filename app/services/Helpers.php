@@ -24,22 +24,22 @@ if (!function_exists("pushnotifikasito")) {
                 'body' => $desk
             ]);
         try {
-           return $messaging->send($message);
+            return $messaging->send($message);
         } catch (\Kreait\Firebase\Exception\MessagingException $e) {
-           return 'Error sending message: ' . $e->getMessage();
+            return 'Error sending message: ' . $e->getMessage();
         }
     }
 }
 if (!function_exists("pushnotifikasiall")) {
-    function pushnotifikasiall($title,$desk)
+    function pushnotifikasiall($title, $desk)
     {
         $factory = (new Factory)->withServiceAccount(__DIR__ . "/../../sisuratmob.json");
         $messaging = $factory->createMessaging();
         $message = CloudMessage::withTarget('topic', 'global')
-        ->withNotification([
-            'title' => $title,
-            'body' => $desk
-        ]);
+            ->withNotification([
+                'title' => $title,
+                'body' => $desk
+            ]);
         try {
             return $messaging->send($message);
             // echo 'Message sent successfully: ' . $sendResponse;
@@ -206,11 +206,9 @@ if (!function_exists("formatStatusPengajuan")) {
 }
 
 if (!function_exists("formatDate")) {
-    function formatDate($date)
+    function formatDate($date, $short = false)
     {
-        // Cek apakah tanggal valid dan tidak kosong
         if (!empty($date) && strtotime($date) !== false) {
-            // Ubah nama bulan ke bahasa Indonesia
             $bulanIndonesia = [
                 'January' => 'Januari',
                 'February' => 'Februari',
@@ -226,14 +224,15 @@ if (!function_exists("formatDate")) {
                 'December' => 'Desember'
             ];
 
-            // Format tanggal ke bahasa Inggris terlebih dahulu
             $formattedDate = date('d F Y', strtotime($date));
+            $translatedDate = strtr($formattedDate, $bulanIndonesia);
 
-            // Ganti bulan Inggris dengan bulan Indonesia
-            return strtr($formattedDate, $bulanIndonesia);
+            if ($short) {
+                $translatedDate = preg_replace('/\b(\w{3})\w+\b/', '$1', $translatedDate);
+            }
+
+            return $translatedDate;
         }
-
-        // Kembalikan NULL jika tanggal tidak valid atau kosong
         return null;
     }
 }

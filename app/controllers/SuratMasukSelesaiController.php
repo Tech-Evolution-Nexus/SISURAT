@@ -115,7 +115,7 @@ class SuratMasukSelesaiController extends Controller
         $options->set('isHtml5ParserEnabled', true);
         $dompdf->setOptions($options);
         $dompdf->render();
-        $dompdf->stream("Surat_" . $data->nama_surat . ".pdf", [
+        $dompdf->stream($data->nama_surat . ".pdf", [
             "Attachment" => true // Ubah ke false jika ingin ditampilkan di browser
         ]);
     }
@@ -123,8 +123,8 @@ class SuratMasukSelesaiController extends Controller
 
     private function replaceValue(&$html, $data)
     {
-        $noSurat = $data->nomor_surat . "/" . $data->nomor_surat_tambahan;
-        $html = str_replace("{no_surat}", $data->nomor_surat ?? "", $html);
+        $noSurat = $data->nomor_surat . ($data->nomor_surat_tambahan != null ? "/" . $data->nomor_surat_tambahan : "");
+        $html = str_replace("{no_surat}", $noSurat ?? "", $html);
         $html = str_replace("{nama}", $data->nama_lengkap ?? "", $html);
         $html = str_replace("{nik}", $data->nik ?? "", $html);
         $html = str_replace("{tempat_lahir}", $data->tempat_lahir ?? "", $html);

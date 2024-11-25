@@ -92,10 +92,10 @@ class AuthApiController
                 "data" => []
             ], 200);
         }
-        
+
         // Jika NIK ditemukan di masyarakat
         $user = $this->model->UserModel->where("nik", "=", $nik)->first();
-        
+
         if (!$user) {
             // Jika NIK ditemukan di masyarakat tetapi belum terdaftar di user
             return response([
@@ -104,7 +104,7 @@ class AuthApiController
                 "data" => []
             ], 200);
         }
-        
+
         // Jika NIK ditemukan di kedua tabel (masyarakat dan user)
         return response([
             "message" => "NIK sudah terdaftar di masyarakat dan user.",
@@ -153,7 +153,6 @@ class AuthApiController
                     "status" => true,
                     "data" => []
                 ], 200);
-            
             } else {
                 // Hash password sebelum menyimpan
                 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
