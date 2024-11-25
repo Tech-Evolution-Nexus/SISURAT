@@ -55,9 +55,9 @@
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Action buttons">
                                             <button data-id="<?= $kk->id ?>" title="Detail" class="btn detailBtn  text-white btn-success btn-sm">
-                                                DETAIL
+                                                Detail
                                             </button>
-                                            <a href="<?= url("/admin/surat-selesai/export/" . $kk->id) ?>">
+                                            <a class="btn btn-primary btn-sm" href="<?= url("/admin/surat-selesai/export/" . $kk->id) ?>">
                                                 Download
                                             </a>
                                         </div>

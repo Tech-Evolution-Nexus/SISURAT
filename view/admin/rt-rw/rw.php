@@ -137,6 +137,7 @@
                                 <th>NIK</th>
                                 <th>Nama RW</th>
                                 <th>Ketua RW</th>
+                                <th>Tanggal Jabatan</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -147,6 +148,7 @@
                                     <td><?= $kk->nik ?></td>
                                     <td><?= $kk->nama_lengkap ?></td>
                                     <td><?= $kk->rw ?></td>
+                                    <td><?= formatDate($kk->masa_jabatan_awal, true) ?> - <?= formatDate($kk->masa_jabatan_akhir, true) ?></td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Action buttons">
                                             <button data-nik="<?= $kk->nik ?>" title="Edit" class="btn editBtn text-white btn-warning btn-sm">
