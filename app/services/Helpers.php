@@ -228,7 +228,7 @@ if (!function_exists("formatDate")) {
             $translatedDate = strtr($formattedDate, $bulanIndonesia);
 
             if ($short) {
-                $translatedDate = preg_replace('/\b(\w{3})\w+\b/', '$1', $translatedDate);
+                $translatedDate = preg_replace('/\b([A-Za-z]{3})[a-z]+\b/', '$1', $translatedDate);
             }
 
             return $translatedDate;

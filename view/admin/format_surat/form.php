@@ -88,7 +88,7 @@
             HorizontalLine,
             Underline,
             HtmlEmbed,
-            Mention
+            Mention,
         } from 'ckeditor5';
 
         const mention = [
@@ -151,7 +151,7 @@
                         'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
                         'alignment', 'bulletedList', 'numberedList', '|',
                         'link', 'blockQuote', 'insertTable', 'imageUpload', '|',
-                        'heading', 'indent', 'outdent', '|',
+                        'heading', 'indent', 'outdent', 'horizontalLine', '|',
                         'code', 'codeBlock', '|',
                         // 'removeFormat', 'horizontalLine'
                     ],

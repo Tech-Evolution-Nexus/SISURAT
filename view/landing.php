@@ -71,11 +71,11 @@
                 <div class="card-body">
                     <h6 class="text-primary">Fitur Unggulan Aplikasi</h6>
                     <div class="row">
-                        <div class="col-md-6 col-12 pe-4">
+                        <div class="col-md-6 col-12 pe-4 pb-md-4">
                             <h2>Pengelolaan Surat yang Lebih Efisien dan Terpusat</h2>
                         </div>
                         <div class="col-md-6 col-12 pb-4">
-                            <p>Smart App memudahkan masyarakat dalam mengajukan dan mengelola surat, memberikan akses cepat dan transparansi penuh, sebagai bagian dari komitmen kami untuk memberikan pelayanan terbaik kepada Anda.</p>
+
                         </div>
                     </div>
                     <div class="row justify-content-center g-4">
@@ -95,7 +95,7 @@
                         </div>
                         <div class="col-lg-4 col-md-6 col-12">
                             <div class="text-center text-md-start">
-                                <i class="fs-1  mb-3 text-primary fa-solid fa-truck-fast"></i>
+                                <i class="fs-1  mb-3 text-primary fa-solid fa-eye"></i>
                             </div>
                             <h6 class="fw-bold text-center text-md-start">Pantau Surat dengan Mudah</h6>
                             <p>Melalui fitur pelacakan real-time, Anda dapat memantau status pengiriman dan penerimaan surat tanpa hambatan.</p>
