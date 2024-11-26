@@ -189,7 +189,7 @@
                                                 </select>
                                             </div>
                                             <div class="form-group mb-2">
-                                                <label for="" class="mb-1">Rt <span>(optional)</span></label>
+                                                <label for="" class="mb-1">Rt</label>
                                                 <select name="rt" id="" class="form-control">
                                                     <option value="">Pilih Rt</option>
                                                     <?php foreach ($data->listRt as $rt) : ?>

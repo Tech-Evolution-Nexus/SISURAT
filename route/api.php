@@ -17,6 +17,7 @@ Router::addRoute("POST", "/pengajuanpembatalan", [SuratApiController::class, "di
 
 
 Router::addRoute("POST", "/approval-pengajuan/{nik}/{id_pengajuan}", [PengajuanSuratApiController::class, "approvalPengajuan"]);
+
 Router::addRoute("GET", "/getpengajuan/{nik}/{status}", [PengajuanSuratApiController::class, "getPengajuan"]);
 Router::addRoute("GET", "/list-pengajuan/{nik}/{status}", [PengajuanSuratApiController::class, "getListPengajuan"]);
 Router::addRoute("GET", "/pengajuan-detail/{id_pengajuan}", [PengajuanSuratApiController::class, "getDetailPengajuan"]);

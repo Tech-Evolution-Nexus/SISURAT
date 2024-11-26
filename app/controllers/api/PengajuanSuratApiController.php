@@ -132,9 +132,9 @@ class PengajuanSuratApiController
             "image"
         )->join("surat", "surat.id", "id_surat")->where("nik", "=", $nik)->whereIn('status', $statusFilter)->get();
 
-        if($data){
+        if ($data) {
             return response(["status" => true, "message" => "Data Berhasil Diambil", "data" => $data], 200);
-        }else{
+        } else {
             return response(["status" => false, "message" => "Data Gagal Diambil / Data Masih Kosong", "data" => []], 200);
         }
     }
@@ -224,46 +224,31 @@ class PengajuanSuratApiController
 
     public function approvalPengajuan($nik, $id_pengajuan)
     {
-        request()->validate([
-            "status" => "required",
-        ]);
-        $pengajuan = $this->model->psurat->where("id", "=", $id_pengajuan)
-            ->first();
-        if (!$pengajuan) {
-            return response(["message" => "Pengajuan tidak ditemukan"], 404);
-        }
-        $user = $this->model->users->where("nik", "=", $nik)->first();
-        $role = $user->role;
-        $status = request("status");
-        $pengantar = request("pengantar");
-        $no_surat = request("no_surat");
-        $no_kelurahan = request("no_kelurahan");
-        $no_surat_tambahan = request("no_surat_tambahan");
-        $no_surat_tambahan = request("no_surat_tambahan");
-        $keteranganDitolak = request("keterangan_ditolak");
-        $keterangan = request("keterangan");
-
-        $data = [];
-        if ($role == "rw") {
-            if ($status == "ditolak") {
-                $data["status"] = "di_tolak_rw";
-            } else {
-                $data["status"] = "di_terima_rw";
+        header("Access-Control-Allow-Origin: *");
+        try {
+            $pengajuan = $this->model->psurat->where("id", "=", $id_pengajuan)
+                ->first();
+            if (!$pengajuan) {
+                return response(["message" => "Pengajuan tidak ditemukan"], 200);
             }
-        } else if ($role == "rt") {
-            if ($status == "ditolak") {
-                $data["status"] = "di_tolak_rt";
-            } else {
-                $data["status"] = "di_terima_rt";
-            }
+            $user = $this->model->users->where("nik", "=", $nik)->first();
+            $role = $user->role;
+            $status = request("status");
+            $keterangan = request("keterangan");
 
-            $data["keterangan_ditolak"] = $keteranganDitolak;
-            $data["keterangan"] = $keterangan;
+            $data = [];
+            $data["status"] = ($role == "rw")
+                ? ($status == "ditolak" ? "di_tolak_rw" : "di_terima_rw")
+                : ($status == "ditolak" ? "di_tolak_rt" : "di_terima_rt");
+
+            $data["keterangan_ditolak"] = $keterangan;
+
+
+            $this->model->psurat->where("id", "=", $id_pengajuan)
+                ->update($data);
+            return response(["message" => "Success", $data, $id_pengajuan, $status, $keterangan], 200);
+        } catch (\Throwable $th) {
+            return response(["message" => "Error"], 500);
         }
-
-        return response(["message" => $data], 200);
-        $this->model->psurat->where("id", "=", $id_pengajuan)
-            ->update($data);
-        return response(["message" => "Success"], 200);
     }
 }

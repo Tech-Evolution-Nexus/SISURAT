@@ -28,7 +28,8 @@ class KomponenController extends Controller
         $filePath = __DIR__ . '/../../upload/masyarakat/' . $url;
         $this->proses($filePath);
     }
-    private function proses($filePath=""){
+    private function proses($filePath = "")
+    {
         if (file_exists($filePath) && is_file($filePath)) {
             $mimeType = mime_content_type($filePath);
             header('Content-Type: ' . $mimeType);
@@ -36,6 +37,7 @@ class KomponenController extends Controller
             return;
         }
     }
+
     public function getImageLampiran($url)
     {
         $filePath = __DIR__ . '/../../upload/lampiran/' . $url;
