@@ -32,6 +32,8 @@ Router::addRoute("POST", "/login", [AuthApiController::class, "login"]);
 Router::addRoute("POST", "/register", [AuthApiController::class, "register"]);
 Router::addRoute("POST", "/veriv", [AuthApiController::class, "veriv"]);
 Router::addRoute("POST", "/aktivasi", [AuthApiController::class, "aktivasi"]);
+Router::addRoute("POST", "/sendemail", [AuthApiController::class, "sendemail"]);
+Router::addRoute("POST", "/reset-password", [AuthApiController::class, "resetpassword"]);
 
 
 Router::addRoute("GET", "/surat-selesai/export/{id}", [SuratMasukSelesaiController::class, "exportPengajuan"]);
