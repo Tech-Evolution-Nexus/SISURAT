@@ -35,9 +35,9 @@
                     <p class="text-white text-small"><?= $data->description ?> </p>
                 </div>
                 <div class="ms-auto">
-                    <button type="button" class="btn btn-warning" id="add-btn" data-bs-toggle="modal" data-bs-target="#modal">
+                    <a href="<?= url("/admin/surat/create") ?>" class="btn btn-warning">
                         Tambah Jenis Surat
-                    </button>
+                    </a>
                 </div>
             </div>
             <div class="card">
@@ -59,10 +59,10 @@
                                     <td><?= $kk->nama_surat ?></td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Action buttons">
-                                            <button data-id="<?= $kk->id ?>" title="Edit" class="btn editBtn text-white btn-warning btn-sm">
+                                            <a href="<?= url("/admin/surat/$kk->id/edit") ?>" title="Edit" class="btn editBtn text-white btn-warning btn-sm">
                                                 <i class="fa fa-pencil"></i>
-                                            </button>
-                                            <button data-id="<?= $kk->id ?>" title="Hapus" class="btn btnDelete text-white btn-danger btn-sm">
+                                            </a>
+                                            <button data-url="<?= url("/admin/surat/$kk->id/delete") ?>" title="Hapus" class="btn deleteBtn  text-white btn-danger btn-sm">
                                                 <i class="fa fa-trash"></i>
                                             </button>
                                             <button data-id="<?= $kk->id ?>" title="Detail" class="btn btnDetail text-white btn-success btn-sm">
@@ -147,208 +147,7 @@
     <!--end yang perlu diubah -->
 
     <?php includeFile("layout/script") ?>
-    <script>
-        $("#add-btn").on("click", function() {
-            setupForm("Tambah Jenis Surat", "<?= url("/admin/surat") ?>")
-            $("[name=nama_surat]").attr('required');
-            $('#fselect').remove();
-            $('.fselected').remove();
-            $('#add-field').show()
-            $('#btn-simpan').show()
-            $('#file_icon').show();
-            $(".modal form").trigger("reset");
-            $(".personal-information, .modal-footer").css({
-                height: 0,
-                opacity: 0
-            })
-            $(".image-upload").css("background-image", `url("")`)
 
-            removeLampiranInput()
-            addField()
-        })
-        $(".editBtn").on("click", function() {
-            const id = $(this).attr("data-id")
-
-            setupForm("Ubah Jenis Surat", ` <?= url("/admin/editsurat/") ?>${id}`);
-            $(".modal").modal("show")
-            $.ajax({
-                url: "/SISURAT/admin/esurat/" + id,
-                success: (data) => {
-                    $('#fselect').remove();
-                    $('.fselected').remove();
-                    $('#add-field').show()
-                    $('#btn-simpan').show()
-                    $('#file_icon').show();
-
-                    $("[name=nama_surat]").prop('disabled', false);
-                    removeLampiranInput()
-                    data.datalampiran.forEach((element, index) => {
-                        const dynamicFields = document.getElementById("dynamic-fields");
-                        const formGroup = document.createElement("div");
-                        formGroup.className = "form-group";
-                        formGroup.innerHTML = `
-                       <div class=" fselected">
-                        <label class="mb-2">Lampiran ${index+1}</label>
-                        <div class="d-flex ms-3  ">
-                            <select name="fields[]" class="form-select" required>
-                                <option value="">Pilih Opsi</option>
-                                <?php foreach ($data->datalampiran  as $index => $datas) : ?>
-                                <option ${element.id==<?= $datas->id ?>?"selected":""} value="<?= $datas->id ?>"><?= $datas->nama_lampiran ?></option>
-                                <?php endforeach; ?>
-                                </select>
-                                ${index!=0?'<button type="button" class="btn btn-danger text-white ms-2" onclick="removeField(this)"><i class="fa-solid fa-trash"></i></button>':''}
-                            </div></div>
-                        `;
-
-                        dynamicFields.appendChild(formGroup);
-                    });
-                    setFormData(data.datasurat)
-                }
-            })
-        })
-
-        $(".btnDetail").on("click", function() {
-            const id = $(this).attr("data-id")
-
-            setupForm("Detail Jenis Surat", "");
-            $(".modal").modal("show")
-            $.ajax({
-                url: "/SISURAT/admin/esurat/" + id,
-                success: (data) => {
-                    $('#fselect').hide()
-                    $('.fselected').hide()
-                    $('#add-field').hide()
-                    $('#btn-simpan').hide()
-                    $('#file_icon').hide();
-
-                    $("[name=nama_surat]").attr('disabled', true);
-                    removeLampiranInput()
-                    data.datalampiran.forEach((element, index) => {
-                        const dynamicFields = document.getElementById("dynamic-fields");
-                        const formGroup = document.createElement("div");
-                        formGroup.className = "form-group";
-                        formGroup.innerHTML = `
-                         <div class="form-group mt-3 ms-3">
-                            <label class="mb-2">Lampiran ${index+1}</label>
-                                <div class="input-group">
-                                    <input class="form-control" name="data-${index}" id="data${index}" value="${element.nama_lampiran}" disabled/>
-                                </div>
-                        </div>
-                        `;
-
-                        dynamicFields.appendChild(formGroup);
-                    });
-                    setFormData(data.datasurat)
-                }
-            })
-        })
-
-
-        const removeLampiranInput = () => {
-            const dynamicFields = document.getElementById("dynamic-fields");
-            const countInput = $(dynamicFields).children(".form-group").remove()
-
-            const allSelects = document.querySelectorAll('[name="fields[]"]');
-            allSelects.forEach(s => {
-                const optionToEnable = s.querySelector(option[value = "${selectedValue}"]);
-                if (optionToEnable) {
-                    optionToEnable.disabled = false;
-                }
-            });
-        }
-        const setupForm = (title, action) => {
-            $("#titleForm").text(title)
-            $(".modal form").attr("action", action)
-        }
-
-        const setFormData = ({
-            id_surat,
-            nama_surat,
-            lampiran,
-            image
-        }) => {
-
-            $("[name=nama_surat]").val(nama_surat)
-            $("[name=file_icon]").val(lampiran)
-            $(".image-upload").css("background-image", `url(${image})`)
-
-        }
-
-        function addField() {
-            const dynamicFields = document.getElementById("dynamic-fields");
-            const formGroup = document.createElement("div");
-            formGroup.className = "form-group";
-            const countInput = $(dynamicFields).children(".form-group").length
-            formGroup.innerHTML = `
-            <div class="mt-3">
-            <label class="mb-2">Lampiran ${countInput+1}</label>
-            <div class="d-flex  ms-3 ">
-                 <select name="fields[]" class="form-select" required>
-                    <option value="">Pilih Opsi</option>
-                    <?php foreach ($data->datalampiran  as $index => $datas) : ?>
-                    <option value="<?= $datas->id ?>"><?= $datas->nama_lampiran ?></option>
-                    <?php endforeach; ?>
-                </select>
-                    ${countInput > 0 ? '<button type="button" class="btn btn-danger text-white ms-2" onclick="removeField(this)"><i class="fa-solid fa-trash"></i></button>':""}
-                </div></div>
-            `;
-            dynamicFields.appendChild(formGroup);
-        }
-
-        function removeField(button) {
-            $(button).parent().parent().remove();
-        }
-
-        document.getElementById("add-field").addEventListener("click", addField);
-
-        document.querySelectorAll('.btnDelete').forEach(button => {
-            button.addEventListener('click', function() {
-                const id = this.getAttribute('data-id');
-
-                Swal.fire({
-                    title: 'Apakah Anda yakin?',
-                    text: "Data ini akan dihapus dan tidak bisa dikembalikan!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Hapus',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-
-                        fetch(`<?= url('/admin/dsurat/') ?>${id}`, {
-                                method: 'POST'
-                            })
-                            .then(response => {
-                                if (response.ok) {
-                                    Swal.fire(
-                                        'Dihapus!',
-                                        'Data telah dihapus.',
-                                        'success'
-                                    ).then(() => {
-                                        location.reload(); // Reload halaman setelah dihapus
-                                    });
-                                } else {
-                                    Swal.fire(
-                                        'Gagal!',
-                                        'Terjadi kesalahan saat menghapus data.',
-                                        'error'
-                                    );
-                                }
-                            })
-                            .catch(error => {
-                                Swal.fire(
-                                    'Gagal!',
-                                    'Terjadi kesalahan saat menghapus data.',
-                                    'error'
-                                );
-                            });
-                    }
-                });
-            });
-        });
-    </script>
 </body>
 
 </html>

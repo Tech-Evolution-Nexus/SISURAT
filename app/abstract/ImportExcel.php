@@ -34,12 +34,7 @@ abstract class ImportExcel
         return $importedData;
     }
 
-    /**
-     * Get the header row from the spreadsheet.
-     *
-     * @param \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet
-     * @return array
-     */
+
     protected function getHeaderRow($sheet)
     {
         $headerRow = [];
@@ -54,10 +49,5 @@ abstract class ImportExcel
         return $headerRow;
     }
 
-    /**
-     * Abstract method for processing each row's data.
-     *
-     * @param array $data
-     */
     abstract public function run(array $data);
 }

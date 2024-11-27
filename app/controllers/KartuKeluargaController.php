@@ -138,7 +138,9 @@ class KartuKeluargaController extends Controller
         if ($foto_kartu_keluarga["name"] !== "") {
             $file_extension = pathinfo($foto_kartu_keluarga['name'], PATHINFO_EXTENSION);
             $randomName = uniqid() . '.' . $file_extension;
-            $fileUpload = new FileUploader($randomName, $foto_kartu_keluarga, "/kartu_keluarga");
+            $fileUpload = new FileUploader();
+            $fileUpload->setFile($foto_kartu_keluarga);
+            $fileUpload->setTarget(storagePath("private", "/kartu_keluarga/" . $randomName));
             $fileUpload->upload();
             $dataKK["kk_file"] = $randomName;
         }

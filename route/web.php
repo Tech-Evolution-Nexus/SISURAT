@@ -23,10 +23,11 @@ Router::addRoute("GET", "/", [LandingController::class, "index"]);
 //surat
 Router::addRoute("GET", "/admin", [DashController::class, "index"]);
 Router::addRoute("GET", "/admin/surat", [SuratController::class, "index"]);
-Router::addRoute("POST", "/admin/surat", [SuratController::class, "add"]);
-Router::addRoute("GET", "/admin/esurat/{id}", [SuratController::class, "getedit"]);
-Router::addRoute("POST", "/admin/dsurat/{id}", [SuratController::class, "deletedata"]);
-Router::addRoute("POST", "/admin/editsurat/{id}", [SuratController::class, "edit"]);
+Router::addRoute("GET", "/admin/surat/create", [SuratController::class, "create"]);
+Router::addRoute("POST", "/admin/surat", [SuratController::class, "store"]);
+Router::addRoute("GET", "/admin/surat/{id}/edit", [SuratController::class, "edit"]);
+Router::addRoute("POST", "/admin/surat/{id}/delete", [SuratController::class, "delete"]);
+Router::addRoute("POST", "/admin/surat/{id}", [SuratController::class, "update"]);
 
 //format surat
 Router::addRoute("GET", "/admin/format-surat", [FormatSuratController::class, "index"]);
@@ -124,3 +125,17 @@ Router::addRoute("GET", "/admin/assetsberita/{name}", [KomponenController::class
 Router::addRoute("GET", "/admin/assets-kartu-keluarga/{name}", [KomponenController::class, "getImageKartuKeluarga"]);
 Router::addRoute("GET", "/admin/assets-lampiran/{name}", [KomponenController::class, "getImageLampiran"]);
 Router::addRoute("GET", "/admin/assetsmasyarakat/{name}", [KomponenController::class, "getImagemasyarakat"]);
+
+
+//handle ckeditor image upload
+Router::addRoute("POST", "/admin/imageupload", function () {
+    $file = request("upload");
+    $file_extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $randomName = uniqid() . '.' . $file_extension;
+    $fileUpload = new FileUploader();
+    $fileUpload->setFile($file);
+    $fileUpload->setTarget(storagePath("public", "/assets/" . $randomName));
+    $fileUpload->upload();
+
+    return response(["url" => url("/assets/" . $randomName)]);
+});
