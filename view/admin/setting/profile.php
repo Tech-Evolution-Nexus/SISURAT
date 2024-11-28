@@ -23,7 +23,7 @@
                         <form action="edit_profile.php" method="post" autocomplete="on" id="form2" class="p-2">
                             <div class="d-flex">
                                 <div style="width: 150px; height: 150px;" class="me-4">
-                                    <img class="rounded-circle bg-dark d-flex" src="<?= assets("assets/logo-admin.png") ?>" alt="Profile Picture" id="profile-picture" style="width: 150px; height: 150px; margin: 10px;">
+                                    <img class="rounded-circle bg-dark d-flex" src="<?= assets("assets/" . auth()->user()->foto_profile) ?>" alt="Profile Picture" id="profile-picture" style="width: 150px; height: 150px; margin: 10px;">
                                     <button class="btn btn-secondary btn-sm position-absolute edit-button" type="button" aria-label="Edit Foto" onclick="document.getElementById('file-input').click();">
                                         <i class="fas fa-camera"></i>
                                     </button>
@@ -39,7 +39,7 @@
                                             formData.append('profile_picture', file);
 
                                             // Ganti URL ini dengan endpoint server Anda yang menangani pengunggahan gambar
-                                            fetch('/upload-profile-picture', {
+                                            fetch('<?= url("/upload-profile-picture") ?>', {
                                                     method: 'POST',
                                                     body: formData,
                                                 })
@@ -47,34 +47,34 @@
                                                 .then(data => {
                                                     if (data.success) {
                                                         // Perbarui tampilan gambar profil di halaman
-                                                        document.getElementById('profile-picture').src = data.imageUrl;
                                                         alert('Foto profil berhasil diperbarui');
                                                     } else {
                                                         alert('Gagal memperbarui foto profil');
                                                     }
                                                 })
                                                 .catch(error => {
-                                                    console.error('Error:', error);
+                                                    console.log('Error:', error);
                                                     alert('Terjadi kesalahan saat mengunggah foto');
+                                                    window.location
                                                 });
                                         }
                                     </script>
                                 </div>
                                 <div class="d-flex flex-column justify-content-center">
-                                    <h5 class="m-0 fw-bold"><br>Nama_lengkap<br></h5>
-                                    <span>E-mail</span>
-                                    <span class="only-number">080808008</span>
+                                    <h5 class="m-0 fw-bold"><br><?= auth()->user()->nama_lengkap ?><br></h5>
+                                    <span><?= auth()->user()->email ?></span>
+                                    <span class="only-number"><?= auth()->user()->no_hp ?></span>
                                 </div>
                             </div>
                             <hr class="my-custom-class">
                             <div class="row p-4">
                                 <div class="col-md-6 col-5 fs-6">
                                     <label class="form-label" for="fullname">Nama Lengkap</label>
-                                    <input type="text" id="fullname" name="fullame" class="form-control  " disabled>
+                                    <input type="text" id="fullname" name="fullame" class="form-control" value="<?= auth()->user()->nama_lengkap ?>" disabled>
                                 </div>
                                 <div class="col-md-6 col-5">
                                     <label class="form-label" for="E-mail">Nomor Induk Kependudukan</label>
-                                    <input type="text" id="nik" name="nik" class="form-control  " disabled>
+                                    <input type="text" id="nik" name="nik" class="form-control" value="<?= auth()->user()->nik ?>" disabled>
                                 </div>
                             </div>
                     </div>
@@ -86,10 +86,10 @@
                                 <h4 class="m-0 fw-bold">Edit Profile</h4>
                                 <span class="d-block mb-3">Tekan tombol "Simpan" untuk menyimpan perubahan.</span>
                                 <label class="form-label" for="email">E-mail</label>
-                                <input type="text" id="email" name="email" class="form-control   bg-secondary" placeholder="email@gmail.com" maxlength="20" autocomplete="off" aria-describedby="emailHelp" />
+                                <input value="<?= auth()->user()->email ?>" type="text" id="email" name="email" class="form-control bg-secondary" placeholder="email@gmail.com" maxlength="20" autocomplete="off" aria-describedby="emailHelp" />
                                 <div id="emailHelp" class="form-text">Kami tidak akan membagikan E-mail anda pada siapapun.</div>
                                 <label class="form-label d-block mt-3" for="email">No HP</label>
-                                <input type="text" id="nohp" name="nohp" class="form-control   only-number bg-secondary" placeholder="08xxxxxxxxxx" maxlength="13" autocomplete="off" />
+                                <input value="<?= auth()->user()->no_hp ?>" type="text" id="nohp" name="nohp" class="form-control   only-number bg-secondary" placeholder="08xxxxxxxxxx" maxlength="13" autocomplete="off" />
                                 <label class="form-label d-block mt-3" for="email">Kata Sandi</label>
                                 <div class="input-group">
                                     <input type="password" id="password" name="password" class="form-control   bg-secondary" placeholder="Masukkan kata sandi anda" maxlength="50" autocomplete="off" />
@@ -149,7 +149,7 @@
     <!--end yang perlu diubah -->
 
     <?php includeFile("layout/script") ?>
-  
+
 </body>
 
 </html>
