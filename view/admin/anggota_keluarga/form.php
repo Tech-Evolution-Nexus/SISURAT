@@ -95,12 +95,12 @@
                                 <div class="form-group mb-2">
                                     <label>Agama<span class="text-danger ">*</span></label></label>
                                     <select class="form-select" name="agama">
-                                        <option <?= old("tanggal_lahir", $data->data->tanggal_lahir)  == "Islam" ? "selected" : "" ?> value="Islam">Islam</option>
-                                        <option <?= old("tanggal_lahir", $data->data->tanggal_lahir)  == "Kristen" ? "selected" : "" ?> value="Kristen Protestan">Kristen Protestan</option>
-                                        <option <?= old("tanggal_lahir", $data->data->tanggal_lahir)  == "Katolik" ? "selected" : "" ?> value="Katolik">Katolik</option>
-                                        <option <?= old("tanggal_lahir", $data->data->tanggal_lahir)  == "Hindu" ? "selected" : "" ?> value="Hindu">Hindu</option>
-                                        <option <?= old("tanggal_lahir", $data->data->tanggal_lahir)  == "Buddha" ? "selected" : "" ?> value="Buddha">Buddha</option>
-                                        <option <?= old("tanggal_lahir", $data->data->tanggal_lahir)  == "Konghucu" ? "selected" : "" ?> value="Konghucu">Konghucu</option>
+                                        <option <?= old("agama", $data->data->agama)  == "Islam" ? "selected" : "" ?> value="Islam">Islam</option>
+                                        <option <?= old("agama", $data->data->agama)  == "Kristen" ? "selected" : "" ?> value="Kristen Protestan">Kristen Protestan</option>
+                                        <option <?= old("agama", $data->data->agama)  == "Katolik" ? "selected" : "" ?> value="Katolik">Katolik</option>
+                                        <option <?= old("agama", $data->data->agama)  == "Hindu" ? "selected" : "" ?> value="Hindu">Hindu</option>
+                                        <option <?= old("agama", $data->data->agama)  == "Buddha" ? "selected" : "" ?> value="Buddha">Buddha</option>
+                                        <option <?= old("agama", $data->data->agama)  == "Konghucu" ? "selected" : "" ?> value="Konghucu">Konghucu</option>
                                     </select>
                                     <?php if (session()->has("agama")): ?>
                                         <small class="text-danger text-capitalize"><?= session()->error("agama") ?></small>

@@ -45,7 +45,7 @@
                             <h6 class="mb-2  fw-bold">Informasi Kartu Keluarga</h6>
                             <input type="hidden" name="id_masyarakat">
                             <div class="col-md-6 col-12">
-                                <div class="form-group  ms-3">
+                                <div class="form-group  ms-md-3">
                                     <label for="no_kk">Nomor Kartu Keluarga<span class="text-danger only-number">*</span></label>
                                     <input value="<?= old("no_kk", $data->data->no_kk) ?>" maxlength="16" minlength="16" type="text" class=" only-number form-control" placeholder="Nomor Kartu Keluarga" name="no_kk" id="no_kk" required>
                                     <?php if (session()->has("no_kk")): ?>
@@ -62,7 +62,7 @@
                                     <?php endif; ?>
                                 </div>
                             </div>
-                            <div class="col-md-6 col-12 mb-2 ms-3">
+                            <div class="col-md-6 col-12 mb-2 ms-md-3">
                                 <div class="form-group mb-2 ">
                                     <label for="foto_kartu_keluarga">Foto Kartu Keluarga</label>
                                     <label style="background-image: url(<?= $data->data->foto_kartu_keluarga ?>);" class="image-upload rounded mt-2 flex-column d-flex justify-content-center align-items-center border border-dashed p-4">
@@ -77,7 +77,7 @@
                             </div>
                             <h6 class="mb-2  col-12 fw-bold">Informasi Kepala Keluarga</h6>
                             <div class="col-12">
-                                <div class="form-group mb-2 ms-3">
+                                <div class="form-group mb-2 ms-md-3">
                                     <label for="no_kk">NIK Kepala Keluarga<span class="text-danger only-number">*</span></label>
                                     <input value="<?= old("nik", $data->data->nik) ?>" maxlength="16" minlength="16" type="text" class=" only-number form-control" placeholder="NIK Kepala Keluarga" name="nik" id="nik" required>
                                     <?php if (session()->has("nik")): ?>
@@ -86,7 +86,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6 col-12">
-                                <div class="form-group mb-2 ms-3">
+                                <div class="form-group mb-2 ms-md-3">
                                     <label for="nama">Nama Lengkap<span class="text-danger ">*</span></label>
                                     <input value="<?= old("nama", $data->data->nama) ?>" type="text" class="  form-control" placeholder="Nama Lengkap" name="nama" id="nama" required>
                                     <?php if (session()->has("nama")): ?>
@@ -104,7 +104,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6 col-12 mb-2">
-                                <div class="form-group mb-2 ms-3">
+                                <div class="form-group mb-2 ms-md-3">
                                     <label for="rt">RT<span class="text-danger ">*</span></label>
                                     <input value="<?= old("rt", $data->data->rt) ?>" maxlength="2" type="text" class=" only-number  form-control" placeholder="Nomor RT" name="rt" id="rt" required>
                                     <?php if (session()->has("rt")): ?>
@@ -124,7 +124,7 @@
                             </div>
                             <h6 class="mb-2  fw-bold">Informasi Wilayah</h6>
                             <div class="col-md-6 col-12">
-                                <div class="form-group mb-2 ms-3">
+                                <div class="form-group mb-2 ms-md-3">
                                     <label for="kelurahan">Kelurahan</label>
                                     <input value="<?= old("kelurahan", $data->data->kelurahan) ?>" readonly type="text" class=" bg-body-secondary  form-control" placeholder="Kelurahan" name="kelurahan" id="kelurahan" required>
                                 </div>
@@ -136,7 +136,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6 col-12">
-                                <div class="form-group mb-2 ms-3">
+                                <div class="form-group mb-2 ms-md-3">
                                     <label for="kabupaten">Kabupaten</label>
                                     <input value="<?= old("kabupaten", $data->data->kabupaten) ?>" readonly type="text" class=" bg-body-secondary  form-control" placeholder="kabupaten" name="kabupaten" id="kabupaten" required>
                                 </div>
@@ -148,7 +148,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6 col-12">
-                                <div class="form-group mb-2 ms-3">
+                                <div class="form-group mb-2 ms-md-3">
                                     <label for="provinsi">Provinsi</label>
                                     <input value="<?= old("provinsi", $data->data->provinsi) ?>" readonly type="text" class=" bg-body-secondary  form-control" placeholder="provinsi" name="provinsi" id="provinsi" required>
                                 </div>

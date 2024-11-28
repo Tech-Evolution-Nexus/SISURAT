@@ -25,7 +25,7 @@ class RT_RWController extends Controller
 
 
         $data = $this->model->masyarakat
-            ->select("masyarakat.nik,nama_lengkap,alamat,rw,rt")
+            ->select("masyarakat.nik,nama_lengkap,alamat,rw,rt,masa_jabatan_awal,masa_jabatan_akhir")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->join("users", "masyarakat.nik", "users.nik")
             ->where("role", "=", "rw")
@@ -138,7 +138,7 @@ class RT_RWController extends Controller
 
 
         $data = $this->model->masyarakat
-            ->select("masyarakat.nik,nama_lengkap,alamat,rw,rt")
+            ->select("masyarakat.nik,nama_lengkap,alamat,rw,rt,masa_jabatan_awal,masa_jabatan_akhir")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->join("users", "masyarakat.nik", "users.nik")
             ->where("role", "=", "rt")
