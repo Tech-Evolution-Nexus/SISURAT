@@ -5,6 +5,7 @@ use app\controllers\api\BeritaApiController;
 use app\controllers\api\KkApiController;
 use app\controllers\api\MasyarakatApiController;
 use app\controllers\api\PengajuanSuratApiController;
+use app\controllers\api\profilEapIcontrolleR;
 use app\controllers\api\SuratApiController;
 use app\controllers\SuratMasukSelesaiController;
 use app\services\Router;
@@ -48,3 +49,4 @@ Router::addRoute("GET", "/getdetailver/{nik}", [MasyarakatApiController::class, 
 
 
 
+Router::addRoute("GET", "/get-user-info/{nik}", [profilEapIcontrolleR::class, "getdatauser"]);
