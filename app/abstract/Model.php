@@ -298,4 +298,18 @@ class Model
         ];
         return $this;
     }
+    public function count()
+{
+    // Menggunakan field COUNT() untuk menghitung jumlah record
+    $this->fields = "COUNT(*) as total";
+    $this->buildQuery();
+
+    // Menjalankan query dan mengambil hasilnya
+    $result = $this->execute($this->query, $this->bindings)->fetch($this->fetchMode);
+
+    // Mereset query agar dapat digunakan kembali
+    $this->resetQuery();
+
+    return $result->total ?? 0;
+}
 }

@@ -79,7 +79,7 @@ class PengajuanSuratApiController
                     $uploader->setAllowedFileTypes($allowedFileTypes);
                     $uploadStatus = $uploader->upload();
                     if ($uploadStatus !== true) {
-                        return response(["status" => false, "message" => "Gagal Menambahkan Data", "data" => $data], 400);
+                        return response(["status" => false, "message" => "Gagal Menambahkan Data", "data" => $uploadStatus], 400);
                     }
                 }
                 $data = $this->model->masyarakat->select("nik,kartu_keluarga.rt")->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")->where("masyarakat.nik", "=", $nik)->first();
