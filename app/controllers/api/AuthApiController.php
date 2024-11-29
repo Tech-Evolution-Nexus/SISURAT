@@ -35,7 +35,7 @@ class AuthApiController
             $nik = $jsonData["nik"];
             $password = $jsonData["password"];
             $fcm = $jsonData["fcm_token"];
-            $users = $this->model->UserModel->select("masyarakat.nik,password,role,masyarakat.no_kk")->join("masyarakat", "masyarakat.nik", "users.nik")->where("users.nik", "=", $nik)->first();
+            $users = $this->model->UserModel->select("masyarakat.nik,password,role,masyarakat.no_kk,masyarakat.nama_lengkap")->join("masyarakat", "masyarakat.nik", "users.nik")->where("users.nik", "=", $nik)->where("users.status", "=", 1)->first();
             if ($users) {
                 if (password_verify($password, $users->password)) {
                     if ($fcm != null || !empty($fcm)) {

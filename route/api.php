@@ -3,6 +3,7 @@
 use app\controllers\api\AuthApiController;
 use app\controllers\api\BeritaApiController;
 use app\controllers\api\KkApiController;
+use app\controllers\api\MasyarakatApiController;
 use app\controllers\api\PengajuanSuratApiController;
 use app\controllers\api\SuratApiController;
 use app\controllers\SuratMasukSelesaiController;
@@ -38,3 +39,12 @@ Router::addRoute("POST", "/reset-password", [AuthApiController::class, "resetpas
 
 
 Router::addRoute("GET", "/surat-selesai/export/{id}", [SuratMasukSelesaiController::class, "exportPengajuan"]);
+
+Router::addRoute("GET", "/getverifmasyarakat", [MasyarakatApiController::class, "getverifmasyarakat"]);
+Router::addRoute("POST", "/tolakverifmasyarakat", [MasyarakatApiController::class, "tolakverifmasyarakat"]);
+Router::addRoute("POST", "/accverifmasyarakat", [MasyarakatApiController::class, "accverifmasyarakat"]);
+Router::addRoute("GET", "/getdash/{nik}", [MasyarakatApiController::class, "dadashboardrt"]);
+Router::addRoute("GET", "/getdetailver/{nik}", [MasyarakatApiController::class, "detailprofilever"]);
+
+
+
