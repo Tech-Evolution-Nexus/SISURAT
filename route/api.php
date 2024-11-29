@@ -4,6 +4,7 @@ use app\controllers\api\AuthApiController;
 use app\controllers\api\BeritaApiController;
 use app\controllers\api\KkApiController;
 use app\controllers\api\PengajuanSuratApiController;
+use app\controllers\api\profilEapIcontrolleR;
 use app\controllers\api\SuratApiController;
 use app\controllers\SuratMasukSelesaiController;
 use app\services\Router;
@@ -36,3 +37,5 @@ Router::addRoute("POST", "/aktivasi", [AuthApiController::class, "aktivasi"]);
 
 
 Router::addRoute("GET", "/surat-selesai/export/{id}", [SuratMasukSelesaiController::class, "exportPengajuan"]);
+
+Router::addRoute("GET", "/get-user-info/{nik}", [profilEapIcontrolleR::class, "getdatauser"]);

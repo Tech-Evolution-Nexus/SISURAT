@@ -14,9 +14,9 @@ class ProfileController extends Controller
     private $model;
     public  function __construct()
     {
-        // if (!auth()->check()) {
-        //     redirect()->to('/login');
-        // }
+        if (!auth()->check()) {
+            redirect()->to('/login');
+        }
 
         $this->model = (object)[];
         $this->model->profile = new ProfilModel();
@@ -38,13 +38,13 @@ class ProfileController extends Controller
         }
 
         $fileExt = pathinfo($ficon['name'], PATHINFO_EXTENSION);
-        $allowedFileTypes = ["jpg", "jpeg", "png", "bmp", "webp", "svg"];
+        $allowedFileTypes = ["jfif","jpg", "jpeg", "png", "bmp", "webp", "svg"];
         $nameFile  = uniqid() . "." . $fileExt;
         $uploader = new FileUploader();
         $uploader->setFile($ficon);
         $uploader->setTarget(storagePath("public", "/assets/" . $nameFile));
         $uploader->setAllowedFileTypes($allowedFileTypes);
-        $uploadStatus = $uploader->upload();
+        $uploadStatus = $uploader->upload();    
 
         $uploadStatus = $uploader->upload();
 
@@ -53,6 +53,7 @@ class ProfileController extends Controller
             return response(["message" => "Berhasil Update", "success" => true]);
         }
         return response(["message" => "Berhasil Update"]);
+        
     }
 
     public function update_data()
@@ -71,6 +72,12 @@ class ProfileController extends Controller
 
     public function update_password()
     {
+        request()->validate([
+            "password" => "required|min:8",
+        ]);
+        $email = request("email");
+        $password = request("password");
+
         $password = request("password");
 
         $dataKK = [
