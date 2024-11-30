@@ -92,7 +92,7 @@
             <ul class="list-unstyled ps-2">
 
                 <li>
-                    <a class="text-body-secondary sidebar-subitem side-link d-flex align-items-center px-3 rounded py-2 text-decoration-none" href="<?= url("/admin/tentang") ?>">
+                    <a class="text-body-secondary sidebar-subitem side-link d-flex align-items-center px-3 rounded py-2 text-decoration-none" href="<?= url("/admin/tentangAplikasi") ?>" >
                         <i class="fa fa-envelopes-bulk"></i>
                         <span class="d-inline-block ms-3">Tentang</span>
                     </a>

@@ -111,10 +111,13 @@ Router::addRoute("POST", "/ganti-password", [AuthController::class, "gantiPasswo
 //profile
 Router::addRoute("GET", "/admin/profile", [ProfileController::class, "profile"]);
 Router::addRoute("POST", "/admin/profile", [ProfileController::class, "profile"]);
+Router::addRoute("POST", "/upload-profile-picture", [ProfileController::class, "uploadPP"]);
+Router::addRoute("POST", "/upload-profile-picture", [ProfileController::class, "uploadPP"]);
 
 //tentang
-Router::addRoute("GET", "/admin/tentangAplikasi", [AboutController::class, "about"]);
-Router::addRoute("POST", "/admin/tentangAplikasi", [AboutController::class, "about"]);
+Router::addRoute("GET", "/admin/tentangAplikasi", [AboutController::class, "index"]);
+Router::addRoute("POST", "/admin/tentangAplikasi", [AboutController::class, "update_about"]);
+
 
 Router::addRoute("GET", "/admin/berita", [BeritaController::class, "index"]);
 Router::addRoute("POST", "/admin/berita", [BeritaController::class, "add"]);
@@ -141,3 +144,5 @@ Router::addRoute("POST", "/admin/imageupload", function () {
 
     return response(["url" => url("/assets/" . $randomName)]);
 });
+Router::addRoute("GET", "/admin/assetsverif/{name}", [KomponenController::class, "getImageverif"]);
+

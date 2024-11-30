@@ -95,6 +95,6 @@ class SuratApiController
             return response(["status" => false, "message" => "Gagal Di Batalkan", "data" => $data], 200);
         }
     }
-
     
+     
 }
