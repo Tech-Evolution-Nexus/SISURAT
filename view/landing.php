@@ -10,7 +10,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="<?= assets("css/main.css") ?>" rel="stylesheet">
+    <style>
+        .navbar {
+            z-index: 999;
+        }
 
+        section {
+            padding-block: 2rem;
+        }
+    </style>
 </head>
 
 <body>
@@ -49,8 +57,9 @@
         <div class="container ">
             <div class="row  align-items-md-center align-items-center" style="height: 70vh;">
                 <div class="col-md-6 col-12">
-                    <h1>Smart App Pengajuan Surat menyurat</h1>
-                    <p>Sebagai wujud komitmen dalam memberikan informasi seluas-seluasnya kepada masyarakat. Smart App akan mempermudahkan dalam proses pengajuan surat yang dilakukan oleh masyarakat.</p>
+                    <h6><?= $data->data->nama_website ?></h6>
+                    <h1><?= $data->data->judul_home ?></h1>
+                    <p><?= $data->data->deskripsi_home ?></p>
                     <!-- <button class="btn btn-primary px-5 mb-4 me-2">
                         <i class="fa fa-download"></i>
                     Login
@@ -64,7 +73,28 @@
         </div>
     </section>
 
+    <section style="min-height: 50vh;" class="d-flex justify-content-center align-items-center flex-column">
+        <div class="container">
+            <h6 class="text-primary">Tentang Aplikasi</h6>
+            <div class="row">
+                <div class="col-md-6 col-12 pe-4 pb-md-2">
+                    <h2><?= $data->data->nama_website ?></h2>
+                </div>
+                <div class="col-md-6 col-12 pb-2">
 
+                </div>
+            </div>
+            <div class="row justify-content-center g-4">
+                <div class=" col-md-6 col-12">
+                    <p><?= $data->data->tentang_aplikasi ?></p>
+                </div>
+                <div class=" col-md-6 col-12">
+                    <h6 class="fw-bold text-center text-md-start">Pantau Surat dengan Mudah</h6>
+                    <p>Melalui fitur pelacakan real-time, Anda dapat memantau status pengiriman dan penerimaan surat tanpa hambatan.</p>
+                </div>
+            </div>
+        </div>
+    </section>
     <section>
         <div class="container">
             <div class="card border-0 shadow-lg p-4">
@@ -72,7 +102,7 @@
                     <h6 class="text-primary">Fitur Unggulan Aplikasi</h6>
                     <div class="row">
                         <div class="col-md-6 col-12 pe-4 pb-md-4">
-                            <h2>Pengelolaan Surat yang Lebih Efisien dan Terpusat</h2>
+                            <h2><?= $data->data->judul_tentang ?></h2>
                         </div>
                         <div class="col-md-6 col-12 pb-4">
 
@@ -105,6 +135,7 @@
             </div>
         </div>
     </section>
+
     <script src="<?= assets("bootstrap/js/bootstrap.min.js") ?>"></script>
 
 </body>

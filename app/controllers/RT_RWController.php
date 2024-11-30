@@ -28,6 +28,7 @@ class RT_RWController extends Controller
             ->select("masyarakat.nik,nama_lengkap,alamat,rw,rt,masa_jabatan_awal,masa_jabatan_akhir")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->join("users", "masyarakat.nik", "users.nik")
+            ->where("status", "=", "1")
             ->where("role", "=", "rw")
             ->orderBy("users.updated_at", "desc")
             ->get();
@@ -60,6 +61,7 @@ class RT_RWController extends Controller
             ->select("masyarakat.nik,nama_lengkap,alamat,rw,rt,masa_jabatan_akhir,masa_jabatan_awal")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->join("users", "masyarakat.nik", "users.nik")
+            ->where("status", "=", "1")
             ->where("role", "=", "rw")
             ->where("masyarakat.nik", "=", $nik)
             ->first();
@@ -84,6 +86,7 @@ class RT_RWController extends Controller
             $rwExist =  $this->model->masyarakat
                 ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
                 ->join("users", "masyarakat.nik", "users.nik")
+                ->where("status", "=", "1")
                 ->where("role", "=", "rw")
                 ->where("rw", "=", $rw)
                 ->get();
@@ -116,6 +119,7 @@ class RT_RWController extends Controller
             $rwExist =  $this->model->masyarakat
                 ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
                 ->join("users", "masyarakat.nik", "users.nik")
+                ->where("status", "=", "1")
                 ->where("role", "=", "rw")
                 ->where("rw", "=", $rw)
                 ->where("masyarakat.nik", "<>", $nik)
@@ -161,6 +165,7 @@ class RT_RWController extends Controller
             ->select("masyarakat.nik,nama_lengkap,alamat,rw,rt,masa_jabatan_awal,masa_jabatan_akhir")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->join("users", "masyarakat.nik", "users.nik")
+            ->where("status", "=", "1")
             ->where("role", "=", "rt")
             ->where("rw", "=", $rw)
             ->orderBy("users.updated_at", "desc")
@@ -190,6 +195,7 @@ class RT_RWController extends Controller
             ->select("masyarakat.nik,nama_lengkap,alamat,rw,rt,masa_jabatan_akhir,masa_jabatan_awal")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->join("users", "masyarakat.nik", "users.nik")
+            ->where("status", "=", "1")
             ->where("role", "=", "rt")
             ->where("rw", "=", $rw)
             ->where("masyarakat.nik", "=", $nik)
@@ -214,6 +220,7 @@ class RT_RWController extends Controller
             $rwExist =  $this->model->masyarakat
                 ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
                 ->join("users", "masyarakat.nik", "users.nik")
+                ->where("status", "=", "1")
                 ->where("role", "=", "rt")
                 ->where("rw", "=", $rw)
                 ->where("rt", "=", $rt)
@@ -248,6 +255,7 @@ class RT_RWController extends Controller
             $rwExist =  $this->model->masyarakat
                 ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
                 ->join("users", "masyarakat.nik", "users.nik")
+                ->where("status", "=", "1")
                 ->where("role", "=", "rt")
                 ->where("rw", "=", $rw)
                 ->where("rt", "=", $rt)
@@ -283,6 +291,7 @@ class RT_RWController extends Controller
             $rwExist =  $this->model->masyarakat
                 ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
                 ->join("users", "masyarakat.nik", "users.nik")
+                ->where("status", "=", "1")
                 ->where("role", "=", "rt")
                 ->where("rw", "=", $rw)
                 ->where("rt", "=", $rt)
