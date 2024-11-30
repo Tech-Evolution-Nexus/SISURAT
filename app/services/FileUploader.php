@@ -5,6 +5,8 @@ class FileUploader
     private $allowedFileTypes = ["jpg", "png", "jpeg", "gif"];
     private $tmp;
 
+    public  $fileName;
+    public  $statusUpload;
     // Set the temporary file path (from the uploaded file)
     public function setFile($file)
     {
@@ -30,8 +32,9 @@ class FileUploader
         if (!$this->isAllowedFileType()) {
             return "Maaf, hanya file " . implode(", ", $this->allowedFileTypes) . " yang diperbolehkan.";
         }
-
-        return $this->moveFile() ? true : "Maaf, terjadi kesalahan saat mengunggah file.";
+        $status = $this->moveFile() ? true : "Maaf, terjadi kesalahan saat mengunggah file.";
+        $this->statusUpload = $status === true;
+        return $status;
     }
 
     // Check if the file type is allowed

@@ -25,6 +25,10 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
+        .preview img {
+            display: none;
+        }
     </style>
 </head>
 
@@ -56,11 +60,11 @@
                     <p class="text-white text-small"><?= $data->description ?></p>
                 </div>
 
-                <div class="ms-auto d-flex gap-2">
+                <!-- <div class="ms-auto d-flex gap-2">
                     <a href="<?= url("/admin/format-surat/create") ?>" class="btn btn-warning">
                         Tambah Format Surat
                     </a>
-                </div>
+                </div> -->
             </div>
             <div class="row align-items-stretch g-4">
                 <?php foreach ($data->data as $formatSurat): ?>
@@ -68,10 +72,10 @@
                         <article class="card h-100" style="max-width: 100%;">
                             <div class="card-body ">
                                 <div class=" no-bootstrap">
-                                    <?= $formatSurat->konten ?>
+                                    <?= $formatSurat->format_surat ?>
                                 </div>
 
-                                <h6 class="mt-4 fw-bold"><?= $formatSurat->nama ?></h6>
+                                <h6 class="mt-4 fw-bold"><?= $formatSurat->nama_surat ?></h6>
                                 <div class="d-flex mt-4 gap-2">
                                     <a href="<?= url("/admin/format-surat/$formatSurat->id/edit") ?>" class="btn btn-warning text-white" title="Ubah"><i class="fa fa-pencil"></i></a>
                                     <button data-bs-toggle="modal" data-bs-target="#modal<?= $formatSurat->id ?>" class="btn btn-success text-white" title="Preview"><i class="fa fa-eye"></i></>
@@ -87,7 +91,7 @@
                                     </div>
                                     <div class="modal-body ">
                                         <div class="preview">
-                                            <?= $formatSurat->konten ?>
+                                            <?= $formatSurat->format_surat ?>
                                         </div>
                                     </div>
 

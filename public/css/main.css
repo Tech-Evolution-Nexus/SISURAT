@@ -203,7 +203,9 @@
     scroll-behavior: smooth;
   }
 }
-
+.mix-blend-color{
+  mix-blend-mode: difference;
+}
 body {
   margin: 0;
   font-family: "Inter", serif;

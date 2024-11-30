@@ -67,7 +67,8 @@
                                         </div>
                                     </div>
                                     <div class="col-12 row personal-information" style="transition: all .5s;">
-                                        <h6 class="mb-2  fw-bold">Detail Informasi Masyarakat</h6>
+                                        <h6 id="title" class="mb-2  fw-bold">Detail Informasi Masyarakat</h6>
+                                        <p id="description"></p>
                                         <input type="hidden" name="id_masyarakat">
                                         <div class="col-12">
                                             <div class="form-group mb-2 ms-3">
@@ -138,6 +139,7 @@
                                 <th>Nama RW</th>
                                 <th>Ketua RW</th>
                                 <th>Tanggal Jabatan</th>
+                                <th>Status</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -149,6 +151,9 @@
                                     <td><?= $kk->nama_lengkap ?></td>
                                     <td><?= $kk->rw ?></td>
                                     <td><?= formatDate($kk->masa_jabatan_awal, true) ?> - <?= formatDate($kk->masa_jabatan_akhir, true) ?></td>
+                                    <td> <button data-nik="<?= $kk->nik ?>" title="Ubah Status" class="btn statusBtn text-white btn-success btn-sm">
+                                            Aktif
+                                        </button></td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Action buttons">
                                             <button data-nik="<?= $kk->nik ?>" title="Edit" class="btn editBtn text-white btn-warning btn-sm">
@@ -210,6 +215,11 @@
         $("#add-btn").on("click", function() {
             setupForm("Tambah RW", '<?= url("/admin/master-rw/") ?>')
             $(".search-section").show();
+            $("form [type=submit]").text("Simpan").removeClass("btn-danger").addClass("btn-primary");
+
+            $("form").find("input,label,h6:not(#title)").show()
+            $("#title").text(`Detail Informasi Masyarakat`);
+            $("#description").text("");
             $(".required-password").show();
             $("[name=password]").attr('required');
             $(".modal form").trigger("reset");
@@ -220,10 +230,11 @@
         })
 
         // handle edit data
-        $(".editBtn").on("click", function() {
+        $(".statusBtn").on("click", function() {
             const nik = $(this).attr("data-nik")
-
-            setupForm("Ubah RW", '<?= url("/admin/master-rw/") ?>' + nik)
+            $("form").find("input,label,h6:not(#title)").hide()
+            $("form [type=submit]").text("Nonaktif").removeClass("btn-primary").addClass("btn-danger text-white");
+            setupForm("Ubah Status Ketua Rw", '<?= url("/admin/master-rw/") ?>' + nik + "/update-status")
             $(".search-section").hide();
             $(".required-password").hide();
             $("[name=password]").removeAttr('required');
@@ -236,8 +247,35 @@
             $.ajax({
                 url: '<?= url("/admin/master-rw/ajax-rw/") ?>' + nik,
                 success: (data) => {
-                    const formData = data;
-                    setFormData(formData)
+                    $("#title").text(`Apakah anda yakin merubah status ketua RW ${data.nama_lengkap} menjadi Nonaktif ?`);
+                    $("#description").text(`Tindakan ini akan mengubah status ketua rw menjadi masyarakat`);
+                    setFormData(data)
+                }
+            })
+        })
+        // handle edit data
+        $(".editBtn").on("click", function() {
+            const nik = $(this).attr("data-nik")
+            $("form").find("input,label,h6:not(#title)").show()
+            $("#title").text(`Detail Informasi Masyarakat`);
+            $("#description").text("");
+            $("form [type=submit]").text("Simpan").removeClass("btn-danger").addClass("btn-primary");
+
+            setupForm("Ubah  Rw", '<?= url("/admin/master-rw/") ?>' + nik)
+            $(".search-section").hide();
+            $(".required-password").hide();
+            $("[name=password]").removeAttr('required');
+            $(".personal-information,.modal-footer").css({
+                height: "auto",
+                opacity: 1
+            })
+
+            $(".modal").modal("show")
+            $.ajax({
+                url: '<?= url("/admin/master-rw/ajax-rw/") ?>' + nik,
+                success: (data) => {
+
+                    setFormData(data)
                 }
             })
         })

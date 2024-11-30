@@ -22,7 +22,7 @@ class SuratMasukController extends Controller
     public function index()
     {
         $data = $this->model->pengajuan_surat
-            ->select("pengajuan_surat.nik,surat.id,nama_lengkap,nama_surat,pengajuan_surat.created_at,status")
+            ->select("pengajuan_surat.nik,pengajuan_surat.id,nama_lengkap,nama_surat,pengajuan_surat.created_at,status")
             ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
             ->join("surat", "pengajuan_surat.id_surat", "surat.id")
             ->where("status", "=", "di_terima_rw")
@@ -40,7 +40,7 @@ class SuratMasukController extends Controller
     public function ajaxPengajuan($idPengajuan)
     {
         $data = $this->model->pengajuan_surat
-            ->select("pengajuan_surat.nik,surat.id,nama_lengkap,nama_surat,surat.created_at as tanggal_pengajuan,pengajuan_surat.nomor_surat,jenis_kelamin,kewarganegaraan,agama,pekerjaan,alamat,tempat_lahir,tgl_lahir,status,nomor_surat_tambahan,kode_kelurahan")
+            ->select("pengajuan_surat.nik,surat.id,nama_lengkap,nama_surat,surat.created_at as tanggal_pengajuan,pengajuan_surat.nomor_surat,jenis_kelamin,kewarganegaraan,agama,pekerjaan,alamat,tempat_lahir,tgl_lahir,status,kode_kelurahan")
             ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->join("surat", "pengajuan_surat.id_surat", "surat.id")
@@ -73,7 +73,7 @@ class SuratMasukController extends Controller
             $data = [
                 "status" => "selesai",
                 "nomor_surat" => $no_surat,
-                "nomor_surat_tambahan" => $no_surat_tambahan,
+                // "nomor_surat_tambahan" => $no_surat_tambahan,
                 "kode_kelurahan" => $no_kelurahan
             ];
             $this->model->pengajuan_surat->where("id", "=", $idPengajuan)->update($data);
