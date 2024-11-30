@@ -3,6 +3,8 @@
 namespace app\controllers\api;
 
 use app\models\BeritaModel;
+use app\models\FieldsModel;
+use app\models\FieldValuesModel;
 use app\models\JenisSuratModel;
 use app\models\KartuKeluargaModel;
 use app\models\LampiranPengajuanModel;
@@ -31,6 +33,8 @@ class PengajuanSuratApiController
         $this->model->masyarakat = new MasyarakatModel();
         $this->model->psurat = new PengajuanSuratModel();
         $this->model->users = new UserModel();
+        $this->model->fields = new FieldsModel();
+        $this->model->fieldsvalue = new FieldValuesModel();
     }
     public function sendsurmas()
     {
@@ -47,7 +51,7 @@ class PengajuanSuratApiController
         $idsurat = request("idsurat");
         $img = request("images");
         $keterangan = request("keterangan");
-
+        $fields = request("fields");
         $datalampiran = $this->model->lampiransuratModel->where("id_surat", "=", $idsurat)->get();
         if ($datalampiran) {
             $data = $this->model->pengajuansurModel->create([
@@ -56,7 +60,19 @@ class PengajuanSuratApiController
                 "keterangan" => $keterangan,
                 "status" => "pending",
             ]);
-            if ($data) {
+            if ($data) {    
+                $datafields = $this->model->fields->where("id_surat", "=", $idsurat)->get();
+                if($fields["name"][0]!=""){
+                    foreach ($fields["name"] as $key => $tmp_name) {
+                        $this->model->fieldsvalue->create([
+                            'id_pengajuan' => $data,
+                            'id_field' => $datafields[$key]->id,
+                            'value' => $fields['name'][$key]
+                        ]);
+                    }
+                }
+                
+
                 foreach ($img['name'] as $key => $tmp_name) {
                     $this->model->lampiranpengajuanModel->create([
                         'id_pengajuan' => $data,
@@ -124,7 +140,6 @@ class PengajuanSuratApiController
             "keterangan_ditolak",
             "nik",
             "kode_kelurahan",
-            "nomor_surat_tambahan",
             "pengajuan_surat.created_at",
             "pengajuan_surat.updated_at",
             "id_surat",
