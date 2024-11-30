@@ -93,7 +93,7 @@ class SuratMasukSelesaiController extends Controller
     {
 
 
-        $data = $this->model->psurat->select("pengajuan_surat.id as id_pengajuan,format_surat,id_surat,nama_lengkap,nomor_surat,pengajuan_surat.nik,rw,rt,kecamatan,kelurahan,kabupaten,tempat_lahir,tgl_lahir,jenis_kelamin,pekerjaan,agama,status_perkawinan,kewarganegaraan,alamat,pengajuan_surat.created_at,nama_surat,pendidikan,kartu_keluarga.no_kk,alamat,nomor_surat_tambahan")
+        $data = $this->model->psurat->select("pengajuan_surat.id as id_pengajuan,format_surat,id_surat,nama_lengkap,nomor_surat,pengajuan_surat.nik,rw,rt,kecamatan,kelurahan,kabupaten,tempat_lahir,tgl_lahir,jenis_kelamin,pekerjaan,agama,status_perkawinan,kewarganegaraan,alamat,pengajuan_surat.created_at,nama_surat,pendidikan,kartu_keluarga.no_kk,alamat")
             ->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->join("surat", "surat.id", "pengajuan_surat.id_surat")
@@ -147,14 +147,14 @@ class SuratMasukSelesaiController extends Controller
         $dompdf->setOptions($options);
         $dompdf->render();
         $dompdf->stream($data->nama_surat . ".pdf", [
-            "Attachment" => true // Ubah ke false jika ingin ditampilkan di browser
+            "Attachment" => false // Ubah ke false jika ingin ditampilkan di browser
         ]);
     }
 
 
     private function replaceValue(&$html, $data)
     {
-        $noSurat = $data->nomor_surat . ($data->nomor_surat_tambahan != null ? "/" . $data->nomor_surat_tambahan : "");
+        $noSurat = $data->nomor_surat;
         $html = str_replace("{no_surat}", $noSurat ?? "", $html);
         $html = str_replace("{nama}", $data->nama_lengkap ?? "", $html);
         $html = str_replace("{nik}", $data->nik ?? "", $html);
@@ -219,7 +219,7 @@ class SuratMasukSelesaiController extends Controller
     public function detail($id)
     {
         $data = $this->model->psurat
-            ->select("pengajuan_surat.nik,surat.id,nama_lengkap,nama_surat,surat.created_at as tanggal_pengajuan,pengajuan_surat.nomor_surat,no_pengantar_rw,jenis_kelamin,kewarganegaraan,agama,pekerjaan,alamat,tempat_lahir,tgl_lahir,status,nomor_surat_tambahan,kode_kelurahan")
+            ->select("pengajuan_surat.nik,surat.id,nama_lengkap,nama_surat,surat.created_at as tanggal_pengajuan,pengajuan_surat.nomor_surat,no_pengantar_rw,jenis_kelamin,kewarganegaraan,agama,pekerjaan,alamat,tempat_lahir,tgl_lahir,status,kode_kelurahan")
             ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->join("surat", "pengajuan_surat.id_surat", "surat.id")

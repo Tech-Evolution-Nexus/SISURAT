@@ -85,6 +85,7 @@ Router::addRoute("GET", "/admin/master-rw/ajax-masyarakat/{nik}", [RT_RWControll
 Router::addRoute("GET", "/admin/msaster-rw/create", [RT_RWController::class, "createRW"]);
 Router::addRoute("POST", "/admin/master-rw", [RT_RWController::class, "storeRW"]);
 Router::addRoute("POST", "/admin/master-rw/{nik}", [RT_RWController::class, "updateRW"]);
+Router::addRoute("POST", "/admin/master-rw/{nik}/update-status", [RT_RWController::class, "updateStatusRW"]);
 
 // RT
 Router::addRoute("GET", "/admin/master-rw/{rw}/master-rt", [RT_RWController::class, "indexRT"]);
@@ -92,6 +93,7 @@ Router::addRoute("GET", "/admin/master-rw/{rw}/master-rt/ajax-rt/{nik}", [RT_RWC
 Router::addRoute("GET", "/admin/master-rw/{rw}/master-rt/create", [RT_RWController::class, "createRT"]);
 Router::addRoute("POST", "/admin/master-rw/{rw}/master-rt", [RT_RWController::class, "storeRT"]);
 Router::addRoute("POST", "/admin/master-rw/{rw}/master-rt/{nik}", [RT_RWController::class, "updateRT"]);
+Router::addRoute("POST", "/admin/master-rw/{rw}/master-rt/{nik}/update-status", [RT_RWController::class, "updateStatusRT"]);
 
 
 // login 

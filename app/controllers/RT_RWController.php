@@ -106,9 +106,11 @@ class RT_RWController extends Controller
         try {
 
             $rw = request("rw");
+            $masa_jabatan_awal = request("masa_jabatan_awal");
+            $masa_jabatan_akhir = request("masa_jabatan_akhir");
             $user = $this->model->users->where("nik", "=", $nik)->first();
             if (!$user) {
-                return redirect()->with("error", "Data user belum melakukan aktivasi. Harap lakukan aktivasi terlebih dahulu untuk mendaftarkan ketua RW")->back();
+                return redirect()->with("error", "Data user tidak ditemukan")->back();
             }
 
             $rwExist =  $this->model->masyarakat
@@ -122,6 +124,24 @@ class RT_RWController extends Controller
             if ($rwExist) {
                 return redirect()->with("error", "RW $rw sudah memiliki Ketua RW terdaftar. Harap periksa data dan coba lagi.")->back();
             }
+            $this->model->users->where("id", "=", $user->id)->update([
+                "masa_jabatan_awal" => $masa_jabatan_awal,
+                "masa_jabatan_akhir" => $masa_jabatan_akhir
+            ]);
+            return redirect()->with("success", "Berhasil mengubah ketua RW $rw")->back();
+        } catch (\Throwable $th) {
+            throw new \InvalidArgumentException($th);
+        }
+    }
+    public  function updateStatusRW($nik)
+    {
+        try {
+
+            $rw = request("rw");
+            $user = $this->model->users->where("nik", "=", $nik)->first();
+            if (!$user)
+                return redirect()->with("error", "Data user tidak ditemukan")->back();
+
             $this->model->users->where("id", "=", $user->id)->update([
                 "role" => "masyarakat",
                 "masa_jabatan_awal" => null,
@@ -218,6 +238,43 @@ class RT_RWController extends Controller
 
             $rw = request("rw");
             $rt = request("rt");
+            $masa_jabatan_awal = request("masa_jabatan_awal");
+            $masa_jabatan_akhir = request("masa_jabatan_akhir");
+            $user = $this->model->users->where("nik", "=", $nik)->first();
+            if (!$user) {
+                return redirect()->with("error", "Data user tidak ditemukan")->back();
+            }
+
+            $rwExist =  $this->model->masyarakat
+                ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+                ->join("users", "masyarakat.nik", "users.nik")
+                ->where("role", "=", "rt")
+                ->where("rw", "=", $rw)
+                ->where("rt", "=", $rt)
+                ->where("masyarakat.nik", "<>", $nik)
+                ->get();
+
+            if ($rwExist) {
+                return redirect()->with("error", "RT $rt sudah memiliki Ketua RT terdaftar. Harap periksa data dan coba lagi.")->back();
+            }
+
+            $this->model->users->where("id", "=", $user->id)->update([
+                "masa_jabatan_awal" => $masa_jabatan_awal,
+                "masa_jabatan_akhir" => $masa_jabatan_akhir
+            ]);
+            return redirect()->with("success", "Berhasil mengubah ketua RT $rt")->back();
+        } catch (\Throwable $th) {
+            throw new \InvalidArgumentException($th);
+        }
+    }
+
+    public  function updateStatusRT($rw, $nik)
+    {
+        try {
+
+            $rw = request("rw");
+            $rt = request("rt");
+
             $user = $this->model->users->where("nik", "=", $nik)->first();
             if (!$user) {
                 return redirect()->with("error", "Data user belum melakukan aktivasi. Harap lakukan aktivasi terlebih dahulu untuk mendaftarkan ketua RW")->back();

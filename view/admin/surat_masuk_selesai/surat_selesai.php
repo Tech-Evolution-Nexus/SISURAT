@@ -88,10 +88,10 @@
                                 </div>
                                 <div class="col-md-9 col-12 d-flex gap-2 align-items-center">
                                     <h6 class="fw-bold" id="nosurat">: </h6>
-                                    <h6 class="fw-bold" id="no_surat">
+                                    <!-- <h6 class="fw-bold" id="no_surat">
                                         /
                                     </h6>
-                                    <h6 class="fw-bold" id="kdtambabhankelurahan"> </h6>
+                                    <h6 class="fw-bold" id="kdtambabhankelurahan"> </h6> -->
                                 </div>
                                 <div class="col-md-3 col-12">
                                     <p class="mb-1">Kode Kelurahan</p>
@@ -241,7 +241,7 @@
 
         const setFormData = (data) => {
             $("#nosurat").text(`${data.nomor_surat ?? "-"}`)
-            $("#kdtambabhankelurahan").text(`${data.nomor_surat_tambahan ?? "-"}`)
+            // $("#kdtambabhankelurahan").text(`${data.nomor_surat_tambahan ?? "-"}`)
             $("#kdkelurahan").text(`${data.kode_kelurahan ?? "-"}`)
             $("#nik").text(`${data.nik ?? "-"}`)
             $("#nama").text(`${data.nama_lengkap ?? "-"}`)

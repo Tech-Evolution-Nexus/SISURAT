@@ -151,8 +151,8 @@
                                     <td><?= $kk->nama_lengkap ?></td>
                                     <td><?= $kk->rw ?></td>
                                     <td><?= formatDate($kk->masa_jabatan_awal, true) ?> - <?= formatDate($kk->masa_jabatan_akhir, true) ?></td>
-                                    <td> <button data-nik="<?= $kk->nik ?>" title="Ubah Status" class="btn statusBtn text-white btn-warning btn-sm">
-                                            <i class="fa fa-pencil"></i>
+                                    <td> <button data-nik="<?= $kk->nik ?>" title="Ubah Status" class="btn statusBtn text-white btn-success btn-sm">
+                                            Aktif
                                         </button></td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Action buttons">
@@ -234,7 +234,7 @@
             const nik = $(this).attr("data-nik")
             $("form").find("input,label,h6:not(#title)").hide()
             $("form [type=submit]").text("Nonaktif").removeClass("btn-primary").addClass("btn-danger text-white");
-            setupForm("Ubah Status Ketua Rw", '<?= url("/admin/master-rw/") ?>' + nik)
+            setupForm("Ubah Status Ketua Rw", '<?= url("/admin/master-rw/") ?>' + nik + "/update-status")
             $(".search-section").hide();
             $(".required-password").hide();
             $("[name=password]").removeAttr('required');
