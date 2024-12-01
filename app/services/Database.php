@@ -8,6 +8,7 @@ use PDOException;
 class Database
 {
     private $conn;                     // Variabel untuk menyimpan koneksi PDO
+    private static $instance = null;
 
     // Konstruktor kelas, akan dijalankan saat objek dibuat
     public function __construct()
@@ -34,6 +35,16 @@ class Database
             echo "Connection failed: " . $e->getMessage();
         }
     }
+
+
+    public static function getInstance()
+    {
+        if (self::$instance === null) {
+            self::$instance = new Database();
+        }
+        return self::$instance;
+    }
+
 
     // Metode untuk mendapatkan koneksi database
     public function getConnection()
