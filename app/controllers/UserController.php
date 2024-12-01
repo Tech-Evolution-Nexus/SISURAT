@@ -24,6 +24,7 @@ class UserController extends Controller
         $users = $this->model->user
             ->select("id, nama_lengkap,users.nik,email,users.no_hp,role")
             ->join("masyarakat", "users.nik", "masyarakat.nik")
+            ->where("status", "=", "1")
             ->where("role", "<>", "admin")
             ->get(); // Ganti dengan fungsi yang sesuai
 

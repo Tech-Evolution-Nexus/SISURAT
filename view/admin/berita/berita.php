@@ -82,7 +82,7 @@
         </div>
         <!-- FORM MODAL -->
         <div id="modal" class="modal hide fade " role="dialog" aria-labelledby="modal" aria-hidden="true">
-            <div class="modal-dialog  modal-lg">
+            <div class="modal-dialog  modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="titleForm">Tambah Berita</h1>
@@ -108,19 +108,19 @@
                                     <div class="form-group mb-2">
                                         <label>Judul </label>
                                         <div class="input-group mt-2">
-                                            <input type="text" class="form-control" placeholder="Masukan Judul Berita" name="judul" id="judul">
+                                            <input required type="text" class="form-control" placeholder="Masukan Judul Berita" name="judul" id="judul">
                                         </div>
                                     </div>
                                     <div class="form-group ">
                                         <label>Keterangan</label>
                                         <div class="input-group mt-2">
-                                            <input type="text" class="form-control" placeholder="Masukan SubJudul Berita" name="subjudul" id="subjudul">
+                                            <input required type="text" class="form-control" placeholder="Masukan Keterangan Berita" name="subjudul" id="subjudul">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group  mt-2">
                                     <label class="mb-2">Konten</label>
-                                    <textarea name="deskripsi" id="deskripsi" class="deskripsi"></textarea>
+                                    <textarea required name="deskripsi" id="deskripsi" class="editor"></textarea>
                                 </div>
                             </div>
 
@@ -143,26 +143,6 @@
     <?php includeFile("layout/script") ?>
 
     <script>
-        let editorInstance;
-        ClassicEditor
-            .create(document.querySelector('.deskripsi'), {
-                toolbar: [
-                    'undo', 'redo', '|',
-                    'bold', 'italic', 'underline', 'strikethrough', '|',
-                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
-                    'alignment', 'bulletedList', 'numberedList', '|',
-                    'link', 'blockQuote', 'insertTable', '|',
-                    'heading', '|',
-                    'code', 'codeBlock', '|',
-                    'removeFormat'
-                ],
-            })
-            .then(editor => {
-                editorInstance = editor;
-            })
-            .catch(error => {
-                console.error('There was a problem initializing the editor:', error);
-            });
         $("#add-btn").on("click", function() {
             setupForm("Tambah Berita", "<?= url("/admin/berita") ?>")
             $("[name=judul]").attr('required');
@@ -186,7 +166,6 @@
             $.ajax({
                 url: "/SISURAT/admin/getberita/" + id,
                 success: (data) => {
-                    console.log(data.data)
                     setFormData(data.data)
                 }
             })
@@ -207,19 +186,12 @@
             $("[name=judul]").val(judul)
             $("[name=subjudul]").val(sub_judul)
             $(".image-upload").css("background-image", `url(${gambar})`)
-
-            if (editorInstance) {
-                editorInstance.setData(deskripsi); // Mengatur konten CKEditor 5
-            } else {
-                console.error("Editor belum siap.");
-            }
-            // $("[name=file_berita]").val(gambar)
-
+            $("[name=deskripsi]").text(deskripsi)
+            window.editor.setData(deskripsi);
         }
         document.querySelectorAll('.btnDelete').forEach(button => {
             button.addEventListener('click', function() {
                 const id = this.getAttribute('data-id');
-
                 Swal.fire({
                     title: 'Apakah Anda yakin?',
                     text: "Data ini akan dihapus dan tidak bisa dikembalikan!",

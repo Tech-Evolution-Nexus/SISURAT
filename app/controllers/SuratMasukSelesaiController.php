@@ -38,11 +38,11 @@ class SuratMasukSelesaiController extends Controller
     public function  index()
     {
         $data = $this->model->psurat
-            ->select("pengajuan_surat.id", "nomor_surat", "masyarakat.nik", "nama_lengkap", "nama_surat", "pengajuan_surat.created_at", "status", "no_hp")
+            ->select("pengajuan_surat.id", "nomor_surat", "masyarakat.nik", "nama_lengkap", "nama_surat", "pengajuan_surat.created_at", "pengajuan_surat.status", "no_hp")
             ->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")
             ->join("surat", "surat.id", "pengajuan_surat.id_surat")
             ->join("users", "users.nik", "pengajuan_surat.nik")
-            ->where("status", "=", "selesai")
+            ->where("pengajuan_surat.status", "=", "selesai")
             ->orderBy("id", "desc")
             ->get();
 
