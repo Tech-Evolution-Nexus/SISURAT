@@ -2,7 +2,10 @@
 
 namespace app\controllers\api;
 
+use app\abstract\Model;
 use app\models\BeritaModel;
+use app\models\FieldsModel;
+use app\models\FieldValuesModel;
 use app\models\JenisSuratModel;
 use app\models\KartuKeluargaModel;
 use app\models\LampiranPengajuanModel;
@@ -18,6 +21,8 @@ use FileUploader;
 class PengajuanSuratApiController
 {
     private $model;
+    private $mainmodel;
+
     public function __construct()
     {
         $this->model =  (object)[];
@@ -31,6 +36,9 @@ class PengajuanSuratApiController
         $this->model->masyarakat = new MasyarakatModel();
         $this->model->psurat = new PengajuanSuratModel();
         $this->model->users = new UserModel();
+        $this->model->fields = new FieldsModel();
+        $this->model->fieldsvalue = new FieldValuesModel();
+        $this->mainmodel = new Model();
     }
     public function sendsurmas()
     {
@@ -47,8 +55,9 @@ class PengajuanSuratApiController
         $idsurat = request("idsurat");
         $img = request("images");
         $keterangan = request("keterangan");
-
+        $fields = request("fields");
         $datalampiran = $this->model->lampiransuratModel->where("id_surat", "=", $idsurat)->get();
+        $this->mainmodel->beginTransaction();
         if ($datalampiran) {
             $data = $this->model->pengajuansurModel->create([
                 "nik" => $nik,
@@ -56,13 +65,20 @@ class PengajuanSuratApiController
                 "keterangan" => $keterangan,
                 "status" => "pending",
             ]);
-            if ($data) {
+            if ($data) {    
+                $datafields = $this->model->fields->where("id_surat", "=", $idsurat)->get();
+                if($fields["name"][0]!=""){
+                    foreach ($fields["name"] as $key => $tmp_name) {
+                        $this->model->fieldsvalue->create([
+                            'id_pengajuan' => $data,
+                            'id_field' => $datafields[$key]->id,
+                            'value' => $fields['name'][$key]
+                        ]);
+                    }
+                }
+                
+
                 foreach ($img['name'] as $key => $tmp_name) {
-                    $this->model->lampiranpengajuanModel->create([
-                        'id_pengajuan' => $data,
-                        'id_lampiran' => $datalampiran[$key]->id_lampiran,
-                        'url' => $img['name'][$key]
-                    ]);
                     $fileName = $img['name'][$key];
                     $fileTmpName = $img['tmp_name'][$key];
                     $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
@@ -124,13 +140,12 @@ class PengajuanSuratApiController
             "keterangan_ditolak",
             "nik",
             "kode_kelurahan",
-            "nomor_surat_tambahan",
             "pengajuan_surat.created_at",
             "pengajuan_surat.updated_at",
             "id_surat",
             "nama_surat",
             "image"
-        )->join("surat", "surat.id", "id_surat")->where("nik", "=", $nik)->whereIn('status', $statusFilter)->get();
+        )->join("surat", "surat.id", "id_surat")->where("nik", "=", $nik)->whereIn('status', $statusFilter)->orderBy("pengajuan_surat.created_at","desc")->get();
 
         if ($data) {
             return response(["status" => true, "message" => "Data Berhasil Diambil", "data" => $data], 200);
@@ -153,21 +168,18 @@ class PengajuanSuratApiController
             return response(["message" => "Anda tidak memiliki akses "], 404);
         }
         $statusAwal = $user->role == "rw" ? "di_terima_rt" : "pending";
-
-        //mengambil data yang menunggu persetujuan berdasarkan status
         $data1 = $this->model->psurat
-            ->select("pengajuan_surat.*,pengajuan_surat.created_at as tanggal_pengajuan,nama_surat,nama_lengkap")
+            ->select("pengajuan_surat.*,pengajuan_surat.created_at as tanggal_pengajuan,nama_surat,nama_lengkap,surat.image")
             ->join("surat", "pengajuan_surat.id_surat", "surat.id")
             ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->where("rw", "=", $user->rw)
-            ->where("rt", "=", $user->rt)
             ->where("status", "=", $statusAwal)
             ->orderBy("pengajuan_surat.created_at", "desc")
             ->get();
 
         $data2 = $this->model->psurat
-            ->select("pengajuan_surat.*,pengajuan_surat.created_at as tanggal_pengajuan,nama_surat,nama_lengkap,rw,rt")
+            ->select("pengajuan_surat.*,pengajuan_surat.created_at as tanggal_pengajuan,nama_surat,nama_lengkap,rw,rt,surat.image")
             ->join("surat", "pengajuan_surat.id_surat", "surat.id")
             ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
@@ -181,6 +193,7 @@ class PengajuanSuratApiController
         } else {
             $data2->where("status", "<>", "pending");
         }
+        $data2->where("status", "<>", "dibatalkan");
         $data2 =  $data2->get();
         return response([
             "status" => "success",
@@ -235,14 +248,22 @@ class PengajuanSuratApiController
             $role = $user->role;
             $status = request("status");
             $keterangan = request("keterangan");
-
+            $nopegantar = request("nopegantarrt");
+            if($role=="rw"){
+                $randomNumber = str_pad(rand(0, 99999999), 8, '0', STR_PAD_LEFT);
+                $nopegantar = "NPRW-" . $randomNumber;
+            }
+            if($keterangan==""){
+                $keterangan =null;
+            }
             $data = [];
             $data["status"] = ($role == "rw")
                 ? ($status == "ditolak" ? "di_tolak_rw" : "di_terima_rw")
                 : ($status == "ditolak" ? "di_tolak_rt" : "di_terima_rt");
 
             $data["keterangan_ditolak"] = $keterangan;
-
+            $role == "rw"? $data["no_pengantar_rw"] =$nopegantar:$data["no_pengantar_rt"] =$nopegantar;
+           
 
             $this->model->psurat->where("id", "=", $id_pengajuan)
                 ->update($data);
