@@ -38,14 +38,6 @@
         ClassicEditor
             .create(document.querySelector('.editor'), {
                 plugins: [Mention, HtmlEmbed, Heading, Essentials, Paragraph, Bold, Italic, Font, Alignment, Image, ImageUpload, TableColumnResize, TableToolbar, Table, Indent, HorizontalLine, Underline],
-                mention: {
-                    feeds: [{
-                        marker: '{',
-                        feed: mention,
-                        minimumCharacters: 0,
-                        dropdownLimit: 100
-                    }]
-                },
                 table: {
                     contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
                 },
