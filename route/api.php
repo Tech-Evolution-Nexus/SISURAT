@@ -37,6 +37,8 @@ Router::addRoute("POST", "/veriv", [AuthApiController::class, "veriv"]);
 Router::addRoute("POST", "/aktivasi", [AuthApiController::class, "aktivasi"]);
 Router::addRoute("POST", "/sendemail", [AuthApiController::class, "sendemail"]);
 Router::addRoute("POST", "/reset-password", [AuthApiController::class, "resetpassword"]);
+Router::addRoute("POST", "/ganti-password", [AuthApiController::class, "gantipassword"]);
+
 
 
 Router::addRoute("GET", "/surat-selesai/export/{id}", [SuratMasukSelesaiController::class, "exportPengajuan"]);
