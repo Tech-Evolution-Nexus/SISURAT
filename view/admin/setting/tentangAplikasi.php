@@ -44,7 +44,38 @@
                                                 <button class="btn btn-secondary about-button mb-2" type="button" aria-label="Edit Foto" onclick="document.getElementById('file-input').click();">
                                                     <i class="fa fa-file-image fa-2x "></i>
                                                 </button>
-                                                <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="logo()">
+                                                <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="uploadLandingImage()">
+                                                <script>
+                                                    function uploadLandingImage() {
+                                                        const fileInput = document.getElementById('file-input');
+                                                        const file = fileInput.files[0];
+                                                        document.querySelector("#hero-image").src = URL.createObjectURL(file);
+                                                        if (!file) return;
+
+                                                        const formData = new FormData();
+                                                        formData.append('image_hero', file);
+
+                                                        // Ganti URL ini dengan endpoint server Anda yang menangani pengunggahan gambar
+                                                        fetch('<?= url("/hero-image") ?>', {
+                                                                method: 'POST',
+                                                                body: formData,
+                                                            })
+                                                            .then(response => response.json())
+                                                            .then(data => {
+                                                                if (data.success) {
+                                                                    // Perbarui tampilan gambar profil di halaman
+                                                                    alert('Foto Landing berhasil diperbarui');
+                                                                } else {
+                                                                    alert('Gagal memperbarui foto Landing');
+                                                                }
+                                                            })
+                                                            .catch(error => {
+                                                                console.log('Error:', error);
+                                                                alert('Terjadi kesalahan saat mengunggah foto');
+                                                                window.location
+                                                            });
+                                                    }
+                                                </script>
                                             </div>
                                         </div>
                                     </div>

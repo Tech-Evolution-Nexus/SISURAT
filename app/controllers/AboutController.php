@@ -28,7 +28,7 @@ class AboutController extends Controller
 
     public function uploadPP()
     {
-        $ficon = $_FILES['profile_picture'] ?? null;
+        $ficon = $_FILES['image_hero'] ?? null;
         $maxFileSize = 2 * 1024 * 1024;
         if ($ficon['size'] > $maxFileSize) {
             return redirect()->with("error", "Ukuran file terlalu besar. Maksimal 2MB.")->back();
