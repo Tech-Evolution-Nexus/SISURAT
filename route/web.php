@@ -19,6 +19,8 @@ use app\controllers\UserController;
 
 // landing
 Router::addRoute("GET", "/", [LandingController::class, "index"]);
+Router::addRoute("GET", "/berita", [LandingController::class, "berita"]);
+Router::addRoute("GET", "/berita/{id}", [LandingController::class, "beritaDetail"]);
 
 //surat
 Router::addRoute("GET", "/admin", [DashController::class, "index"]);
@@ -145,4 +147,3 @@ Router::addRoute("POST", "/admin/imageupload", function () {
     return response(["url" => url("/assets/" . $randomName)]);
 });
 Router::addRoute("GET", "/admin/assetsverif/{name}", [KomponenController::class, "getImageverif"]);
-
