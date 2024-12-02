@@ -143,7 +143,7 @@
                                     </div>
                                 <?php endforeach; ?>
 
-                                <?php if (count($data->data->fields) == 0): ?>
+                                <!-- <?php if (count($data->data->fields) == 0): ?>
                                     <div class="form-group " id="fselect">
 
                                         <div class="row">
@@ -171,7 +171,7 @@
                                         </div>
                                         <input type="hidden" value="0" class="form-control" name="fields_id[]" id="">
                                     </div>
-                                <?php endif; ?>
+                                <?php endif; ?> -->
 
                             </div>
                         </div>

@@ -55,7 +55,7 @@
                             <?php foreach ($data->datasurat  as $index => $kk) : ?>
                                 <tr>
                                     <td><?= $index + 1 ?></td>
-                                    <td> <img class="rounded" src="<?= url("/admin/assetssurat/$kk->image") ?>" width="50" height="50" alt="a"></td>
+                                    <td> <img class="rounded" src="<?= url("/admin/assetssurat/$kk->image") ?>" width="80" height="80" alt="a"></td>
                                     <td><?= $kk->nama_surat ?></td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Action buttons">

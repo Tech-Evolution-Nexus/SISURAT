@@ -61,7 +61,7 @@ class DashController
             ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
             ->join("surat", "pengajuan_surat.id_surat", "surat.id")
             ->where("status", "=", "di_terima_rw")
-            ->where("DATE(pengajuan_surat.created_at)", "=", $currentDate)
+            // ->where("DATE(pengajuan_surat.created_at)", "=", $currentDate)
             ->orderBy("pengajuan_surat.created_at", "desc")
             ->get();
         $listRt = $this->model->kartuKeluarga->select("rt")->groupBy("rt")->orderBy("rt")->get();

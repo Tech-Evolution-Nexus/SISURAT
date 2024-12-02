@@ -298,7 +298,7 @@ class Model
     public function whereNotIn($column, array $values)
     {
         if (empty($values)) {
-            throw new InvalidArgumentException("Values for whereIn cannot be empty.");
+            $values = [0];
         }
 
         $placeholders = [];
