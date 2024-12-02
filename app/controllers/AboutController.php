@@ -17,45 +17,20 @@ class AboutController extends Controller
 
         $this->model = (object)[];
         $this->model->about = new AboutModel();
-
     }
 
     public function index()
     {
-        return view("admin/setting/tentangAplikasi");
-        
-    }
 
-    public function uploadPP()
-    {
-        $ficon = $_FILES['profile_picture'] ?? null;
-        $maxFileSize = 2 * 1024 * 1024;
-        if ($ficon['size'] > $maxFileSize) {
-            return redirect()->with("error", "Ukuran file terlalu besar. Maksimal 2MB.")->back();
-        }
-
-        $fileExt = pathinfo($ficon['name'], PATHINFO_EXTENSION);
-        $allowedFileTypes = ["jfif", "jpg", "jpeg", "png", "gif" , "bmp", "webp", "svg"];
-        $nameFile  = uniqid() . "." . $fileExt;
-        $uploader = new FileUploader();
-        $uploader->setFile($ficon);
-        $uploader->setTarget(storagePath("public", "/assets/" . $nameFile));
-        $uploader->setAllowedFileTypes($allowedFileTypes);
-        $uploadStatus = $uploader->upload();
-
-        $uploadStatus = $uploader->upload();
-
-        if ($uploadStatus !== true) {
-            $this->model->about->where("id", "=", 1)->update(["image_hero" => $nameFile]);
-            return response(["message" => "Berhasil Update", "success" => true]);
-        }
-        return response(["message" => "Berhasil Update"]);
+        $data = $this->model->about->first();
+        return view("admin/setting/tentangAplikasi", ["data" => $data]);
     }
 
     public function update_about()
     {
         $websiteName = request("nama_website");
         $homeTitle = request("judul_home");
+        $logo = request("image_hero");
         $homeDesc = request("deskripsi_home");
         $aboutTitle = request("judul_about");
         $downloadLink = request("link_download");
@@ -78,14 +53,32 @@ class AboutController extends Controller
             "video_url" => $urlVideo,
         ];
 
+
+        $ficon = $_FILES['logo'] ?? null;
+        $maxFileSize = 2 * 1024 * 1024;
+        if ($ficon['size'] > $maxFileSize) {
+            return redirect()->with("error", "Ukuran file terlalu besar. Maksimal 2MB.")->back();
+        }
+
+
+        $fileExt = pathinfo($ficon['name'], PATHINFO_EXTENSION);
+        $allowedFileTypes = ["jfif", "jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
+        $nameFile  = uniqid() . "." . $fileExt;
+        $uploader = new FileUploader();
+        //upload logo
+        $uploader->setFile($ficon);
+        $uploader->setTarget(storagePath("public", "/assets/" . $nameFile));
+        $uploader->setAllowedFileTypes($allowedFileTypes);
+        $uploadStatus = $uploader->upload();
+        if ($uploadStatus !== true) {
+            $this->model->about->where("id", "=", 1)->update(["image_hero" => $nameFile]);
+        }
+
+
         $this->model->about->where("id", "=", 1)->update($fieldTentang);
         return redirect()->with("success", "Data berhasil diubah")->back();
-        
     }
-
-
-
-        // public  function edit_about()
+    // public  function edit_about()
     // {
     //     $id = request("id");
     //     $landing = $this->model->landing->find($id);

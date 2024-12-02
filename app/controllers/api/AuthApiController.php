@@ -447,4 +447,30 @@ class AuthApiController
             ], 200);
         }
     }
+
+    public function gantipassword()
+    {
+        $nik = request("nik");
+        $password = request("password");
+        $new_pass = request("new_password");
+        
+
+        // Encrypt password
+        $hashed_password = password_hash($new_pass, PASSWORD_BCRYPT);
+
+        $nik = 
+        $user = $this->model->UserModel->where("nik", "=", $nik)->first();
+        if ($user) {
+            if (password_verify($password,$user->password)) {
+                $this->model->userModel->where("nik", "=", $nik)->update(["password" => $hashed_password]);
+                return response([
+                    "message" => "Password berhasil diubah",
+                    "status" => true,
+                    "data" => []
+                ], 200);
+        }
+        
+
+    }
+}
 }
