@@ -26,16 +26,42 @@ class AboutController extends Controller
         
     }
 
-    public function uploadPP()
+    public function update_about()
     {
-        $ficon = $_FILES['image_hero'] ?? null;
+        $websiteName = request("nama_website");
+        $homeTitle = request("judul_home");
+        $logo = request("image_hero");
+        $homeDesc = request("deskripsi_home");
+        $aboutTitle = request("judul_about");
+        $downloadLink = request("link_download");
+        $aboutApp = request("tentang_aplikasi");
+        $neighbourhoodEmail = request("email_kelurahan");
+        $neighbourhoodPhone = request("no_telp");
+        $neighbourhoodAddress = request("alamat_kelurahan");
+        $urlVideo = request("video_url");
+
+        $fieldTentang = [
+            "nama_website" => $websiteName,
+            "judul_home" => $homeTitle,
+            "image_heo" => $logo,
+            "deskripsi_home" => $homeDesc,
+            "judul_tentang" => $aboutTitle,
+            "link_download" => $downloadLink,
+            "tentang_aplikasi" => $aboutApp,
+            "email_kelurahan" => $neighbourhoodEmail,
+            "no_telp" => $neighbourhoodPhone,
+            "alamat_kelurahan" => $neighbourhoodAddress,
+            "video_url" => $urlVideo,
+        ];
+
+        $ficon = $_FILES['logo'] ?? null;
         $maxFileSize = 2 * 1024 * 1024;
         if ($ficon['size'] > $maxFileSize) {
             return redirect()->with("error", "Ukuran file terlalu besar. Maksimal 2MB.")->back();
         }
 
         $fileExt = pathinfo($ficon['name'], PATHINFO_EXTENSION);
-        $allowedFileTypes = ["jfif", "jpg", "jpeg", "png", "gif" , "bmp", "webp", "svg"];
+        $allowedFileTypes = ["jfif", "jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
         $nameFile  = uniqid() . "." . $fileExt;
         $uploader = new FileUploader();
         $uploader->setFile($ficon);
@@ -50,41 +76,11 @@ class AboutController extends Controller
             return response(["message" => "Berhasil Update", "success" => true]);
         }
         return response(["message" => "Berhasil Update"]);
-    }
-
-    public function update_about()
-    {
-        $websiteName = request("nama_website");
-        $homeTitle = request("judul_home");
-        $homeDesc = request("deskripsi_home");
-        $aboutTitle = request("judul_about");
-        $downloadLink = request("link_download");
-        $aboutApp = request("tentang_aplikasi");
-        $neighbourhoodEmail = request("email_kelurahan");
-        $neighbourhoodPhone = request("no_telp");
-        $neighbourhoodAddress = request("alamat_kelurahan");
-        $urlVideo = request("video_url");
-
-        $fieldTentang = [
-            "nama_website" => $websiteName,
-            "judul_home" => $homeTitle,
-            "deskripsi_home" => $homeDesc,
-            "judul_tentang" => $aboutTitle,
-            "link_download" => $downloadLink,
-            "tentang_aplikasi" => $aboutApp,
-            "email_kelurahan" => $neighbourhoodEmail,
-            "no_telp" => $neighbourhoodPhone,
-            "alamat_kelurahan" => $neighbourhoodAddress,
-            "video_url" => $urlVideo,
-        ];
 
         $this->model->about->where("id", "=", 1)->update($fieldTentang);
         return redirect()->with("success", "Data berhasil diubah")->back();
         
     }
-
-
-
         // public  function edit_about()
     // {
     //     $id = request("id");

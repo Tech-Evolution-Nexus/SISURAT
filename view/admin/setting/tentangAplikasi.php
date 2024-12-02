@@ -44,7 +44,7 @@
                                                 <button class="btn btn-secondary about-button mb-2" type="button" aria-label="Edit Foto" onclick="document.getElementById('file-input').click();">
                                                     <i class="fa fa-file-image fa-2x "></i>
                                                 </button>
-                                                <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="uploadLandingImage()">
+                                                <input type="file" id="file-input" name="logo" accept="image/*" style="display: none;" onchange="uploadLandingImage()">
                                                 <script>
                                                     function uploadLandingImage() {
                                                         const fileInput = document.getElementById('file-input');
