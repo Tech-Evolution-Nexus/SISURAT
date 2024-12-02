@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\abstract\Model;
 use app\models\BeritaModel;
 use PHPMailer\PHPMailer\PHPMailer;
 use app\models\UserModel;
@@ -74,12 +75,13 @@ class BeritaController
                 "gambar" => $nameFile,
             ]
         );
-        pushnotifikasiall("✨ Halo! Ada berita menarik yang mungkin Anda sukai. Yuk, cek sekarang","Berita baru, suasana baru! Klik untuk melihat Berita terkini.");
+        pushnotifikasiall("✨ Halo! Ada berita menarik yang mungkin Anda sukai. Yuk, cek sekarang", "Berita baru, suasana baru! Klik untuk melihat Berita terkini.");
 
         return redirect()->with("success", "Data berhasil ditambahkan.")->back();
     }
     public function update($id)
     {
+
         request()->validate([
             "judul" => "required",
             "subjudul" => "required",
@@ -140,6 +142,7 @@ class BeritaController
 
         // Perform the update
         $this->model->beritamodel->where("id", "=", $id)->update($updateData);
+
 
         return redirect()->with("success", "Data berhasil diperbarui.")->back();
     }

@@ -23,7 +23,7 @@ class Model
     private $limit;
     public function __construct()
     {
-        $this->db = (new Database)->getConnection();
+        $this->db = Database::getInstance()->getConnection();
     }
 
     public function find($primaryKey)
@@ -173,7 +173,6 @@ class Model
     public function first()
     {
         $this->buildQuery();
-
         return $this->execute($this->query, $this->bindings)->fetch($this->fetchMode);
     }
 
@@ -196,7 +195,7 @@ class Model
             foreach ($this->wheres as $index => $where) {
                 $prefix = $index === 0 ? "WHERE" : $where['type'];
                 $placeholder = ":{$where['column']}";
-                $value = $where["operator"] == "IN" ? "{$where['value']}" : "'{$where['value']}'";
+                $value = $where["operator"] == "IN" || $where["operator"] == "NOT IN" ? "{$where['value']}" : "'{$where['value']}'";
                 $whereClauses[] = "$prefix {$where['column']} {$where['operator']} {$value} ";
 
                 $this->bindings[$placeholder] = $where['value'];
@@ -224,7 +223,6 @@ class Model
             $this->query .= " LIMIT {$this->limit}";
         }
 
-
         $this->resetQuery();
     }
 
@@ -233,12 +231,11 @@ class Model
 
         $stmt = $this->db->prepare($query);
         try {
-
             $stmt->execute($bindings);
         } catch (\Throwable $th) {
-            dd($th);
             throw new \Exception("Database query error: " . $th->getMessage());
         }
+        $this->resetQuery();
         return $stmt;
     }
 
@@ -297,5 +294,52 @@ class Model
             'value' => '(' . implode(',', $placeholders) . ')',
         ];
         return $this;
+    }
+    public function whereNotIn($column, array $values)
+    {
+        if (empty($values)) {
+            throw new InvalidArgumentException("Values for whereIn cannot be empty.");
+        }
+
+        $placeholders = [];
+        foreach ($values as $index => $value) {
+            $placeholder = "'{$value}'";
+            $placeholders[] = $placeholder;
+            $this->bindings[$placeholder] = $value;
+        }
+        $this->wheres[] = [
+            'type' => 'AND',
+            'column' => $column,
+            'operator' => 'NOT IN',
+            'value' => '(' . implode(',', $placeholders) . ')',
+        ];
+        return $this;
+    }
+    public function count()
+    {
+        // Menggunakan field COUNT() untuk menghitung jumlah record
+        $this->fields = "COUNT(*) as total";
+        $this->buildQuery();
+
+        // Menjalankan query dan mengambil hasilnya
+        $result = $this->execute($this->query, $this->bindings)->fetch($this->fetchMode);
+
+        // Mereset query agar dapat digunakan kembali
+        $this->resetQuery();
+
+        return $result->total ?? 0;
+    }
+
+    public function beginTransaction()
+    {
+        $this->db->beginTransaction();
+    }
+    public function rollBack(): void
+    {
+        $this->db->rollBack();
+    }
+    public function commit(): void
+    {
+        $this->db->commit();
     }
 }

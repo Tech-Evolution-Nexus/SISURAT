@@ -54,6 +54,7 @@ class DashController
         $berita = $this->model->berita->get();
         $users = $this->model->users
             ->where("role", "<>", "admin")
+            ->where("status", "=", "1")
             ->get();
         $pengajuan = $this->model->pengajuan
             ->select("pengajuan_surat.nik,surat.id,nama_lengkap,nama_surat,pengajuan_surat.created_at,status")
@@ -120,6 +121,7 @@ class DashController
             if ($filterRw) {
                 $tmpPengajuanSuratSelesai->where("rw", "=", $filterRw);
             }
+
             if ($filterRt) {
                 $tmpPengajuanSuratSelesai->where("rt", "=", $filterRt);
             }
@@ -130,8 +132,14 @@ class DashController
             $tmpChartData["surat_selesai"][] = count($tmpPengajuanSuratSelesai);
         }
 
-        $rw =   $this->model->users->where("role", "=", "rw")->get();
-        $rt = $this->model->users->where("role", "=", "rt")->get();
+        $rw =   $this->model->users
+            ->where("role", "=", "rw")
+            ->where("status", "=", "1")
+            ->get();
+        $rt = $this->model->users
+            ->where("role", "=", "rt")
+            ->where("status", "=", "1")
+            ->get();
         $masyarakat = $this->model->users->where("role", "=", "masyarakat")->get();
 
         $tmpChartData["pengguna"] = [count($rw), count($rt), count($masyarakat)];

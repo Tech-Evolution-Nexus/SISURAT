@@ -28,6 +28,11 @@ class KomponenController extends Controller
         $filePath = __DIR__ . '/../../upload/masyarakat/' . $url;
         $this->proses($filePath);
     }
+    public function getImageverif($url)
+    {
+        $filePath = __DIR__ . '/../../upload/fileverif/' . $url;
+        $this->proses($filePath);
+    }
     private function proses($filePath = "")
     {
         if (file_exists($filePath) && is_file($filePath)) {

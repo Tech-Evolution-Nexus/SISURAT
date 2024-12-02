@@ -96,10 +96,10 @@
                                         </div>
                                         <div class="col-md-9 col-12 d-flex gap-2 align-items-center">
                                             <input type="text" class="form-control" name="no_surat" placeholder="Nomer Surat" id="" required>
-                                            <h6 class="fw-bold" id="no_surat">
+                                            <!-- <h6 class="fw-bold" id="no_surat">
                                                 /
                                             </h6>
-                                            <input type="text" class="form-control" name="no_surat_tambahan" placeholder="Nomer Surat Tambahan" id="">
+                                            <input type="text" class="form-control" name="no_surat_tambahan" placeholder="Nomer Surat Tambahan" id=""> -->
 
                                         </div>
 

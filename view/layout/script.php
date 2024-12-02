@@ -29,13 +29,22 @@
         Indent,
         HorizontalLine,
         Underline,
-        HtmlEmbed
+        HtmlEmbed,
+        Mention,
+        TableColumnResize,
     } from 'ckeditor5';
 
     if (document.querySelector('.editor')) {
         ClassicEditor
             .create(document.querySelector('.editor'), {
-                plugins: [HtmlEmbed, Heading, Essentials, Paragraph, Bold, Italic, Font, Alignment, Image, ImageUpload, Table, TableToolbar, Indent, HorizontalLine, Underline],
+                plugins: [Mention, HtmlEmbed, Heading, Essentials, Paragraph, Bold, Italic, Font, Alignment, Image, ImageUpload, TableColumnResize, TableToolbar, Table, Indent, HorizontalLine, Underline],
+                table: {
+                    contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+                },
+                indentBlock: {
+                    offset: 1,
+                    unit: 'em'
+                },
                 toolbar: [
                     'undo', 'redo', '|', 'underline', 'htmlEmbed',
                     'bold', 'italic', 'underline', 'strikethrough', '|',
@@ -148,10 +157,9 @@
                                     'Data telah dihapus.',
                                     'success'
                                 ).then(() => {
-                                    location.reload(); // Reload halaman setelah dihapus
+                                    // location.reload();
                                 });
                             } else {
-
                                 Swal.fire(
                                     'Gagal!',
                                     'Terjadi kesalahan saat menghapus data.',

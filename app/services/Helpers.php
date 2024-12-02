@@ -26,7 +26,7 @@ if (!function_exists("pushnotifikasito")) {
         try {
             return $messaging->send($message);
         } catch (\Kreait\Firebase\Exception\MessagingException $e) {
-            return 'Error sending message: ' . $e->getMessage();
+            throw new Exception('Error sending message: ' . $e->getMessage());
         }
     }
 }

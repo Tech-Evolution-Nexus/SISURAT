@@ -70,7 +70,8 @@
                                         </div>
                                     </div>
                                     <div class="col-12 row personal-information" style="transition: all .5s;">
-                                        <h6 class="mb-2  fw-bold">Detail Informasi Masyarakat</h6>
+                                        <h6 class="mb-2  fw-bold" id="title">Detail Informasi Masyarakat</h6>
+                                        <p id="description"></p>
                                         <input type="hidden" name="id_masyarakat">
                                         <div class="col-12">
                                             <div class="form-group mb-2 ms-3">
@@ -156,6 +157,7 @@
                                 <th>Nama RT</th>
                                 <th>Ketua RT</th>
                                 <th>Tanggal Jabatan</th>
+                                <th>Status</th>
 
                                 <th></th>
                             </tr>
@@ -168,6 +170,9 @@
                                     <td><?= $kk->nama_lengkap ?></td>
                                     <td><?= $kk->rw ?></td>
                                     <td><?= formatDate($kk->masa_jabatan_awal, true) ?> - <?= formatDate($kk->masa_jabatan_akhir, true) ?></td>
+                                    <td> <button data-nik="<?= $kk->nik ?>" title="Ubah Status" class="btn statusBtn text-white btn-success btn-sm">
+                                            Aktif
+                                        </button></td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Action buttons">
                                             <button data-nik="<?= $kk->nik ?>" title="Edit" class="btn editBtn text-white btn-warning btn-sm">
@@ -217,6 +222,10 @@
 
         // handle add data
         $("#add-btn").on("click", function() {
+            $("form [type=submit]").text("Simpan").removeClass("btn-danger").addClass("btn-primary");
+            $("form").find("input,label,h6:not(#title)").show()
+            $("#title").text(`Detail Informasi Masyarakat`);
+            $("#description").text("");
             setupForm("Tambah RT", "<?= url("/admin/master-rw/$data->rw/master-rt") ?>")
             $(".search-section").show();
             $(".required-password").show();
@@ -228,10 +237,37 @@
             })
         })
 
+
+        $(".statusBtn").on("click", function() {
+            const nik = $(this).attr("data-nik")
+            $("form").find("input,label,h6:not(#title)").hide()
+            $("form [type=submit]").text("Nonaktif").removeClass("btn-primary").addClass("btn-danger text-white");
+            setupForm("Ubah Status Ketua Rw", "<?= url("/admin/master-rw/$data->rw/master-rt/") ?>" + nik + "/update-status")
+            $(".search-section").hide();
+            $(".required-password").hide();
+            $("[name=password]").removeAttr('required');
+            $(".personal-information,.modal-footer").css({
+                height: "auto",
+                opacity: 1
+            })
+
+            $(".modal").modal("show")
+            $.ajax({
+                url: "<?= url("/admin/master-rw/$data->rw/master-rt/ajax-rt/") ?>" + nik,
+                success: (data) => {
+                    $("#title").text(`Apakah anda yakin merubah status ketua RT ${data.nama_lengkap} menjadi Nonaktif ?`);
+                    $("#description").text(`Tindakan ini akan mengubah status ketua rt menjadi masyarakat`);
+                    setFormData(data)
+                }
+            })
+        })
         // handle edit data
         $(".editBtn").on("click", function() {
             const nik = $(this).attr("data-nik")
-
+            $("form [type=submit]").text("Simpan").removeClass("btn-danger").addClass("btn-primary");
+            $("form").find("input,label,h6:not(#title)").show()
+            $("#title").text(`Detail Informasi Masyarakat`);
+            $("#description").text("");
             setupForm("Ubah RT", "<?= url("/admin/master-rw/$data->rw/master-rt/") ?>" + nik)
             $(".search-section").hide();
             $(".required-password").hide();

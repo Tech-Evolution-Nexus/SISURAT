@@ -6,6 +6,8 @@ use app\models\KartuKeluargaModel;
 use app\models\MasyarakatModel;
 use app\models\UserModel;
 use Exception;
+use FileUploader;
+use PHPMailer\PHPMailer\PHPMailer;
 
 class AuthApiController
 {
@@ -33,7 +35,7 @@ class AuthApiController
             $nik = $jsonData["nik"];
             $password = $jsonData["password"];
             $fcm = $jsonData["fcm_token"];
-            $users = $this->model->UserModel->select("masyarakat.nik,password,role,masyarakat.no_kk")->join("masyarakat", "masyarakat.nik", "users.nik")->where("users.nik", "=", $nik)->first();
+            $users = $this->model->UserModel->select("masyarakat.nik,password,role,masyarakat.no_kk,masyarakat.nama_lengkap")->join("masyarakat", "masyarakat.nik", "users.nik")->where("users.nik", "=", $nik)->where("users.status", "=", 1)->first();
             if ($users) {
                 if (password_verify($password, $users->password)) {
                     if ($fcm != null || !empty($fcm)) {
@@ -186,96 +188,263 @@ class AuthApiController
 
     public function register()
     {
-        // Ambil data dari JSON
+        header("Access-Control-Allow-Origin: *");
         $jsonData = json_decode(file_get_contents('php://input'), true);
+        $dataJson = request("data");
+        $dataJson = html_entity_decode($dataJson);
+        $data = json_decode($dataJson);
+        $img = request("images");
 
-
-        $nik = $jsonData["nik"] ?? null;
-        $password = $jsonData["password"] ?? null;
-        $no_hp = $jsonData["no_hp"] ?? null;
-        $nama_lengkap = $jsonData["nama_lengkap"] ?? null;
-        $jenis_kelamin = $jsonData["jenis_kelamin"] ?? null;
-        $tempat_lahir = $jsonData["tempat_lahir"] ?? null;
-        $tgl_lahir = $jsonData["tgl_lahir"] ?? null;
-        $agama = $jsonData["agama"] ?? null;
-        $pendidikan = $jsonData["pendidikan"] ?? null;
-        $pekerjaan = $jsonData["pekerjaan"] ?? null;
-        $status_perkawinan = $jsonData["status_perkawinan"] ?? null;
-        $status_keluarga = $jsonData["status_keluarga"] ?? null;
-        $kewarganegaraan = $jsonData["kewarganegaraan"] ?? null;
-        $nama_ayah = $jsonData["nama_ayah"] ?? null;
-        $nama_ibu = $jsonData["nama_ibu"] ?? null;
-        $no_kk = $jsonData["no_kk"] ?? null;
-        $alamat = $jsonData["alamat"] ?? null;
-        $rt = $jsonData["rt"] ?? null;
-        $rw = $jsonData["rw"] ?? null;
-        $kode_pos = $jsonData["kode_pos"] ?? null;
-        $kelurahan = $jsonData["kelurahan"] ?? null;
-        $kecamatan = $jsonData["kecamatan"] ?? null;
-        $kabupaten = $jsonData["kabupaten"] ?? null;
-        $provinsi = $jsonData["provinsi"] ?? null;
-        $kk_tgl = $jsonData["kk_tgl"] ?? null;
+        $nik = $data->nik;
+        $agama = $data->agama;
+        $alamat = $data->alamat;
+        $email = $data->email;
+        $jenis_kelamin = $data->jenis_kelamin;
+        $kabupaten = $data->kabupaten;
+        $kecamatan = $data->kecamatan;
+        $kelurahan = $data->kelurahan;
+        $kewarganegaraan = $data->kewarganegaraan;
+        $kk_tgl = $data->kk_tgl;
+        $kode_pos = $data->kode_pos;
+        $nama_ayah = $data->nama_ayah;
+        $nama_ibu = $data->nama_ibu;
+        $nama_lengkap = $data->nama_lengkap;
+        $no_hp = $data->no_hp;
+        $no_kk = $data->no_kk;
+        $password = $data->password;
+        $pekerjaan = $data->pekerjaan;
+        $pendidikan = $data->pendidikan;
+        $provinsi = $data->provinsi;
+        $rt = $data->rt;
+        $rw = $data->rw;
+        $status_keluarga = $data->status_keluarga;
+        $status_perkawinan = $data->status_perkawinan;
+        $tempat_lahir = $data->tempat_lahir;
+        $tgl_lahir = $data->tgl_lahir;
 
         if (empty($nik) || empty($nama_lengkap) || empty($password) || empty($no_hp) || empty($no_kk)) {
-            header('Content-Type: application/json');
-            echo json_encode([
-                "data" => [
-                    "msg" => "Field NIK, nama lengkap, password, nomor HP, dan No KK wajib diisi.",
-                    "status" => false
-                ]
-            ]);
-            exit;
+            return response([
+                "message" => "Field NIK, nama lengkap, password, nomor HP, dan No KK wajib diisi.",
+                "status" => false,
+                "data" => []
+            ], 400);
         }
 
-        // Simpan data ke tabel kartu keluarga
-        $this->model->KartuKeluargaModel->create([
-            "no_kk" => $no_kk,
-            "alamat" => $alamat,
-            "rt" => $rt,
-            "rw" => $rw,
-            "kode_pos" => $kode_pos,
-            "kelurahan" => $kelurahan,
-            "kecamatan" => $kecamatan,
-            "kabupaten" => $kabupaten,
-            "provinsi" => $provinsi,
-            "kk_tgl" => $kk_tgl
-        ]);
+        $cekstatuskk = $this->model->masyarakatModel->where("no_kk", "=", $no_kk)->where("status_keluarga", "=", "kk")->first();
+        if ($cekstatuskk) {
+            return response([
+                "message" => "Gagal Kepala Keluarga Sudah Terdaftar.",
+                "status" => false,
+                "data" => []
+            ], 200);
+        } else {
+            $cekkk = $this->model->KartuKeluargaModel->where("no_kk", "=", $no_kk)->first();
+            $fileName = $img['name'];
+            $fileTmpName = $img['tmp_name'];
+            $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
+            $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
+            $nameFile  = uniqid() . "." . $fileExt;
+            if ($cekkk) {
+                $this->model->masyarakatModel->create([
+                    "nik" => $nik,
+                    "nama_lengkap" => $nama_lengkap,
+                    "jenis_kelamin" => $jenis_kelamin,
+                    "tempat_lahir" => $tempat_lahir,
+                    "tgl_lahir" => $tgl_lahir,
+                    "agama" => $agama,
+                    "pendidikan" => $pendidikan,
+                    "pekerjaan" => $pekerjaan,
+                    "status_perkawinan" => $status_perkawinan,
+                    "status_keluarga" => $status_keluarga,
+                    "kewarganegaraan" => $kewarganegaraan,
+                    "nama_ayah" => $nama_ayah,
+                    "nama_ibu" => $nama_ibu,
+                    "no_kk" => $no_kk
+                ]);
+                $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+                $this->model->UserModel->create([
+                    "nik" => $nik,
+                    "email" => $email,
+                    "password" => $hashedPassword,
+                    "no_hp" => $no_hp,
+                    "role" => "masyarakat"
+                ]);
+            } else {
+                $this->model->KartuKeluargaModel->create([
+                    "no_kk" => $no_kk,
+                    "alamat" => $alamat,
+                    "rt" => $rt,
+                    "rw" => $rw,
+                    "kode_pos" => $kode_pos,
+                    "kelurahan" => $kelurahan,
+                    "kecamatan" => $kecamatan,
+                    "kabupaten" => $kabupaten,
+                    "provinsi" => $provinsi,
+                    "kk_tgl" => $kk_tgl,
+                    "kk_file" => $nameFile
+                ]);
+                $this->model->masyarakatModel->create([
+                    "nik" => $nik,
+                    "nama_lengkap" => $nama_lengkap,
+                    "jenis_kelamin" => $jenis_kelamin,
+                    "tempat_lahir" => $tempat_lahir,
+                    "tgl_lahir" => $tgl_lahir,
+                    "agama" => $agama,
+                    "pendidikan" => $pendidikan,
+                    "pekerjaan" => $pekerjaan,
+                    "status_perkawinan" => $status_perkawinan,
+                    "status_keluarga" => $status_keluarga,
+                    "kewarganegaraan" => $kewarganegaraan,
+                    "nama_ayah" => $nama_ayah,
+                    "nama_ibu" => $nama_ibu,
+                    "no_kk" => $no_kk,
+                    "kk_file" => $nameFile
+                ]);
+                $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+                $this->model->UserModel->create([
+                    "nik" => $nik,
+                    "email" => $email,
+                    "password" => $hashedPassword,
+                    "no_hp" => $no_hp,
+                    "role" => "masyarakat"
+                ]);
+            }
 
-        // Simpan data ke tabel masyarakat
-        $this->model->masyarakatModel->create([
-            "nik" => $nik,
-            "nama_lengkap" => $nama_lengkap,
-            "jenis_kelamin" => $jenis_kelamin,
-            "tempat_lahir" => $tempat_lahir,
-            "tgl_lahir" => $tgl_lahir,
-            "agama" => $agama,
-            "pendidikan" => $pendidikan,
-            "pekerjaan" => $pekerjaan,
-            "status_perkawinan" => $status_perkawinan,
-            "status_keluarga" => $status_keluarga,
-            "kewarganegaraan" => $kewarganegaraan,
-            "nama_ayah" => $nama_ayah,
-            "nama_ibu" => $nama_ibu,
-            "no_kk" => $no_kk
-        ]);
+            $uploader = new FileUploader();
+            $uploader->setFile($fileTmpName);
+            $uploader->setTarget(storagePath("private", "/fileverif/" . $nameFile));
+            $uploader->setAllowedFileTypes($allowedFileTypes);
+            $uploadStatus = $uploader->upload();
+            if ($uploadStatus !== true) {
+                return response(["status" => false, "message" => "Gagal Menambahkan Data eeror image", "data" => $uploadStatus], 200);
+            }
+        }
+        return response([
+            "message" => "Registrasi berhasil.",
+            "status" => true,
+            "data" => []
+        ], 200);
+    }
+    public function sendemail()
+    {
+        $email = request('email');
+        $model  = new UserModel();
+        $result = $this->model->UserModel->where("email", "=", $email)->first();
+        if ($result) {
+            // Buat token
+            $token = bin2hex(random_bytes(50)); // Generate random token
+            $expiry = time() + 3600; // 1 jam ke depan
+            $payload = json_encode(['email' => $email, 'token' => $token, 'exp' => $expiry]);
+            $encodedToken = base64_encode($payload);
+            $data = [
+                "token_reset" => $encodedToken,
+                "email" => $email
+            ];
 
-        // Simpan data ke tabel user
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-        $this->model->UserModel->create([
-            "nik" => $nik,
-            "password" => $hashedPassword,
-            "no_hp" => $no_hp,
-            "role" => "masyarakat"
-        ]);
 
-        // Kirim respons sukses
-        header('Content-Type: application/json');
-        echo json_encode([
-            "data" => [
-                "msg" => "Registrasi berhasil.",
-                "status" => true
-            ]
-        ]);
-        exit;
+            $resetLink = "http://192.168.100.205/SISURAT/api/reset-password?token=" . $encodedToken;
+            $mail = new PHPMailer(true);
+            try {
+                // Pengaturan server SMTP
+                $mail->isSMTP();
+                $mail->Host = $_ENV['MAIL_HOST']; // Ganti dengan server SMTP Anda
+                $mail->SMTPAuth = true;
+                $mail->Username = $_ENV['MAIL_USERNAME']; // Ganti dengan email Anda
+                $mail->Password = $_ENV['MAIL_PASSWORD']; // Ganti dengan password email Anda
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // atau PHPMailer::ENCRYPTION_SMTPS
+                $mail->Port = 587; // Ganti dengan port yang sesuai
+
+                // Penerima
+                $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'], $_ENV['MAIL_FROM_NAME']);
+                $mail->addAddress($email); // Tambahkan alamat email penerima
+
+                // Konten email
+                $mail->isHTML(true);
+                $mail->Subject = 'Reset Password';
+                $mail->Body = "Klik tautan ini untuk reset password Anda:
+                    <br><br>
+                    <a href='{$resetLink}' style='display: inline-block; padding: 10px 20px; font-size: 16px; color: white; background-color: #007BFF; text-decoration: none; border-radius: 5px;'>Reset Password</a>
+                    ";
+
+                // Kirim email
+                if ($mail->send()) {
+                    $this->model->UserModel->where("id", "=", $result->id)->update($data);
+                };
+                return response([
+                    "message" => "Email Berhasil Dikirim.",
+                    "status" => true,
+                    "data" => []
+                ], 200);
+            } catch (Exception $e) {
+                return response([
+                    "message" => "Email Gagal Dikirim.",
+                    "status" => true,
+                    "data" => []
+                ], 400);
+            }
+        } else {
+            return response([
+                "message" => "Email Tidak Ditemukan",
+                "status" => false,
+                "data" => []
+            ], 200);
+        }
+    }
+    public function resetpassword()
+    {
+        $email = request("email");
+        $token = request("token");
+        $password = request("password");
+
+        // Encrypt password
+        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+        if (!$token || !$email || !$password) {
+            return redirect()->with("error", "Email,Password,Token Tidak Ada.")->back();
+        }
+
+        $dataupdate = [
+            "password" => $hashed_password,
+            "token_reset" => null
+        ];
+
+        $result = $this->model->UserModel->where("email", "=", $email)->first();
+        $data = json_decode(base64_decode($result->token_reset));
+        if ($result) {
+            if (time() > $data->exp) {
+                return response([
+                    "message" => "Token Sudah Kadaluarsa",
+                    "status" => false,
+                    "data" => []
+                ], 200);
+            } else {
+                if ($token == $data->token) {
+                    if ($this->model->UserModel->where("email", "=", $data->email)->update($dataupdate)) {
+                        return response([
+                            "message" => "Password Berhasil Direset.",
+                            "status" => true,
+                            "data" => []
+                        ], 200);
+                    }else{
+                        return response([
+                            "message" => "Password Gagal Direset.",
+                            "status" => false,
+                            "data" => []
+                        ], 200);
+                    }
+                } else {
+                    return response([
+                        "message" => "Token tidak ditemukan",
+                        "status" => false,
+                        "data" => []
+                    ], 200);
+                }
+            }
+        } else {
+            return response([
+                "message" => "User Tidak Ditemukan",
+                "status" => false,
+                "data" => []
+            ], 200);
+        }
     }
 }

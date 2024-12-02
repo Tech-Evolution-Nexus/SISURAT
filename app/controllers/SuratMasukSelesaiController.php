@@ -3,6 +3,8 @@
 namespace app\controllers;
 
 use app\abstract\Controller;
+use app\models\FieldsModel;
+use app\models\FieldValuesModel;
 use app\models\FormatSuratModel;
 use app\models\JenisSuratModel;
 use app\models\KartuKeluargaModel;
@@ -30,10 +32,19 @@ class SuratMasukSelesaiController extends Controller
 
         $this->model->formatSurat  = new FormatSuratModel();
         $this->model->masyarakat  = new MasyarakatModel();
+        $this->model->fieldValues  = new FieldValuesModel();
+        $this->model->fields  = new FieldsModel();
     }
     public function  index()
     {
-        $data = $this->model->psurat->select("pengajuan_surat.id", "nomor_surat", "masyarakat.nik", "nama_lengkap", "nama_surat", "pengajuan_surat.created_at", "status", "no_hp")->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")->join("surat", "surat.id", "pengajuan_surat.id_surat")->join("users", "users.nik", "pengajuan_surat.nik")->where("status", "=", "selesai")->get();
+        $data = $this->model->psurat
+            ->select("pengajuan_surat.id", "nomor_surat", "masyarakat.nik", "nama_lengkap", "nama_surat", "pengajuan_surat.created_at", "pengajuan_surat.status", "no_hp")
+            ->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")
+            ->join("surat", "surat.id", "pengajuan_surat.id_surat")
+            ->join("users", "users.nik", "pengajuan_surat.nik")
+            ->where("pengajuan_surat.status", "=", "selesai")
+            ->orderBy("id", "desc")
+            ->get();
 
         $params["data"] = (object)[
             "title" => "Jenis Surat",
@@ -46,6 +57,7 @@ class SuratMasukSelesaiController extends Controller
     public function  getdata($id)
     {
         $biodata = $this->model->psurat->select(
+
             "nomor_surat as nomor_surat",
             "nama_surat as nama_surat",
             "nik as nik",
@@ -79,13 +91,9 @@ class SuratMasukSelesaiController extends Controller
 
     public function exportPengajuan($idPengajuan)
     {
-        $formatSurat = $this->model->formatSurat
-            ->join("surat", "format_surat.id", "surat.id_format_surat")
-            ->join("pengajuan_surat", "surat.id", "pengajuan_surat.id_surat")
-            ->where("pengajuan_surat.id", "=", $idPengajuan)
-            ->first();
 
-        $data = $this->model->psurat->select("nama_lengkap,nomor_surat,pengajuan_surat.nik,rw,rt,kecamatan,kelurahan,kabupaten,tempat_lahir,tgl_lahir,jenis_kelamin,pekerjaan,agama,status_perkawinan,kewarganegaraan,alamat,pengajuan_surat.created_at,nama_surat,pendidikan,kartu_keluarga.no_kk,alamat,nomor_surat_tambahan")
+
+        $data = $this->model->psurat->select("pengajuan_surat.id as id_pengajuan,format_surat,id_surat,nama_lengkap,nomor_surat,pengajuan_surat.nik,rw,rt,kecamatan,kelurahan,kabupaten,tempat_lahir,tgl_lahir,jenis_kelamin,pekerjaan,agama,status_perkawinan,kewarganegaraan,alamat,pengajuan_surat.created_at,nama_surat,pendidikan,kartu_keluarga.no_kk,alamat")
             ->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->join("surat", "surat.id", "pengajuan_surat.id_surat")
@@ -102,28 +110,51 @@ class SuratMasukSelesaiController extends Controller
             ->where("no_kk", "=", $data->no_kk)
             ->first();
 
+        $fields = $this->model->fields->select("nama_field,id")->where("id_surat", "=", $data->id_surat)->get();
+
+        $data->fields = $fields;
+
         $html = "<style>
                 @page { margin:10px 50px; }
+                img{
+                    height:auto;
+                    max-width:100%;
+                }
+                .image-style-align-left{
+                    float:left;
+                }
+                .image-style-align-right{
+                    float:right;
+                }
+                .image-style-block-align-right{
+                    margin-left: auto;
+                    margin-right: 0;
+                }
+                .image-style-block-align-left{
+                    margin-left: 0;
+                    margin-right: auto;
+                }
                 </style>";
 
-        $html .= $formatSurat->konten;
+        $html .= $data->format_surat;
         $this->replaceValue($html, $data);
         $dompdf = new Dompdf();
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');
         $options = $dompdf->getOptions();
         $options->set('isHtml5ParserEnabled', true);
+        $options->set('isRemoteEnabled', true);
         $dompdf->setOptions($options);
         $dompdf->render();
         $dompdf->stream($data->nama_surat . ".pdf", [
-            "Attachment" => true // Ubah ke false jika ingin ditampilkan di browser
+            "Attachment" => false // Ubah ke false jika ingin ditampilkan di browser
         ]);
     }
 
 
     private function replaceValue(&$html, $data)
     {
-        $noSurat = $data->nomor_surat . ($data->nomor_surat_tambahan != null ? "/" . $data->nomor_surat_tambahan : "");
+        $noSurat = $data->nomor_surat;
         $html = str_replace("{no_surat}", $noSurat ?? "", $html);
         $html = str_replace("{nama}", $data->nama_lengkap ?? "", $html);
         $html = str_replace("{nik}", $data->nik ?? "", $html);
@@ -173,11 +204,22 @@ class SuratMasukSelesaiController extends Controller
         $html = str_replace("{desa}", $data->kelurahan ?? "", $html);
         $html = str_replace("{kabupaten}", $data->kabupaten ?? "", $html);
         $html = str_replace("{tanggal_pengajuan}", formatDate($data->created_at) ?? "", $html);
+
+
+        foreach ($data->fields as $field) {
+            $value = $this->model->fieldValues
+                ->where("id_field", "=", $field->id)
+                ->where("id_pengajuan", "=", $data->id_pengajuan)
+                ->first();
+            $namaField = "{field_" . strtolower(str_replace(" ", "_", trim($field->nama_field)) . "}");
+
+            $html = str_replace($namaField,  $value->value ?? "-", $html);
+        }
     }
     public function detail($id)
     {
         $data = $this->model->psurat
-            ->select("pengajuan_surat.nik,surat.id,nama_lengkap,nama_surat,surat.created_at as tanggal_pengajuan,pengajuan_surat.nomor_surat,no_pengantar_rw,jenis_kelamin,kewarganegaraan,agama,pekerjaan,alamat,tempat_lahir,tgl_lahir,status,nomor_surat_tambahan,kode_kelurahan")
+            ->select("pengajuan_surat.nik,surat.id,nama_lengkap,nama_surat,surat.created_at as tanggal_pengajuan,pengajuan_surat.nomor_surat,no_pengantar_rw,jenis_kelamin,kewarganegaraan,agama,pekerjaan,alamat,tempat_lahir,tgl_lahir,status,kode_kelurahan")
             ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->join("surat", "pengajuan_surat.id_surat", "surat.id")

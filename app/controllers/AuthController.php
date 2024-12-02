@@ -125,7 +125,7 @@ class AuthController
         ];
 
         $result = $this->model->users->where("token_reset", "=", $token)->first();
-        if ($this->model->users->update($result->id, $data)) {
+        if ($this->model->users->where("id",$result->id)->update($data)) {
             return redirect()->with("success", "Berhasil mengubah password")->to("/login");
         } else {
             return redirect()->with("success", "Gagal mengubah password,Coba lagi")->back();

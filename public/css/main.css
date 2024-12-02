@@ -204,9 +204,13 @@
   }
 }
 
+.mix-blend-color {
+  mix-blend-mode: difference;
+}
 body {
   margin: 0;
-  font-family: "Inter", serif;
+  /* font-family: "Inter", serif; */
+  font-family: "Montserrat", serif;
   font-size: var(--bs-body-font-size);
   font-weight: var(--bs-body-font-weight);
   line-height: var(--bs-body-line-height);

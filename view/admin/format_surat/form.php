@@ -41,7 +41,7 @@
                 <div class="card-body">
                     <div class="form-group">
                         <label for="">Nama Format</label>
-                        <input value="<?= old("nama", $data->data->nama) ?>" type="text" name="nama" class="form-control" id="">
+                        <input disabled value="<?= old("nama", $data->data->nama) ?>" type="text" name="nama" class="form-control" id="">
                         <?php if (session()->has("nama")): ?>
                             <small class="text-danger text-capitalize"><?= session()->error("nama") ?></small>
                         <?php endif; ?>
@@ -64,7 +64,6 @@
 
         </div>
     </main>
-
 
     <!--end yang perlu diubah -->
     <?php includeFile("layout/script") ?>
@@ -89,10 +88,21 @@
             Underline,
             HtmlEmbed,
             Mention,
+            TableColumnResize,
+            SimpleUploadAdapter,
+            ImageToolbar,
+            ImageCaption,
+            ImageStyle,
+            ImageResize,
+            LinkImage,
+            ImageResizeEditing,
+            ImageResizeHandles
+
         } from 'ckeditor5';
+        const fields = <?= json_encode($data->data->fields) ?>;
 
         const mention = [
-            '{no_surat}',
+            ...fields, '{no_surat}',
             '{nama}',
             '{nik}',
             '{tempat_lahir}',
@@ -134,27 +144,70 @@
             '{tanggal_pengajuan}'
         ];
 
+        console.log(mention);
+
         if (document.querySelector('.konten')) {
             ClassicEditor
                 .create(document.querySelector('.konten'), {
-                    plugins: [Mention, HtmlEmbed, Heading, Essentials, Paragraph, Bold, Italic, Font, Alignment, Image, ImageUpload, Table, TableToolbar, Indent, HorizontalLine, Underline],
+                    plugins: [Mention, HtmlEmbed, Heading, Essentials, Paragraph, Bold, Italic, Font, Alignment, Image, ImageUpload, SimpleUploadAdapter, TableColumnResize, TableToolbar, Table, Indent, HorizontalLine, Underline, ImageResize, ImageToolbar, ImageStyle, ImageResizeEditing, ImageResizeHandles],
+                    image: {
+                        toolbar: [
+                            'imageStyle:alignLeft',
+                            'imageStyle:alignRight',
+                            'imageStyle:alignBlockLeft',
+                            'imageStyle:alignCenter',
+                            'imageStyle:alignBlockRight',
+                            '|',
+                            'toggleImageCaption',
+                            'imageTextAlternative',
+                            '|',
+                            'linkImage'
+                        ],
+                        insert: {
+                            // If this setting is omitted, the editor defaults to 'block'.
+                            // See explanation below.
+                            type: 'auto'
+                        }
+                    },
                     mention: {
                         feeds: [{
                             marker: '{',
                             feed: mention,
-                            minimumCharacters: 0
+                            minimumCharacters: 0,
+                            dropdownLimit: 100
                         }]
+                    },
+                    table: {
+                        contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+                    },
+                    indentBlock: {
+                        offset: 1,
+                        unit: 'em'
                     },
                     toolbar: [
                         'undo', 'redo', '|', 'underline', 'htmlEmbed',
                         'bold', 'italic', 'underline', 'strikethrough', '|',
                         'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
                         'alignment', 'bulletedList', 'numberedList', '|',
-                        'link', 'blockQuote', 'insertTable', 'imageUpload', '|',
+                        'link', 'blockQuote', 'insertTable', 'imageUpload', "insertImage", '|',
                         'heading', 'indent', 'outdent', 'horizontalLine', '|',
                         'code', 'codeBlock', '|',
                         // 'removeFormat', 'horizontalLine'
                     ],
+
+                    simpleUpload: {
+                        // The URL that the images are uploaded to.
+                        uploadUrl: "<?= url('/admin/imageupload') ?>",
+
+                        // Enable the XMLHttpRequest.withCredentials property.
+                        // withCredentials: true,
+
+                        // headers: {
+                        //     'X-CSRF-TOKEN': 'CSRF-Token',
+                        //     Authorization: 'Bearer <JSON Web Token>'
+                        // }
+                    },
+
                 })
                 .then(editor => {
                     window.editor = editor;
