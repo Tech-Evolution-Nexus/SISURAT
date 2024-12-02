@@ -31,29 +31,33 @@ class ProfileController extends Controller
 
     public function uploadPP()
     {
-        $ficon = $_FILES['profile_picture'] ?? null;
-        $maxFileSize = 2 * 1024 * 1024;
-        if ($ficon['size'] > $maxFileSize) {
-            return redirect()->with("error", "Ukuran file terlalu besar. Maksimal 2MB.")->back();
+        try {
+            $ficon = $_FILES['profile_picture'] ?? null;
+            $maxFileSize = 2 * 1024 * 1024;
+            if ($ficon['size'] > $maxFileSize) {
+                return response(["message" => "Ukuran file terlalu besar"]);
+            }
+
+            $fileExt = pathinfo($ficon['name'], PATHINFO_EXTENSION);
+            $allowedFileTypes = ["jfif", "jpg", "jpeg", "png", "bmp", "webp", "svg"];
+            $nameFile  = uniqid() . "." . $fileExt;
+            $uploader = new FileUploader();
+            $uploader->setFile($ficon);
+            $uploader->setTarget(storagePath("public", "/assets/" . $nameFile));
+            $uploader->setAllowedFileTypes($allowedFileTypes);
+            $uploadStatus = $uploader->upload();
+
+            $uploadStatus = $uploader->upload();
+
+            if ($uploadStatus !== true) {
+                $this->model->user->where("id", "=", auth()->user()->id)->update(["foto_profile" => $nameFile]);
+                return response(["message" => "Berhasil Update", "success" => true]);
+            }
+            return response(["message" => "Berhasil Update"]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response(["message" => $th->getMessage()], 500);
         }
-
-        $fileExt = pathinfo($ficon['name'], PATHINFO_EXTENSION);
-        $allowedFileTypes = ["jfif","jpg", "jpeg", "png", "bmp", "webp", "svg"];
-        $nameFile  = uniqid() . "." . $fileExt;
-        $uploader = new FileUploader();
-        $uploader->setFile($ficon);
-        $uploader->setTarget(storagePath("public", "/assets/" . $nameFile));
-        $uploader->setAllowedFileTypes($allowedFileTypes);
-        $uploadStatus = $uploader->upload();    
-
-        $uploadStatus = $uploader->upload();
-
-        if ($uploadStatus !== true) {
-            $this->model->user->where("id", "=", auth()->user()->id)->update(["foto_profile" => $nameFile]);
-            return response(["message" => "Berhasil Update", "success" => true]);
-        }
-        return response(["message" => "Berhasil Update"]);
-        
     }
 
     public function update_data()

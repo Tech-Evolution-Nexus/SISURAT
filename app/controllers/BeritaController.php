@@ -24,7 +24,7 @@ class BeritaController
     }
     public function index()
     {
-        $data  = $this->model->beritamodel->select()->get();
+        $data  = $this->model->beritamodel->orderBy("id", "desc")->get();
         $params["data"] = (object)[
             "title" => "Berita",
             "description" => "Kelola Berita Dengan Mudah",

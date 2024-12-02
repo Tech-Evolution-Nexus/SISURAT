@@ -70,7 +70,7 @@ class SuratController extends Controller
 
         $namasur = request("nama_surat");
         $ficon = request("file_icon");
-        $fields = request("fields");
+        $fields = request("fields") ?? [];
         $typeData = request("typeData");
         $isRequired = request("isRequired");
         $lampiran = request("lampiran");
@@ -177,10 +177,10 @@ class SuratController extends Controller
 
         $namasur = request("nama_surat");
         $ficon = request("file_icon");
-        $fields = request("fields");
+        $fields = request("fields") ?? [];
         $typeData = request("typeData");
         $isRequired = request("isRequired");
-        $fields_id = request("fields_id");
+        $fields_id = request("fields_id") ?? [];
         $lampiran = request("lampiran");
         $lampiran_id = request("lampiran_id");
 

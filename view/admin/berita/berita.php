@@ -48,7 +48,6 @@
                                 <th>No</th>
                                 <th>Gambar</th>
                                 <th>Judul</th>
-                                <th>Keterangan</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -56,9 +55,8 @@
                             <?php foreach ($data->data  as $index => $berita) : ?>
                                 <tr>
                                     <td><?= $index + 1 ?></td>
-                                    <td> <img src="<?= url("/admin/assetsberita/$berita->gambar") ?>" width="32" height="32" alt="a"></td>
+                                    <td> <img class="rounded" src="<?= url("/admin/assetsberita/$berita->gambar") ?>" width="50" height="50" alt="a"></td>
                                     <td><?= $berita->judul ?></td>
-                                    <td><?= $berita->sub_judul ?></td>
 
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Action buttons">
@@ -108,13 +106,13 @@
                                     <div class="form-group mb-2">
                                         <label>Judul </label>
                                         <div class="input-group mt-2">
-                                            <input required type="text" class="form-control" placeholder="Masukan Judul Berita" name="judul" id="judul">
+                                            <input maxlength="100" required type="text" class="form-control" placeholder="Masukan Judul Berita" name="judul" id="judul">
                                         </div>
                                     </div>
                                     <div class="form-group ">
                                         <label>Keterangan</label>
                                         <div class="input-group mt-2">
-                                            <input required type="text" class="form-control" placeholder="Masukan Keterangan Berita" name="subjudul" id="subjudul">
+                                            <input maxlength="70" required type="text" class="form-control" placeholder="Masukan Keterangan Berita" name="subjudul" id="subjudul">
                                         </div>
                                     </div>
                                 </div>
