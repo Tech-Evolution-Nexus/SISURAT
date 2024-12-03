@@ -38,6 +38,10 @@ Router::addRoute("POST", "/aktivasi", [AuthApiController::class, "aktivasi"]);
 Router::addRoute("POST", "/sendemail", [AuthApiController::class, "sendemail"]);
 Router::addRoute("POST", "/reset-password", [AuthApiController::class, "resetpassword"]);
 Router::addRoute("POST", "/ganti-password", [AuthApiController::class, "gantipassword"]);
+Router::addRoute("POST", "/ubah-email", [AuthApiController::class, "ubahemail"]);
+Router::addRoute("POST", "/ubah-nohp", [AuthApiController::class, "ubahnohp"]);
+
+
 
 
 
