@@ -35,7 +35,7 @@ class AuthApiController
             $nik = $jsonData["nik"];
             $password = $jsonData["password"];
             $fcm = $jsonData["fcm_token"];
-            $users = $this->model->UserModel->select("masyarakat.nik,password,role,masyarakat.no_kk,masyarakat.nama_lengkap")->join("masyarakat", "masyarakat.nik", "users.nik")->where("users.nik", "=", $nik)->where("users.status", "=", 1)->first();
+            $users = $this->model->UserModel->select("masyarakat.nik,password,role,masyarakat.no_kk,masyarakat.nama_lengkap,users.email,users.no_hp")->join("masyarakat", "masyarakat.nik", "users.nik")->where("users.nik", "=", $nik)->where("users.status", "=", 1)->first();
             if ($users) {
                 if (password_verify($password, $users->password)) {
                     if ($fcm != null || !empty($fcm)) {
@@ -114,8 +114,6 @@ class AuthApiController
             "data" => []
         ], 200);
     }
-
-
     public function Aktivasi()
     {
         // Membaca data JSON dari request body
@@ -134,9 +132,9 @@ class AuthApiController
         $nik = $jsonData["nik"] ?? null;
         $no_hp = $jsonData["no_hp"] ?? null;
         $password = $jsonData["password"] ?? null;
-
+        $email = $jsonData["email"] ?? null;
         // Validasi input
-        if (empty($nik) || empty($no_hp) || empty($password)) {
+        if (empty($nik) || empty($no_hp) || empty($password)|| empty($email)) {
             return response([
                 "message" => "semua field harus di isi.",
                 "status" => false,
@@ -156,36 +154,37 @@ class AuthApiController
                     "data" => []
                 ], 200);
             } else {
-                // Hash password sebelum menyimpan
-                $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-
-                // Simpan data ke tabel users
-                $this->model->UserModel->create([
-                    "nik" => $nik,
-                    "no_hp" => $no_hp,
-                    "password" => $hashedPassword
-                ]);
-
-                return response([
-                    "message" => "Aktivasi berhasil. Silakan login.",
-                    "status" => true,
-                    "data" => []
-                ], 200);
+                $emailExists = $this->model->UserModel->where("email", "=", $email)->first();
+                if($emailExists){
+                    return response([
+                        "message" => "email sudah terdaftar",
+                        "status" => true,
+                        "data" => []
+                    ], 200);
+                }else{
+                    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+                    $this->model->UserModel->create([
+                        "nik" => $nik,
+                        "email"=>$email,
+                        "no_hp" => $no_hp,
+                        "password" => $hashedPassword
+                    ]);
+    
+                    return response([
+                        "message" => "Aktivasi berhasil. Silakan login.",
+                        "status" => true,
+                        "data" => []
+                    ], 200);
+                }
             }
         } else {
-            // Jika NIK tidak ditemukan di data masyarakat
             return response([
                 "message" => "NIK tidak ditemukan di data masyarakat.",
                 "status" => false,
                 "data" => []
             ], 200);
         }
-
-        exit;
     }
-
-
-
     public function register()
     {
         header("Access-Control-Allow-Origin: *");
@@ -297,8 +296,7 @@ class AuthApiController
                     "kewarganegaraan" => $kewarganegaraan,
                     "nama_ayah" => $nama_ayah,
                     "nama_ibu" => $nama_ibu,
-                    "no_kk" => $no_kk,
-                    "kk_file" => $nameFile
+                    "no_kk" => $no_kk
                 ]);
                 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
                 $this->model->UserModel->create([
@@ -312,7 +310,7 @@ class AuthApiController
 
             $uploader = new FileUploader();
             $uploader->setFile($fileTmpName);
-            $uploader->setTarget(storagePath("private", "/fileverif/" . $nameFile));
+            $uploader->setTarget(storagePath("private", "/masyarakat/" . $nameFile));
             $uploader->setAllowedFileTypes($allowedFileTypes);
             $uploadStatus = $uploader->upload();
             if ($uploadStatus !== true) {
@@ -424,7 +422,7 @@ class AuthApiController
                             "status" => true,
                             "data" => []
                         ], 200);
-                    }else{
+                    } else {
                         return response([
                             "message" => "Password Gagal Direset.",
                             "status" => false,
@@ -453,24 +451,81 @@ class AuthApiController
         $nik = request("nik");
         $password = request("password");
         $new_pass = request("new_password");
-        
+
 
         // Encrypt password
         $hashed_password = password_hash($new_pass, PASSWORD_BCRYPT);
-
-        $nik = 
-        $user = $this->model->UserModel->where("nik", "=", $nik)->first();
+            $user = $this->model->UserModel->where("nik", "=", $nik)->first();
         if ($user) {
-            if (password_verify($password,$user->password)) {
-                $this->model->userModel->where("nik", "=", $nik)->update(["password" => $hashed_password]);
+            if (password_verify($password, $user->password)) {
+                $this->model->UserModel->where("nik", "=", $nik)->update(["password" => $hashed_password]);
                 return response([
                     "message" => "Password berhasil diubah",
                     "status" => true,
                     "data" => []
                 ], 200);
+            }
         }
-        
+    }
+    public function ubahemail()
+    {
+        $nik = request("nik");
+        $emailb = request("emailbaru");
+        $emaill = request("emaillama");
+        $user = $this->model->UserModel->where("nik", "=", $nik)->where("email", "=", $emaill)->first();
+        if($user){
+            $data = $this->model->UserModel->where("nik", "=", $nik)->update(["email"=>$emailb]);
+            if($data){
+                return response([
+                    "message" => "Berhasil Diubah",
+                    "status" => true,
+                    "data" => $data
+                ], 200);
+            }else{
+                return response([
+                    "message" => "Gagal Diubah",
+                    "status" => true,
+                    "data" => []
+                ], 200);
+            }
+           
+        }else{
+            return response([
+                "message" => "Gagal Diubah",
+                "status" => false,
+                "data" => []
+            ], 200);
+        }
 
     }
-}
+    public function ubahnohp()
+    {
+        $nik = request("nik");
+        $nohpl = request("nohplama");
+        $nohpb = request("nohpbaru");
+        
+        $user = $this->model->UserModel->where("nik", "=", $nik)->where("no_hp", "=", $nohpl)->first();
+        if($user){
+            $data = $this->model->UserModel->where("id", "=", $user->id)->update(["no_hp"=>$nohpb]);
+            if($data){
+                return response([
+                    "message" => "Berhasil Diubah",
+                    "status" => true,
+                    "data" => $data
+                ], 200);
+            }else{
+                return response([
+                    "message" => "Gagal Diubah",
+                    "status" => true,
+                    "data" => []
+                ], 200);
+            }
+        }else{
+            return response([
+                "message" => "User Tidak Ditemukan",
+                "status" => false,
+                "data" => []
+            ], 200);
+        }
+    }
 }
