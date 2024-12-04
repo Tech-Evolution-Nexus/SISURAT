@@ -296,8 +296,7 @@ class AuthApiController
                     "kewarganegaraan" => $kewarganegaraan,
                     "nama_ayah" => $nama_ayah,
                     "nama_ibu" => $nama_ibu,
-                    "no_kk" => $no_kk,
-                    "kk_file" => $nameFile
+                    "no_kk" => $no_kk
                 ]);
                 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
                 $this->model->UserModel->create([
@@ -311,7 +310,7 @@ class AuthApiController
 
             $uploader = new FileUploader();
             $uploader->setFile($fileTmpName);
-            $uploader->setTarget(storagePath("private", "/fileverif/" . $nameFile));
+            $uploader->setTarget(storagePath("private", "/masyarakat/" . $nameFile));
             $uploader->setAllowedFileTypes($allowedFileTypes);
             $uploadStatus = $uploader->upload();
             if ($uploadStatus !== true) {
