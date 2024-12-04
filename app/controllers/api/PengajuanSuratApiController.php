@@ -175,7 +175,7 @@ class PengajuanSuratApiController
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->where("rw", "=", $user->rw)
             ->where("status", "=", $statusAwal)
-            ->orderBy("pengajuan_surat.created_at", "desc")
+            ->orderBy("pengajuan_surat.updated_at", "desc")
             ->get();
 
         $data2 = $this->model->psurat
@@ -185,7 +185,7 @@ class PengajuanSuratApiController
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->where("rw", "=", $user->rw)
             ->where("rt", "=", $user->rt)
-            ->orderBy("pengajuan_surat.created_at", "desc");
+            ->orderBy("pengajuan_surat.updated_at", "desc");
 
         if ($user->role === "rw") {
             $data2->where("status", "<>", "pending");
