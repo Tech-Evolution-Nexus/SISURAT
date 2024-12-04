@@ -138,6 +138,37 @@ class SuratController extends Controller
     }
 
 
+    public function show($id)
+    {
+        $lampiran = $this->model->lampiran->all();
+        $surat = $this->model->jsurat->find($id);
+
+        $lampiranSurat = $this->model->lampiransurat
+            ->where("id_surat", "=", $id)
+            ->join("lampiran", "lampiran_surat.id_lampiran", "lampiran.id")
+            ->get();
+
+        $fieldsSurat = $this->model->fields
+            ->where("id_surat", "=", $id)
+            ->get();
+
+
+
+        $params["data"] = (object)[
+            "title" => "Detail Surat",
+            "description" => "Kelola Surat dengan mudah",
+            "action_form" => url("/admin/surat/$id"),
+            "lampiran" => $lampiran,
+            "data" => (object)[
+                "nama" => $surat->nama_surat,
+                "gambar" => url("/admin/assetssurat/$surat->image"),
+                "lampiran" => $lampiranSurat,
+                "fields" => $fieldsSurat,
+            ]
+        ];
+
+        return view("admin/surat/show", $params);
+    }
     public function edit($id)
     {
         $lampiran = $this->model->lampiran->all();

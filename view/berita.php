@@ -27,6 +27,11 @@
         body {
             overflow-x: hidden;
         }
+
+        .aspect-video {
+            aspect-ratio: 16/9;
+            object-fit: cover;
+        }
     </style>
 </head>
 
@@ -62,7 +67,7 @@
         </div>
     </nav>
 
-    <section id="hero" class="mb-4 text-white " style="background-size:cover;background-image: url(<?= assets("assets/heroBg.svg") ?>);">
+    <section id="hero" class="mb-4 py-5 text-white " style="background-size:cover;background-image: url(<?= assets("assets/heroBg.svg") ?>);">
         <div class="container ">
             <h1 class="text-center mb-3">Jelajahi Berita</h1>
             <form action="" method="get">
@@ -79,11 +84,11 @@
             <div class="row g-4">
                 <?php foreach ($data->berita as $berita): ?>
                     <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-                        <a href="<?= url("admin/berita/$berita->id") ?>">
-                            <article class="card overflow-hidden text-">
+                        <a href="<?= url("/berita/$berita->id") ?>" class="text-decoration-none">
+                            <article class="card overflow-hidden  item-bottom">
                                 <div class="card-body p-0">
                                     <figure class="mb-0">
-                                        <img class="img-fluid" src="<?= url("admin/assetsberita/" . $berita->gambar) ?>" alt="">
+                                        <img class="img-fluid aspect-video" src="<?= url("admin/assetsberita/" . $berita->gambar) ?>" alt="">
                                     </figure>
                                     <div class="p-3">
                                         <h6><?= $berita->judul ?></h6>

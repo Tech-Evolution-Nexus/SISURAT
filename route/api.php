@@ -31,6 +31,7 @@ Router::addRoute("GET", "/getberita/{data}", [BeritaApiController::class, "getBe
 Router::addRoute("GET", "/detailberita/{id}", [BeritaApiController::class, "getdetailberita"]);
 
 Router::addRoute("POST", "/sendpengajuansuratmasyarakat", [PengajuanSuratApiController::class, "sendsurmas"]);
+
 Router::addRoute("POST", "/login", [AuthApiController::class, "login"]);
 Router::addRoute("POST", "/register", [AuthApiController::class, "register"]);
 Router::addRoute("POST", "/veriv", [AuthApiController::class, "veriv"]);

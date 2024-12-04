@@ -36,7 +36,7 @@ class LandingController extends Controller
     }
     public function beritaDetail($id)
     {
-        $data = $this->model->berita->first($id);
+        $data = $this->model->berita->find($id);
         $params["data"] = (object)[
             "title" => "Berita Badean Terkini",
             "berita" => $data,

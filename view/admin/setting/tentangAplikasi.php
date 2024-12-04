@@ -29,13 +29,13 @@
                                         <div class="col-md-6">
                                             <div class="form-group mb-2">
                                                 <label for="nama_website">Nama Website:</label>
-                                                <input type="text" value="<?= $data ?>" class="form-control shadow-sm" id="nama_website" name="nama_website">
+                                                <input type="text" value="<?= $data->nama_website ?>" class="form-control shadow-sm" id="nama_website" name="nama_website">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="judul_home">Judul Halaman Home:</label>
-                                                <input type="text" value="<?= $data ?>" class="form-control shadow-sm" id="judul_home" name="judul_home">
+                                                <input type="text" value="<?= $data->judul_home ?>" class="form-control shadow-sm" id="judul_home" name="judul_home">
                                             </div>
                                         </div>
                                         <div class="form-group mt-2">
@@ -44,7 +44,7 @@
                                                 <button class="btn btn-secondary about-button mb-2" type="button" aria-label="Edit Foto" onclick="document.getElementById('file-input').click();">
                                                     <i class="fa fa-file-image fa-2x "></i>
                                                 </button>
-                                                <input type="file" value="<?= $data ?>" id="file-input" name="logo" accept="image/*" style="display: none;">
+                                                <input type="file" value="<?= $data->image_hero ?>" id="file-input" name="logo" accept="image/*" style="display: none;">
 
                                             </div>
                                         </div>
@@ -53,7 +53,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group mb-3">
                                                 <label for="deskripsi_home">Deskripsi Halaman Home:</label>
-                                                <textarea class="form-control shadow-sm" id="deskripsi_home" name="deskripsi_home" rows="4"><?= $data ?></textarea>
+                                                <textarea class="form-control shadow-sm" id="deskripsi_home" name="deskripsi_home" rows="4"><?= $data->deskripsi_home ?></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -62,25 +62,25 @@
                                         <div class="col-md-6">
                                             <div class="form-group mb-2">
                                                 <label for="judul_tentang">Judul Halaman Tentang:</label>
-                                                <input type="text" value="<?= $data ?>" class="form-control shadow-sm" id="judul_tentang" name="judul_tentang">
+                                                <input type="text" value="<?= $data->judul_tentang ?>" class="form-control shadow-sm" id="judul_tentang" name="judul_tentang">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="link_download">Link Download Aplikasi:</label>
-                                                <input type="text" value="<?= $data ?>" class="form-control shadow-sm" id="link_download" name="link_download">
+                                                <input type="text" value="<?= $data->link_download ?>" class="form-control shadow-sm" id="link_download" name="link_download">
                                             </div>
                                         </div>
                                         <div class="form-group mb-2">
                                             <label for="video_url">Video:</label>
-                                            <input type="text" value="<?= $data ?>" value="" class="form-control shadow-sm" id="video_url" name="video_url">
+                                            <input type="text" value="<?= $data->video_url ?>" value="" class="form-control shadow-sm" id="video_url" name="video_url">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group mb-3">
                                                 <label for="tentang_aplikasi">Tentang Aplikasi:</label>
-                                                <textarea class="form-control shadow-sm" id="tentang_aplikasi" name="tentang_aplikasi" rows="4"><?= $data ?></textarea>
+                                                <textarea class="form-control shadow-sm" id="tentang_aplikasi" name="tentang_aplikasi" rows="4"><?= $data->tentang_aplikasi ?></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -89,13 +89,13 @@
                                         <div class="col-md-6">
                                             <div class="form-group mb-2">
                                                 <label for="email_kelurahan">Email Kelurahan:</label>
-                                                <input type="text" value="<?= $data ?>" class="form-control shadow-sm" id="email_kelurahan" name="email_kelurahan">
+                                                <input type="text" value="<?= $data->email_kelurahan ?>" class="form-control shadow-sm" id="email_kelurahan" name="email_kelurahan">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="no_telp">No Telp:</label>
-                                                <input type="text" value="<?= $data ?>" class="form-control shadow-sm" id="no_telp" name="no_telp">
+                                                <input type="text" value="<?= $data->no_telp ?>" class="form-control shadow-sm" id="no_telp" name="no_telp">
                                             </div>
                                         </div>
                                     </div>
@@ -103,7 +103,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="alamat_kelurahan">Alamat Kelurahan:</label>
-                                                <textarea class="form-control shadow-sm" id="alamat_kelurahan" name="alamat_kelurahan" rows="4"><?= $data ?></textarea>
+                                                <textarea class="form-control shadow-sm" id="alamat_kelurahan" name="alamat_kelurahan" rows="4"><?= $data->alamat_kelurahan ?></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -125,85 +125,6 @@
     <!--end yang perlu diubah -->
 
     <?php includeFile("layout/script") ?>
-    <script>
-        // handle change data
-        $('.select2-modal').on('select2:select', function(e) {
-            var data = e.params.data;
-            $(".personal-information,.modal-footer").css({
-                height: "auto",
-                opacity: 1
-            })
-
-
-            $.ajax({
-                url: "/admin/master-rw/ajax-masyarakat/" + data.id,
-                success: (data) => {
-                    const formData = data;
-
-                    setFormData(formData)
-
-                }
-            })
-        });
-
-
-        // handle add data
-        $("#add-btn").on("click", function() {
-            setupForm("Tambah KK", "/admin/kartu-keluarga")
-            $(".search-section").show();
-            $(".required-password").show();
-            $("[name=password]").attr('required');
-            $(".modal form").trigger("reset");
-
-        })
-
-        // handle edit data
-        $(".editBtn").on("click", function() {
-            const id = $(this).attr("data-id")
-
-            setupForm("Ubah RKKW", "/admin/kartu-keluarga/" + id)
-            $(".search-section").hide();
-            $(".required-password").hide();
-            $("[name=password]").removeAttr('required');
-
-
-            $(".modal").modal("show")
-            $.ajax({
-                url: "/admin/master-rw/ajax-rw/" + id,
-                success: (data) => {
-                    const formData = data;
-                    console.log(formData);
-
-                    setFormData(formData)
-                }
-            })
-        })
-
-
-        const setupForm = (title, action) => {
-            $("#titleForm").text(title)
-            $(".modal form").attr("action", action)
-        }
-
-        const setFormData = ({
-            nik,
-            nama_lengkap,
-            alamat,
-            rt,
-            rw,
-            no_hp,
-            id
-        }) => {
-
-            $("[name=id_masyarakat]").val(id)
-            $("[name=nik]").val(nik)
-            $("[name=nama_lengkap]").val(nama_lengkap)
-            $("[name=alamat]").val(alamat)
-            $("[name=rt]").val(rt)
-            $("[name=rw]").val(rw)
-            $("[name=no_hp]").val(no_hp)
-        }
-    </script>
 </body>
 
 </html>

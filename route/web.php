@@ -28,6 +28,7 @@ Router::addRoute("GET", "/admin/surat", [SuratController::class, "index"]);
 Router::addRoute("GET", "/admin/surat/create", [SuratController::class, "create"]);
 Router::addRoute("POST", "/admin/surat", [SuratController::class, "store"]);
 Router::addRoute("GET", "/admin/surat/{id}/edit", [SuratController::class, "edit"]);
+Router::addRoute("GET", "/admin/surat/{id}", [SuratController::class, "show"]);
 Router::addRoute("POST", "/admin/surat/{id}/delete", [SuratController::class, "delete"]);
 Router::addRoute("POST", "/admin/surat/{id}", [SuratController::class, "update"]);
 
