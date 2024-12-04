@@ -19,7 +19,6 @@ class MasyarakatApiController
         $this->model->MasyarakatModel = new MasyarakatModel();
         $this->model->UsersModel = new UserModel();
         $this->model->psurat = new PengajuanSuratModel();
-
     }
     public function getverifmasyarakat()
     {
@@ -72,7 +71,7 @@ class MasyarakatApiController
         if ($data) {
             return response(["status" => true, "message" => "Berhasil Mengambil Data", "data" =>  $data], 200);
         } else {
-            return response(["status" => false, "message" => "Gagal Mengambil Data", "data" =>[]], 400);
+            return response(["status" => false, "message" => "Gagal Mengambil Data", "data" => []], 400);
         }
     }
     public function dadashboardrt($nik)
@@ -81,43 +80,43 @@ class MasyarakatApiController
             ->join("users", "users.nik", "masyarakat.nik")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->where("users.nik", "=", $nik)->first();
-        if($data->role=="rt"){
-            $countmasuk = $this->model->psurat
-            ->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")
-            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
-            ->where("kartu_keluarga.rt", "=", $data->rt)
-            ->where("kartu_keluarga.rw", "=", $data->rw);
-
         if ($data->role == "rt") {
-            $countmasuk = $countmasuk->where("pengajuan_surat.status", "=", "pending")->count();
-        } else {
-            $countmasuk = $countmasuk->where("pengajuan_surat.status", "=", "di_terima_rt")->count();
-        }
-
-        $countselesai = $this->model->psurat
-            ->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")
-            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
-            ->where("kartu_keluarga.rt", "=", $data->rt)
-            ->where("kartu_keluarga.rw", "=", $data->rw);
-        }else{
             $countmasuk = $this->model->psurat
-            ->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")
-            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
-        
-            ->where("kartu_keluarga.rw", "=", $data->rw);
+                ->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")
+                ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+                ->where("kartu_keluarga.rt", "=", $data->rt)
+                ->where("kartu_keluarga.rw", "=", $data->rw);
 
-        if ($data->role == "rt") {
-            $countmasuk = $countmasuk->where("pengajuan_surat.status", "=", "pending")->count();
+            if ($data->role == "rt") {
+                $countmasuk = $countmasuk->where("pengajuan_surat.status", "=", "pending")->count();
+            } else {
+                $countmasuk = $countmasuk->where("pengajuan_surat.status", "=", "di_terima_rt")->count();
+            }
+
+            $countselesai = $this->model->psurat
+                ->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")
+                ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+                ->where("kartu_keluarga.rt", "=", $data->rt)
+                ->where("kartu_keluarga.rw", "=", $data->rw);
         } else {
-            $countmasuk = $countmasuk->where("pengajuan_surat.status", "=", "di_terima_rt")->count();
+            $countmasuk = $this->model->psurat
+                ->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")
+                ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+
+                ->where("kartu_keluarga.rw", "=", $data->rw);
+
+            if ($data->role == "rt") {
+                $countmasuk = $countmasuk->where("pengajuan_surat.status", "=", "pending")->count();
+            } else {
+                $countmasuk = $countmasuk->where("pengajuan_surat.status", "=", "di_terima_rt")->count();
+            }
+
+            $countselesai = $this->model->psurat
+                ->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")
+                ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+                ->where("kartu_keluarga.rw", "=", $data->rw);
         }
 
-        $countselesai = $this->model->psurat
-            ->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")
-            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
-            ->where("kartu_keluarga.rw", "=", $data->rw);
-        }
-       
 
         if ($data->role == "rt") {
             $countselesai = $countselesai->whereIn("pengajuan_surat.status", ["di_terima_rt", "di_tolak_rt", "selesai"])->count();
@@ -125,7 +124,7 @@ class MasyarakatApiController
             $countselesai = $countselesai->whereIn("pengajuan_surat.status", ["di_terima_rw", "di_tolak_rw", "selesai"])->count();
         }
         // $countmasuk = $countmasuk->count();
-        if ($countmasuk) {
+        if ($countmasuk||$countselesai) {
             return response(["status" => true, "message" => "Berhasil Ditemukan", "data" => ["masuk" => $countmasuk, "selesai" => $countselesai]], 200);
         } else {
             return response(["status" => false, "message" => "Gagal Ditemukan", "data" => []], 200);
