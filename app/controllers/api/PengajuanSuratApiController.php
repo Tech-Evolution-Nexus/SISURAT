@@ -183,14 +183,14 @@ class PengajuanSuratApiController
             ->join("surat", "pengajuan_surat.id_surat", "surat.id")
             ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
-            ->where("rw", "=", $user->rw)
-            ->where("rt", "=", $user->rt)
             ->orderBy("pengajuan_surat.updated_at", "desc");
-
         if ($user->role === "rw") {
+            $data2->where("rw", "=", $user->rw);
             $data2->where("status", "<>", "pending");
             $data2->where("status", "<>", "di_terima_rt");
         } else {
+            $data2->where("rw", "=", $user->rw);
+            $data2->where("rt", "=", $user->rt);
             $data2->where("status", "<>", "pending");
         }
         $data2->where("status", "<>", "dibatalkan");
