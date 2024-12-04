@@ -27,6 +27,11 @@
         body {
             overflow-x: hidden;
         }
+
+        .aspect-video {
+            aspect-ratio: 16/9;
+            object-fit: cover;
+        }
     </style>
 </head>
 
@@ -62,7 +67,7 @@
         </div>
     </nav>
 
-    <section id="hero" class="mb-4  text-white " style="background-size:cover;background-image: url(<?= assets("assets/heroBg.svg") ?>);">
+    <section id="hero" class=" text-white " style="background-size:cover;background-image: url(<?= assets("assets/heroBg.svg") ?>);">
         <div class="container py-5 text-center">
             <h1 class=" mb-3"><?= $data->berita->judul ?></h1>
             <p><?= $data->berita->sub_judul ?></p>
@@ -73,6 +78,9 @@
 
     <section>
         <div class="container">
+            <center>
+                <img src="<?= url("admin/assetsberita/" . $data->berita->gambar) ?>" class="mb-4 aspect-video rounded " style="max-width: 60%;" alt="">
+            </center>
             <div>
                 <?= $data->berita->deskripsi ?>
             </div>

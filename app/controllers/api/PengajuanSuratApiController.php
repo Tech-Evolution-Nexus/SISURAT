@@ -65,9 +65,9 @@ class PengajuanSuratApiController
                 "keterangan" => $keterangan,
                 "status" => "pending",
             ]);
-            if ($data) {    
+            if ($data) {
                 $datafields = $this->model->fields->where("id_surat", "=", $idsurat)->get();
-                if($fields["name"][0]!=""){
+                if ($fields["name"][0] != "") {
                     foreach ($fields["name"] as $key => $tmp_name) {
                         $this->model->fieldsvalue->create([
                             'id_pengajuan' => $data,
@@ -76,7 +76,7 @@ class PengajuanSuratApiController
                         ]);
                     }
                 }
-                
+
 
                 foreach ($img['name'] as $key => $tmp_name) {
                     $fileName = $img['name'][$key];
@@ -145,7 +145,7 @@ class PengajuanSuratApiController
             "id_surat",
             "nama_surat",
             "image"
-        )->join("surat", "surat.id", "id_surat")->where("nik", "=", $nik)->whereIn('status', $statusFilter)->orderBy("pengajuan_surat.created_at","desc")->get();
+        )->join("surat", "surat.id", "id_surat")->where("nik", "=", $nik)->whereIn('status', $statusFilter)->orderBy("pengajuan_surat.created_at", "desc")->get();
 
         if ($data) {
             return response(["status" => true, "message" => "Data Berhasil Diambil", "data" => $data], 200);
@@ -249,12 +249,12 @@ class PengajuanSuratApiController
             $status = request("status");
             $keterangan = request("keterangan");
             $nopegantar = request("nopegantarrt");
-            if($role=="rw"){
+            if ($role == "rw") {
                 $randomNumber = str_pad(rand(0, 99999999), 8, '0', STR_PAD_LEFT);
                 $nopegantar = "NPRW-" . $randomNumber;
             }
-            if($keterangan==""){
-                $keterangan =null;
+            if ($keterangan == "") {
+                $keterangan = null;
             }
             $data = [];
             $data["status"] = ($role == "rw")
@@ -262,8 +262,8 @@ class PengajuanSuratApiController
                 : ($status == "ditolak" ? "di_tolak_rt" : "di_terima_rt");
 
             $data["keterangan_ditolak"] = $keterangan;
-            $role == "rw"? $data["no_pengantar_rw"] =$nopegantar:$data["no_pengantar_rt"] =$nopegantar;
-           
+            $role == "rw" ? $data["no_pengantar_rw"] = $nopegantar : $data["no_pengantar_rt"] = $nopegantar;
+
 
             $this->model->psurat->where("id", "=", $id_pengajuan)
                 ->update($data);

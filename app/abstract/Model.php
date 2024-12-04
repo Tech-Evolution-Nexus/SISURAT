@@ -92,7 +92,6 @@ class Model
         }
 
         $this->bindings = $data;
-
         $this->execute($this->query, $this->bindings);
         return $this->execute($query, $bindings)->fetch($this->fetchMode);
     }

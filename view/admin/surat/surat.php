@@ -65,9 +65,9 @@
                                             <button data-url="<?= url("/admin/surat/$kk->id/delete") ?>" title="Hapus" class="btn deleteBtn  text-white btn-danger btn-sm">
                                                 <i class="fa fa-trash"></i>
                                             </button>
-                                            <button data-id="<?= $kk->id ?>" title="Detail" class="btn btnDetail text-white btn-success btn-sm">
+                                            <a href="<?= url("/admin/surat/$kk->id") ?>" title="Detail" class="btn btnDetail text-white btn-success btn-sm">
                                                 <i class="fa fa-users"></i>
-                                            </button>
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>
