@@ -42,14 +42,7 @@ class PengajuanSuratApiController
     }
     public function sendsurmas()
     {
-
-        // $jsonData = json_decode(file_get_contents("php://input"), true);
-        // if (!$jsonData) {
-        //     return response(["data"=>"d","msg"=>"gagal"], 200);
-
-        // }
-        // return response(["data"=>$_POST['lampiran_info'],"msg"=>"behasil"], 200);
-        try{
+        try {
             header("Access-Control-Allow-Origin: *");
 
             $nik = request("nik");
@@ -77,8 +70,8 @@ class PengajuanSuratApiController
                             ]);
                         }
                     }
-    
-    
+
+
                     foreach ($img['name'] as $key => $tmp_name) {
                         $fileName = $img['name'][$key];
                         $fileTmpName = $img['tmp_name'][$key];
@@ -101,7 +94,10 @@ class PengajuanSuratApiController
                     }
                     $data = $this->model->masyarakat->select("nik,kartu_keluarga.rt")->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")->where("masyarakat.nik", "=", $nik)->first();
                     if ($data) {
-                        $data2 = $this->model->users->select("rt,role,fcm_token")->join("masyarakat", "masyarakat.nik", "users.nik")->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")->where("kartu_keluarga.rt", "=", $data->rt)->where("users.role", "=", "rt")->first();
+                        $data2 = $this->model->users->select("rt,role,fcm_token")->join("masyarakat", "masyarakat.nik", "users.nik")->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+                            ->where("kartu_keluarga.rt", "=", $data->rt)
+                            ->where("users.role", "=", "rt")
+                            ->first();
                         if ($data2) {
                             if ($data2->fcm_token != null) {
                                 pushnotifikasito($data2->fcm_token, "Ada Surat Baru Masuk", "Silahkan Klik Untuk Melakukan Persetujuan");
@@ -120,12 +116,108 @@ class PengajuanSuratApiController
             } else {
                 return response(["status" => false, "message" => "Gagal Menambahkan Data", "data" => []], 400);
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             $this->mainmodel->rollBack();
         }
-     
     }
 
+    // public function sendsurmas()
+    // {
+    //     try {
+    //         header("Access-Control-Allow-Origin: *");
+
+    //         $nik = request("nik");
+    //         $idsurat = request("idsurat");
+    //         $img = request("images");
+    //         $keterangan = request("keterangan");
+    //         $fields = request("fields");
+
+    //         $datalampiran = $this->model->lampiransuratModel->where("id_surat", $idsurat)->get();
+    //         if (!$datalampiran) {
+    //             return response(["status" => false, "message" => "Data lampiran tidak ditemukan"], 400);
+    //         }
+
+    //         $this->mainmodel->beginTransaction();
+
+    //         // Buat pengajuan surat
+    //         $pengajuan = $this->model->pengajuansurModel->create([
+    //             "nik" => $nik,
+    //             "id_surat" => $idsurat,
+    //             "keterangan" => $keterangan,
+    //             "status" => "pending",
+    //         ]);
+
+    //         if (!$pengajuan) {
+    //             return response(["status" => false, "message" => "Gagal membuat pengajuan"], 400);
+    //         }
+
+    //         // Simpan fields jika ada
+    //         if (!empty($fields['name'][0])) {
+    //             $datafields = $this->model->fields->where("id_surat", $idsurat)->get();
+    //             foreach ($fields['name'] as $key => $value) {
+    //                 $this->model->fieldsvalue->create([
+    //                     'id_pengajuan' => $pengajuan,
+    //                     'id_field' => $datafields[$key]->id ?? null,
+    //                     'value' => $value,
+    //                 ]);
+    //             }
+    //         }
+
+    //         // Simpan lampiran
+    //         $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
+    //         foreach ($img['name'] as $key => $fileName) {
+    //             $fileTmpName = $img['tmp_name'][$key];
+    //             $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
+    //             $uniqueFileName = uniqid() . "." . $fileExt;
+
+    //             $this->model->lampiranpengajuanModel->create([
+    //                 'id_pengajuan' => $pengajuan,
+    //                 'id_lampiran' => $datalampiran[$key]->id_lampiran ?? null,
+    //                 'url' => $uniqueFileName,
+    //             ]);
+
+    //             $uploader = new FileUploader();
+    //             $uploader->setFile($fileTmpName);
+    //             $uploader->setTarget(storagePath("private", "/masyarakat/" . $uniqueFileName));
+    //             $uploader->setAllowedFileTypes($allowedFileTypes);
+
+    //             if (!$uploader->upload()) {
+    //                 $this->mainmodel->rollBack();
+    //                 return response(["status" => false, "message" => "Gagal mengunggah lampiran"], 400);
+    //             }
+    //         }
+
+    //         // Kirim notifikasi ke ketua RT
+    //         $dataMasyarakat = $this->model->masyarakat
+    //             ->select("nik,kartu_keluarga.rt")
+    //             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+    //             ->where("masyarakat.nik", $nik)
+    //             ->first();
+
+    //         if ($dataMasyarakat) {
+    //             $dataRT = $this->model->users
+    //                 ->select("rt,role,fcm_token")
+    //                 ->join("masyarakat", "masyarakat.nik", "users.nik")
+    //                 ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+    //                 ->where("kartu_keluarga.rt", $dataMasyarakat->rt)
+    //                 ->where("users.role", "rt")
+    //                 ->first();
+
+    //             if ($dataRT && $dataRT->fcm_token) {
+    //                 pushnotifikasito($dataRT->fcm_token, "Ada Surat Baru Masuk", "Silahkan Klik Untuk Melakukan Persetujuan");
+    //                 $this->mainmodel->commit();
+    //                 return response(["status" => true, "message" => "Berhasil menambahkan data"], 200);
+    //             }
+
+    //             return response(["status" => false, "message" => "Ketua RT tidak ditemukan"], 400);
+    //         }
+
+    //         return response(["status" => false, "message" => "Data masyarakat tidak ditemukan"], 400);
+    //     } catch (Exception $e) {
+    //         $this->mainmodel->rollBack();
+    //         return response(["status" => false, "message" => "Terjadi kesalahan: " . $e->getMessage()], 500);
+    //     }
+    // }
 
     public function getPengajuan($nik, $status)
     {
