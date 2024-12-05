@@ -51,71 +51,69 @@ class PengajuanSuratApiController
             $keterangan = request("keterangan");
             $fields = request("fields");
             $datalampiran = $this->model->lampiransuratModel->where("id_surat", "=", $idsurat)->get();
-            $this->mainmodel->beginTransaction();
-            if ($datalampiran) {
-                $data = $this->model->pengajuansurModel->create([
-                    "nik" => $nik,
-                    "id_surat" => $idsurat,
-                    "keterangan" => $keterangan,
-                    "status" => "pending",
-                ]);
-                if ($data) {
-                    $datafields = $this->model->fields->where("id_surat", "=", $idsurat)->get();
-                    if ($fields["name"][0] != "") {
-                        foreach ($fields["name"] as $key => $tmp_name) {
-                            $this->model->fieldsvalue->create([
-                                'id_pengajuan' => $data,
-                                'id_field' => $datafields[$key]->id,
-                                'value' => $fields['name'][$key]
-                            ]);
-                        }
-                    }
 
-
-                    foreach ($img['name'] as $key => $tmp_name) {
-                        $fileName = $img['name'][$key];
-                        $fileTmpName = $img['tmp_name'][$key];
-                        $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
-                        $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-                        $nameFile  = uniqid() . "." . $fileExt;
-                        $this->model->lampiranpengajuanModel->create([
-                            'id_pengajuan' => $data,
-                            'id_lampiran' => $datalampiran[$key]->id_lampiran,
-                            'url' => $nameFile
-                        ]);
-                        $uploader = new FileUploader();
-                        $uploader->setFile($fileTmpName);
-                        $uploader->setTarget(storagePath("private", "/masyarakat/" . $nameFile));
-                        $uploader->setAllowedFileTypes($allowedFileTypes);
-                        $uploadStatus = $uploader->upload();
-                        if ($uploadStatus !== true) {
-                            return response(["status" => false, "message" => "Gagal Menambahkan Data", "data" => $uploadStatus], 400);
-                        }
-                    }
-                    $data = $this->model->masyarakat->select("nik,kartu_keluarga.rt")->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")->where("masyarakat.nik", "=", $nik)->first();
-                    if ($data) {
-                        $data2 = $this->model->users->select("rt,role,fcm_token")->join("masyarakat", "masyarakat.nik", "users.nik")->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
-                            ->where("kartu_keluarga.rt", "=", $data->rt)
-                            ->where("users.role", "=", "rt")
-                            ->first();
-                        if ($data2) {
-                            if ($data2->fcm_token != null) {
-                                pushnotifikasito($data2->fcm_token, "Ada Surat Baru Masuk", "Silahkan Klik Untuk Melakukan Persetujuan");
-                                $this->mainmodel->commit();
-                            }
-                            return response(["status" => true, "message" => "Berhasil Menambahkan Data", "data" => []], 200);
-                        } else {
-                            return response(["status" => false, "message" => "Ketua Rt Tidak ditemukan", "data" => []], 400);
-                        }
-                    } else {
-                        return response(["status" => false, "message" => "Rt Tidak ditemukan", "data" => []], 400);
-                    }
-                } else {
-                    return response(["status" => false, "message" => "Masyarakat Tidak Ditemukan", "data" => []], 400);
-                }
-            } else {
-                return response(["status" => false, "message" => "Gagal Menambahkan Data", "data" => []], 400);
+            if (!$datalampiran) {
+                return response(["status" => false, "message" => "Surat Tidak Ditemukan", "data" => []], 200);
             }
+
+            $data = $this->model->masyarakat->select("nik,kartu_keluarga.rt")->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")->where("masyarakat.nik", "=", $nik)->first();
+
+            if (!$data) {
+                return response(["status" => false, "message" => "Masyarakat Tidak Ditemukan", "data" => []], 200);
+            }
+
+            $data2 = $this->model->users->select("rt,role,fcm_token")->join("masyarakat", "masyarakat.nik", "users.nik")->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+                ->where("kartu_keluarga.rt", "=", $data->rt)
+                ->where("users.role", "=", "rt")
+                ->first();
+
+            if (!$data2) {
+                return response(["status" => false, "message" => "Ketua Rt Tidak ditemukan", "data" => []], 200);
+            }
+
+            $this->mainmodel->beginTransaction();
+            $data = $this->model->pengajuansurModel->create([
+                "nik" => $nik,
+                "id_surat" => $idsurat,
+                "keterangan" => $keterangan,
+                "status" => "pending",
+            ]);
+            $datafields = $this->model->fields->where("id_surat", "=", $idsurat)->get();
+            if ($fields["name"][0] != "") {
+                foreach ($fields["name"] as $key => $tmp_name) {
+                    $this->model->fieldsvalue->create([
+                        'id_pengajuan' => $data,
+                        'id_field' => $datafields[$key]->id,
+                        'value' => $fields['name'][$key]
+                    ]);
+                }
+            }
+            foreach ($img['name'] as $key => $tmp_name) {
+                $fileName = $img['name'][$key];
+                $fileTmpName = $img['tmp_name'][$key];
+                $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
+                $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
+                $nameFile  = uniqid() . "." . $fileExt;
+                $this->model->lampiranpengajuanModel->create([
+                    'id_pengajuan' => $data,
+                    'id_lampiran' => $datalampiran[$key]->id_lampiran,
+                    'url' => $nameFile
+                ]);
+                $uploader = new FileUploader();
+                $uploader->setFile($fileTmpName);
+                $uploader->setTarget(storagePath("private", "/masyarakat/" . $nameFile));
+                $uploader->setAllowedFileTypes($allowedFileTypes);
+                $uploadStatus = $uploader->upload();
+                if ($uploadStatus !== true) {
+                    return response(["status" => false, "message" => "Gagal Menambahkan Data", "data" => $uploadStatus], 200);
+                }
+            }
+
+            if ($data2->fcm_token != null) {
+                pushnotifikasito($data2->fcm_token, "Ada Surat Baru Masuk", "Silahkan Klik Untuk Melakukan Persetujuan");
+            }
+            $this->mainmodel->commit();
+            return response(["status" => true, "message" => "Berhasil Menambahkan Data", "data" => []], 200);
         } catch (Exception $e) {
             $this->mainmodel->rollBack();
         }
