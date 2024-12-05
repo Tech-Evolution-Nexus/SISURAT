@@ -76,58 +76,57 @@ class MasyarakatApiController
     }
     public function dadashboardrt($nik)
     {
-        $data = $this->model->MasyarakatModel
-            ->join("users", "users.nik", "masyarakat.nik")
+        $user = $this->model->MasyarakatModel
+            ->select("rw,rt,role")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
-            ->where("users.nik", "=", $nik)->first();
-        if ($data->role == "rt") {
-            $countmasuk = $this->model->psurat
-                ->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")
-                ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
-                ->where("kartu_keluarga.rt", "=", $data->rt)
-                ->where("kartu_keluarga.rw", "=", $data->rw);
-
-            if ($data->role == "rt") {
-                $countmasuk = $countmasuk->where("pengajuan_surat.status", "=", "pending")->count();
-            } else {
-                $countmasuk = $countmasuk->where("pengajuan_surat.status", "=", "di_terima_rt")->count();
-            }
-
-            $countselesai = $this->model->psurat
-                ->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")
-                ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
-                ->where("kartu_keluarga.rt", "=", $data->rt)
-                ->where("kartu_keluarga.rw", "=", $data->rw);
-        } else {
-            $countmasuk = $this->model->psurat
-                ->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")
-                ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
-
-                ->where("kartu_keluarga.rw", "=", $data->rw);
-
-            if ($data->role == "rt") {
-                $countmasuk = $countmasuk->where("pengajuan_surat.status", "=", "pending")->count();
-            } else {
-                $countmasuk = $countmasuk->where("pengajuan_surat.status", "=", "di_terima_rt")->count();
-            }
-
-            $countselesai = $this->model->psurat
-                ->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")
-                ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
-                ->where("kartu_keluarga.rw", "=", $data->rw);
+            ->join("users", "masyarakat.nik", "users.nik")
+            ->where("masyarakat.nik", "=", $nik)
+            ->whereIn("role", ["rw", "rt"])
+            ->first();
+        if ($user->role != "rw" && $user->role != "rt") {
+            return response(["message" => "Anda tidak memiliki akses "], 404);
         }
+        $statusAwal = $user->role == "rw" ? "di_terima_rt" : "pending";
+        $data1 = $this->model->psurat
+            ->select("pengajuan_surat.*,pengajuan_surat.created_at as tanggal_pengajuan,nama_surat,nama_lengkap,surat.image")
+            ->join("surat", "pengajuan_surat.id_surat", "surat.id")
+            ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
+            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+            ->where("status", "=", $statusAwal)
+            ->orderBy("pengajuan_surat.updated_at", "desc");
 
+        if ($user->role === "rw") {
+            $data1->where("rw", "=", $user->rw);
+        } else {
+            $data1->where("rw", "=", $user->rw);
+            $data1->where("rt", "=", $user->rt);
+        }
+        $data1 = $data1->count();
+        $data2 = $this->model->psurat
+            ->select("pengajuan_surat.*,pengajuan_surat.created_at as tanggal_pengajuan,nama_surat,nama_lengkap,rw,rt,surat.image")
+            ->join("surat", "pengajuan_surat.id_surat", "surat.id")
+            ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
+            ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+            ->orderBy("pengajuan_surat.updated_at", "desc");
 
-        if ($data->role == "rt") {
-            $countselesai = $countselesai->whereIn("pengajuan_surat.status", ["di_terima_rt", "di_tolak_rt", "selesai"])->count();
+        if ($user->role === "rw") {
+            $data2->where("rw", "=", $user->rw);
+            $data2->where("status", "<>", "pending");
+            $data2->where("status", "<>", "di_terima_rt");
         } else {
-            $countselesai = $countselesai->whereIn("pengajuan_surat.status", ["di_terima_rw", "di_tolak_rw", "selesai"])->count();
+            $data2->where("rw", "=", $user->rw);
+            $data2->where("rt", "=", $user->rt);
+            $data2->where("status", "<>", "pending");
         }
-        // $countmasuk = $countmasuk->count();
-        if ($countmasuk||$countselesai) {
-            return response(["status" => true, "message" => "Berhasil Ditemukan", "data" => ["masuk" => $countmasuk, "selesai" => $countselesai]], 200);
-        } else {
-            return response(["status" => false, "message" => "Gagal Ditemukan", "data" => []], 200);
-        }
+        $data2->where("status", "<>", "dibatalkan");
+        $data2 =  $data2->count();
+        return response([
+            "status" => true,
+            "message" => null,
+            "data" => [
+                "masuk" => $data1,
+                "selesai" => $data2
+            ]
+        ], 200);
     }
 }
