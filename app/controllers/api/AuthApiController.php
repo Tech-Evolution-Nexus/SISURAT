@@ -180,8 +180,7 @@ class AuthApiController
                 "data" => []
             ], 200);
         }
-
-        exit;
+        
     }
 
 
