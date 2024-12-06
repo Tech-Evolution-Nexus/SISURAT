@@ -23,7 +23,10 @@ class AboutController extends Controller
     {
 
         $data = $this->model->about->first();
-        return view("admin/setting/tentangAplikasi", ["data" => $data]);
+        return view("admin/setting/tentangAplikasi", ["data" => (object)[
+            "title" => "Tentang Aplikasi",
+            "data" => $data
+        ]]);
     }
 
     public function update_about()
