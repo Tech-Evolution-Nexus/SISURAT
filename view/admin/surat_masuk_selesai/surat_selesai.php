@@ -191,49 +191,11 @@
             console.log(id);
             $(".modal").modal("show")
             $.ajax({
-                url: "/SISURAT/admin/surat-selesai/detail/" + id,
+                url: "<?= url("admin/surat-selesai/detail/") ?>" + id,
                 success: (data) => {
                     $('#fselect').hide();
                     $('.fselected').remove();
                     setFormData(data)
-                    // const dynamicFields = document.getElementById("isi");
-
-                    // Menambahkan biodata
-                    //         data.biodata.forEach((element, index) => {
-                    //             for (const [key, value] of Object.entries(element)) {
-                    //                 const inputField = document.createElement("div");
-                    //                 inputField.classList.add("col-6"); // Pastikan tidak ada spasi di sini
-
-                    //                 const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-
-                    //                 inputField.innerHTML = `
-                    //                     <div class="form-group mt-3 ms-3">
-                    //                         <label>${label}</label>
-                    //                         <div class="input-group">
-                    //                             <input type="text" class="form-control" value="${value}" placeholder="${label}" name="${key}[]" readonly>
-                    //                         </div>
-                    //                     </div>
-                    //                 `;
-                    //                 dynamicFields.appendChild(inputField);
-                    //             }
-                    //         });
-
-                    //         const suratFieldRow = document.createElement("div");
-                    //         suratFieldRow.classList.add("row", "mt-3", "ms-3");
-                    //         dynamicFields.appendChild(suratFieldRow);
-
-                    //         data.datasurat.forEach((surat) => {
-                    //             const suratItem = document.createElement("div");
-                    //             suratItem.classList.add("col-6", "form-group", "mt-3");
-
-                    //             suratItem.innerHTML = `
-                    //     <label>${surat.nama_lampiran}</label>
-                    //     <div class="input-group">
-                    //         <img src="${surat.url}" alt="${surat.nama_lampiran}" style="width: 100px; height: auto;"/>
-                    //     </div>
-                    // `;
-                    //             suratFieldRow.appendChild(suratItem);
-                    //         });
                 }
             });
 

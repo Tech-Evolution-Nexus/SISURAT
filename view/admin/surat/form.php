@@ -224,7 +224,7 @@
                                 </div>
                             </div>
                             <div class="col-1">
-                                ${countInput > 0 ? '<button type="button" class="btn btn-danger text-white ms-2" onclick="removeField(this)"><i class="fa-solid fa-trash"></i></button>':""}
+                               <button type="button" class="btn btn-danger text-white ms-2" onclick="removeField(this)"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </div>
                     </div>
@@ -249,7 +249,7 @@
                         <option value="<?= $datas->id ?>"><?= $datas->nama_lampiran ?></option>
                     <?php endforeach; ?>
                 </select>
-                ${countInput > 0 ? '<button type="button" class="btn btn-danger text-white ms-2" onclick="removeField(this)"><i class="fa-solid fa-trash"></i></button>':""}</div>
+                ${countInput > 0 ? '<button type="button" class="btn btn-danger text-white ms-2" onclick="removeLampiran(this)"><i class="fa-solid fa-trash"></i></button>':""}</div>
                 <input type="hidden" value="0" class="form-control" name="lampiran_id[]" id="">
                 </div>   
             `;
@@ -264,7 +264,7 @@
             $(button).parent().parent().remove();
         }
 
-        $("#add-lampiran").on("click", removeLampiran)
+        $("#add-lampiran").on("click", addLampiran)
         $("#add-field").on("click", addField)
     </script>
 </body>

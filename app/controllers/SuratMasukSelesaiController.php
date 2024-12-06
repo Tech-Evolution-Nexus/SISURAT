@@ -47,8 +47,8 @@ class SuratMasukSelesaiController extends Controller
             ->get();
 
         $params["data"] = (object)[
-            "title" => "Jenis Surat",
-            "description" => "Kelola Jenis dengan mudah",
+            "title" => "Surat Selesai",
+            "description" => "Kelola Surat Selesai dengan mudah",
             "data" => $data,
 
         ];
@@ -73,7 +73,8 @@ class SuratMasukSelesaiController extends Controller
         )
             ->join("masyarakat", "masyarakat.id", "pengajuan_surat.id_masyarakat")
             ->join("surat", "surat.id", "pengajuan_surat.id_surat")
-            ->where("nomor_surat", "=", $id)->get();
+            ->where("pengajuan_surat.id", "=", $id)
+            ->get();
         $datasurat = $this->model->psurat->select(
             "lampiran.nama_lampiran",
             "url"
@@ -81,7 +82,8 @@ class SuratMasukSelesaiController extends Controller
             ->join("surat", "surat.id", "pengajuan_surat.id_surat")
             ->join("lampiran_pengajuan", "lampiran_pengajuan.id_pengajuan", "pengajuan_surat.id")
             ->join("lampiran", "lampiran_pengajuan.id_lampiran", "lampiran.id")
-            ->where("nomor_surat", "=", $id)->get();
+            ->where("pengajuan_surat.id", "=", $id)
+            ->get();
         $params = [
             "biodata" => $biodata,
             "datasurat" => $datasurat,
@@ -223,12 +225,12 @@ class SuratMasukSelesaiController extends Controller
             ->join("masyarakat", "pengajuan_surat.nik", "masyarakat.nik")
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->join("surat", "pengajuan_surat.id_surat", "surat.id")
-            ->where("surat.id", "=", $id)
+            ->where("pengajuan_surat.id", "=", $id)
             ->first();
 
         $lampiran = $this->model->lpengajuan
             ->select("nama_lampiran,url")
-            ->where("id_pengajuan", "=", $data->id)
+            ->where("id_pengajuan", "=", $id)
             ->join("lampiran", "lampiran_pengajuan.id_lampiran", "lampiran.id")
             ->get();
 

@@ -144,7 +144,7 @@ class KartuKeluargaController extends Controller
             $fileUpload->upload();
             $dataKK["kk_file"] = $randomName;
         }
-        $idKK =  $this->model->kartuKeluarga->create($dataKK);
+        $this->model->kartuKeluarga->create($dataKK);
         $this->model->masyarakat->create([
             "nik" => $nik,
             "nama_lengkap" => $nama,
