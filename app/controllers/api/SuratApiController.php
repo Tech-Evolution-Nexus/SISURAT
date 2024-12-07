@@ -40,7 +40,7 @@ class SuratApiController
     public function getdataall($limit)
     {
         if ($limit == "all") {
-            $data = $this->model->jsurat->select()->orderBy("id", "DESC")->all();
+            $data = $this->model->jsurat->select()->orderBy("nama_surat", "ASC")->get();
         } else {
             $data = $this->model->jsurat->select()->limit(6)->orderBy("id", "DESC")->get();
         }
