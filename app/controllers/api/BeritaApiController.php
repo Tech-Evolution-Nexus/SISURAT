@@ -19,9 +19,9 @@ class BeritaApiController
     public function getBerita($limit)
     {
         if($limit == "all"){
-            $data = $this->model->beritaModel->select()->orderBy("id","DESC")->get();
+            $data = $this->model->beritaModel->select()->orderBy("created_at","DESC")->get();
         }else{
-            $data = $this->model->beritaModel->select()->limit(8)->orderBy("id","DESC")->get();
+            $data = $this->model->beritaModel->select()->limit(8)->orderBy("created_at","DESC")->get();
         }
         if ($data) {
             return response(["status" => true, "message" => "Data Berhasil Diambil", "data" => $data], 200);
