@@ -60,7 +60,7 @@ class Model
         $placeholders = implode(',', array_map(fn($item) => ":$item", array_keys($data)));
         $this->query = "INSERT INTO {$this->table} ({$columns}) VALUES($placeholders)";
         $this->bindings = $data;
-        $this->execute($this->query, $this->bindings);
+        $result =   $this->execute($this->query, $this->bindings);
         return $this->db->lastInsertId();
     }
 
@@ -232,6 +232,7 @@ class Model
         try {
             $stmt->execute($bindings);
         } catch (\Throwable $th) {
+            dd($th);
             throw new \Exception("Database query error: " . $th->getMessage());
         }
         $this->resetQuery();
