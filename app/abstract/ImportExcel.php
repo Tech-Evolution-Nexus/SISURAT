@@ -23,7 +23,22 @@ abstract class ImportExcel
 
             foreach ($cellIterator as $cell) {
                 $columnName = $headerRow[$colIndex];
-                $rowData[strtolower($columnName)] = $cell->getValue();
+                $value = $cell->getValue();
+
+                $cellFormat = $cell->getStyle()->getNumberFormat()->getFormatCode();
+
+                // Periksa apakah nilai adalah tanggal (Excel timestamp)
+                if (
+                    is_numeric($value)
+                    && $value >= 1
+                    && $value <= 2958465
+                    && (strpos($cellFormat, 'd') !== false || strpos($cellFormat, 'y') !== false)
+                ) {
+                    $unixDate = ($value - 25569) * 86400; // Konversi Excel timestamp ke UNIX timestamp
+                    $formattedDate = date('Y-m-d', $unixDate); // Format tanggal
+                    $value = $formattedDate;
+                }
+                $rowData[strtolower(str_replace(" ", "_", $columnName))] = $value;
                 $colIndex++;
             }
 

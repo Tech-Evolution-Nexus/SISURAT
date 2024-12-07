@@ -111,7 +111,7 @@
                 <form action="<?= url("/admin/kartu-keluarga/import") ?>" enctype="multipart/form-data" method="post">
                     <div class="modal-body">
                         <div class="form-group">
-                            <button class="btn btn-success text-white mb-2">Download Template Import</button>
+                            <a href="<?= url("kartu_keluarga_template.xlsx") ?>" class="btn btn-success text-white mb-2">Download Template Import</a>
                         </div>
                         <div class="form-group">
                             <label for="">File excel</label>

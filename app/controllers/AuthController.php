@@ -125,7 +125,7 @@ class AuthController
         ];
 
         $result = $this->model->users->where("token_reset", "=", $token)->first();
-        if ($this->model->users->where("id",$result->id)->update($data)) {
+        if ($this->model->users->where("id", $result->id)->update($data)) {
             return redirect()->with("success", "Berhasil mengubah password")->to("/login");
         } else {
             return redirect()->with("success", "Gagal mengubah password,Coba lagi")->back();
@@ -155,7 +155,7 @@ class AuthController
                 "email" => $email
             ];
             // Simpan token dan tanggal kedaluwarsa di database
-            $model->update($result->id, $data);
+            $model->where("email", "=", $email)->update($data);
 
             $resetLink = "http://localhost/SISURAT/ganti-password?token=" . $encodedToken;
             $mail = new PHPMailer(true);
