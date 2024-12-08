@@ -21,9 +21,9 @@
                     <p class="text-white text-small"><?= $data->description ?> </p>
                 </div>
                 <div class="ms-auto">
-                    <button type="button" class="btn btn-warning" id="add-btn">
+                    <a href="<?=url("/admin/export-excelsurat-selesai")?>" class="btn btn-warning">
                         Export
-                    </button>
+                    </a>
                 </div>
             </div>
             <div class="card">
@@ -200,6 +200,7 @@
             });
 
         })
+
 
         const setFormData = (data) => {
             $("#nosurat").text(`${data.nomor_surat ?? "-"}`)
