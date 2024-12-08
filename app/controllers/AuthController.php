@@ -189,4 +189,8 @@ class AuthController
             }
         }
     }
+    public function logout(){
+        session()->removeAll();
+        return redirect(url: "/login");
+    }
 }

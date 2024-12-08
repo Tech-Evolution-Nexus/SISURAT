@@ -17,6 +17,20 @@
     <main class="flex-grow-1">
         <?php includeFile("layout/navbar") ?>
         <div class="p-4">
+        <?php if (session()->has("success")): ?>
+                <div class="alert alert-success d-flex justify-content-between" role="alert">
+                    <?= session()->flash("success") ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+                </div>
+            <?php endif; ?>
+
+            <?php if (session()->has("error")): ?>
+                <div class="alert alert-danger d-flex justify-content-between" role="alert">
+                    <?= session()->flash("error") ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
             <div class="row g-4">
                 <div class="col-15">
                     <div class="card">
@@ -38,14 +52,31 @@
                                                 <input type="text" value="<?= $data->judul_home ?>" class="form-control shadow-sm" id="judul_home" name="judul_home">
                                             </div>
                                         </div>
-                                        <div class="form-group mt-2">
-                                            <label for="judul_home">Upload Gambar: </label>
-                                            <div class="mt-2">
-                                                <button class="btn btn-secondary about-button mb-2" type="button" aria-label="Edit Foto" onclick="document.getElementById('file-input').click();">
-                                                    <i class="fa fa-file-image fa-2x "></i>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="judul_home">Upload Gambar Landing:</label>
+                                                <button class="btn btn-secondary about-button mb-2" type="button" aria-label="Edit Foto" onclick="document.getElementById('file-input-landing').click();">
+                                                    <i class="fa fa-file-image fa-2x"></i>
                                                 </button>
-                                                <input type="file" value="<?= $data->image_hero ?>" id="file-input" name="logo" accept="image/*" style="display: none;">
+                                                <input type="file" id="file-input-landing" name="image_hero" accept="image/*" style="display: none;" onchange="previewImage(event, 'preview-landing')">
+                                                <img id="preview-landing"
+                                                    src="<?= $data->image_hero ? assets('assets/' . $data->image_hero) : '#' ?>"
+                                                    alt="Preview"
+                                                    style="display: <?= $data->image_hero  ? 'block' : 'none' ?>; margin-top: 10px; max-width: 100%; height: auto; border: 1px solid #ddd;">
+                                            </div>
+                                        </div>
 
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="judul_home">Upload Logo:</label>
+                                                <button class="btn btn-secondary about-button mb-2" type="button" aria-label="Edit Foto" onclick="document.getElementById('file-input-sidebar').click();">
+                                                    <i class="fa fa-file-image fa-2x"></i>
+                                                </button>
+                                                <input type="file" id="file-input-sidebar" name="image_logo" accept="image/*" style="display: none;" onchange="previewImage(event, 'preview-sidebar')">
+                                                <img id="preview-sidebar"
+                                                    src="<?= $data->img_logo ? assets('assets/' . $data->img_logo) : '#' ?>"
+                                                    alt="Preview"
+                                                    style="display: <?= $data->img_logo ? 'block' : 'none' ?>; margin-top: 10px; max-width: 100%; height: auto; border: 1px solid #ddd;">
                                             </div>
                                         </div>
                                     </div>
@@ -125,6 +156,26 @@
     <!--end yang perlu diubah -->
 
     <?php includeFile("layout/script") ?>
+    <script>
+        function previewImage(event, previewId) {
+            const fileInput = event.target;
+            const file = fileInput.files[0];
+            const preview = document.getElementById(previewId);
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+            }
+        }
+    </script>
+
 </body>
 
 </html>

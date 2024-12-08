@@ -28,9 +28,9 @@ class AboutController extends Controller
 
     public function update_about()
     {
+        // Ambil data dari request
         $websiteName = request("nama_website");
         $homeTitle = request("judul_home");
-        $logo = request("image_hero");
         $homeDesc = request("deskripsi_home");
         $aboutTitle = request("judul_about");
         $downloadLink = request("link_download");
@@ -39,7 +39,7 @@ class AboutController extends Controller
         $neighbourhoodPhone = request("no_telp");
         $neighbourhoodAddress = request("alamat_kelurahan");
         $urlVideo = request("video_url");
-
+    
         $fieldTentang = [
             "nama_website" => $websiteName,
             "judul_home" => $homeTitle,
@@ -52,32 +52,68 @@ class AboutController extends Controller
             "alamat_kelurahan" => $neighbourhoodAddress,
             "video_url" => $urlVideo,
         ];
-
-
-        $ficon = $_FILES['logo'] ?? null;
-        $maxFileSize = 2 * 1024 * 1024;
-        if ($ficon['size'] > $maxFileSize) {
-            return redirect()->with("error", "Ukuran file terlalu besar. Maksimal 2MB.")->back();
-        }
-
-
-        $fileExt = pathinfo($ficon['name'], PATHINFO_EXTENSION);
+    
+        // Pengaturan upload
+        $maxFileSize = 2 * 1024 * 1024; // 2MB
         $allowedFileTypes = ["jfif", "jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-        $nameFile  = uniqid() . "." . $fileExt;
-        $uploader = new FileUploader();
-        //upload logo
-        $uploader->setFile($ficon);
-        $uploader->setTarget(storagePath("public", "/assets/" . $nameFile));
-        $uploader->setAllowedFileTypes($allowedFileTypes);
-        $uploadStatus = $uploader->upload();
-        if ($uploadStatus !== true) {
-            $this->model->about->where("id", "=", 1)->update(["image_hero" => $nameFile]);
+    
+        // Upload image_hero
+        $ficonHero = $_FILES['image_hero'] ?? null;
+        if ($ficonHero && $ficonHero['error'] === UPLOAD_ERR_OK) {
+            $fileExtHero = pathinfo($ficonHero['name'], PATHINFO_EXTENSION);
+            if ($ficonHero['size'] > $maxFileSize) {
+                return redirect()->with("error", "Ukuran file 'image_hero' terlalu besar. Maksimal 2MB.")->back();
+            }
+            if (!in_array(strtolower($fileExtHero), $allowedFileTypes)) {
+                return redirect()->with("error", "Format file 'image_hero' tidak didukung.")->back();
+            }
+            $nameFileHero = uniqid() . "." . $fileExtHero;
+            $uploadPathHero = storagePath("public", "/assets/hero-img.png");
+    
+            $uploaderHero = new FileUploader();
+            $uploaderHero->setFile($ficonHero);
+            $uploaderHero->setTarget($uploadPathHero);
+            $uploaderHero->setAllowedFileTypes($allowedFileTypes);
+    
+            if ($uploaderHero->upload() === true) {
+                $fieldTentang['image_hero'] = "hero-img.png";
+            } else {
+                return redirect()->with("error", "Gagal mengunggah file 'image_hero'.")->back();
+            }
         }
-
-
+    
+        // Upload image_logo
+        $ficonLogo = $_FILES['image_logo'] ?? null;
+        if ($ficonLogo && $ficonLogo['error'] === UPLOAD_ERR_OK) {
+            $fileExtLogo = pathinfo($ficonLogo['name'], PATHINFO_EXTENSION);
+            if ($ficonLogo['size'] > $maxFileSize) {
+                return redirect()->with("error", "Ukuran file 'image_logo' terlalu besar. Maksimal 2MB.")->back();
+            }
+            if (!in_array(strtolower($fileExtLogo), $allowedFileTypes)) {
+                return redirect()->with("error", "Format file 'image_logo' tidak didukung.")->back();
+            }
+            $nameFileLogo = uniqid() . "." . $fileExtLogo;
+            $uploadPathLogo = storagePath("public", "/assets/logo-badean.png");
+    
+            $uploaderLogo = new FileUploader();
+            $uploaderLogo->setFile($ficonLogo);
+            $uploaderLogo->setTarget($uploadPathLogo);
+            $uploaderLogo->setAllowedFileTypes($allowedFileTypes);
+    
+            if ($uploaderLogo->upload() === true) {
+                $fieldTentang['img_logo'] = "logo-badean.png";
+            } else {
+                return redirect()->with("error", "Gagal mengunggah file 'image_logo'.")->back();
+            }
+        }
+    
+        // Simpan perubahan ke database
         $this->model->about->where("id", "=", 1)->update($fieldTentang);
+    
+        // Redirect dengan pesan sukses
         return redirect()->with("success", "Data berhasil diubah")->back();
     }
+    
     // public  function edit_about()
     // {
     //     $id = request("id");
