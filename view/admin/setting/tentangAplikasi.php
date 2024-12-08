@@ -43,13 +43,13 @@
                                         <div class="col-md-6">
                                             <div class="form-group mb-2">
                                                 <label for="nama_website">Nama Website:</label>
-                                                <input type="text" value="<?= $data->nama_website ?>" class="form-control shadow-sm" id="nama_website" name="nama_website">
+                                                <input type="text" value="<?= $data->data->nama_website ?>" class="form-control shadow-sm" id="nama_website" name="nama_website">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="judul_home">Judul Halaman Home:</label>
-                                                <input type="text" value="<?= $data->judul_home ?>" class="form-control shadow-sm" id="judul_home" name="judul_home">
+                                                <input type="text" value="<?= $data->data->judul_home ?>" class="form-control shadow-sm" id="judul_home" name="judul_home">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -84,7 +84,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group mb-3">
                                                 <label for="deskripsi_home">Deskripsi Halaman Home:</label>
-                                                <textarea class="form-control shadow-sm" id="deskripsi_home" name="deskripsi_home" rows="4"><?= $data->deskripsi_home ?></textarea>
+                                                <textarea class="form-control shadow-sm" id="deskripsi_home" name="deskripsi_home" rows="4"><?= $data->data->deskripsi_home ?></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -93,25 +93,25 @@
                                         <div class="col-md-6">
                                             <div class="form-group mb-2">
                                                 <label for="judul_tentang">Judul Halaman Tentang:</label>
-                                                <input type="text" value="<?= $data->judul_tentang ?>" class="form-control shadow-sm" id="judul_tentang" name="judul_tentang">
+                                                <input type="text" value="<?= $data->data->judul_tentang ?>" class="form-control shadow-sm" id="judul_tentang" name="judul_tentang">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="link_download">Link Download Aplikasi:</label>
-                                                <input type="text" value="<?= $data->link_download ?>" class="form-control shadow-sm" id="link_download" name="link_download">
+                                                <input type="text" value="<?= $data->data->link_download ?>" class="form-control shadow-sm" id="link_download" name="link_download">
                                             </div>
                                         </div>
                                         <div class="form-group mb-2">
                                             <label for="video_url">Video:</label>
-                                            <input type="text" value="<?= $data->video_url ?>" value="" class="form-control shadow-sm" id="video_url" name="video_url">
+                                            <input type="text" value="<?= $data->data->video_url ?>" value="" class="form-control shadow-sm" id="video_url" name="video_url">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group mb-3">
                                                 <label for="tentang_aplikasi">Tentang Aplikasi:</label>
-                                                <textarea class="form-control shadow-sm" id="tentang_aplikasi" name="tentang_aplikasi" rows="4"><?= $data->tentang_aplikasi ?></textarea>
+                                                <textarea class="form-control shadow-sm" id="tentang_aplikasi" name="tentang_aplikasi" rows="4"><?= $data->data->tentang_aplikasi ?></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -120,13 +120,13 @@
                                         <div class="col-md-6">
                                             <div class="form-group mb-2">
                                                 <label for="email_kelurahan">Email Kelurahan:</label>
-                                                <input type="text" value="<?= $data->email_kelurahan ?>" class="form-control shadow-sm" id="email_kelurahan" name="email_kelurahan">
+                                                <input type="text" value="<?= $data->data->email_kelurahan ?>" class="form-control shadow-sm" id="email_kelurahan" name="email_kelurahan">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="no_telp">No Telp:</label>
-                                                <input type="text" value="<?= $data->no_telp ?>" class="form-control shadow-sm" id="no_telp" name="no_telp">
+                                                <input type="text" value="<?= $data->data->no_telp ?>" class="form-control shadow-sm" id="no_telp" name="no_telp">
                                             </div>
                                         </div>
                                     </div>
@@ -134,7 +134,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="alamat_kelurahan">Alamat Kelurahan:</label>
-                                                <textarea class="form-control shadow-sm" id="alamat_kelurahan" name="alamat_kelurahan" rows="4"><?= $data->alamat_kelurahan ?></textarea>
+                                                <textarea class="form-control shadow-sm" id="alamat_kelurahan" name="alamat_kelurahan" rows="4"><?= $data->data->alamat_kelurahan ?></textarea>
                                             </div>
                                         </div>
                                     </div>

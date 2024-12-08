@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\abstract\Controller;
+use app\abstract\Model;
 use app\import\KartuKeluargaImport;
 use app\models\KartuKeluargaModel;
 use app\models\MasyarakatModel;
@@ -144,7 +145,7 @@ class KartuKeluargaController extends Controller
             $fileUpload->upload();
             $dataKK["kk_file"] = $randomName;
         }
-        $idKK =  $this->model->kartuKeluarga->create($dataKK);
+        $this->model->kartuKeluarga->create($dataKK);
         $this->model->masyarakat->create([
             "nik" => $nik,
             "nama_lengkap" => $nama,
@@ -325,11 +326,14 @@ class KartuKeluargaController extends Controller
     {
         $file = request("file");
         try {
+            $mainModel = new Model();
+            // $mainModel->beginTransaction();
             $kkImport = new KartuKeluargaImport();
             $data =  $kkImport->import($file);
+            // $mainModel->commit();
             return redirect()->with("success", "Kartu keluarga berhasil diimport")->back();
         } catch (\Throwable $th) {
-            return redirect()->with("error", "Kartu keluarga gagal diimport")->back();
+            return redirect()->with("error", $th->getMessage())->back();
         }
     }
 }

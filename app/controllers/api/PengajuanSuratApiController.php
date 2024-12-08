@@ -25,12 +25,12 @@ class PengajuanSuratApiController
 
     public function __construct()
     {
-        $this->model =  (object)[];
+        $this->model = (object) [];
         $this->model->pengajuansurModel = new PengajuanSuratModel();
         $this->model->lampiranpengajuanModel = new LampiranPengajuanModel();
         $this->model->lampiransuratModel = new LampiranSuratModel();
-        $this->model->jsurat  = new JenisSuratModel();
-        $this->model->lampiransurat  = new LampiranSuratModel();
+        $this->model->jsurat = new JenisSuratModel();
+        $this->model->lampiransurat = new LampiranSuratModel();
         $this->model->lampiranpengajuanModel = new LampiranPengajuanModel();
         $this->model->kartuKeluarga = new KartuKeluargaModel();
         $this->model->masyarakat = new MasyarakatModel();
@@ -93,7 +93,7 @@ class PengajuanSuratApiController
                 $fileTmpName = $img['tmp_name'][$key];
                 $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
                 $allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-                $nameFile  = uniqid() . "." . $fileExt;
+                $nameFile = uniqid() . "." . $fileExt;
                 $this->model->lampiranpengajuanModel->create([
                     'id_pengajuan' => $data,
                     'id_lampiran' => $datalampiran[$key]->id_lampiran,
@@ -108,14 +108,14 @@ class PengajuanSuratApiController
                     return response(["status" => false, "message" => "Gagal Menambahkan Data", "data" => $uploadStatus], 200);
                 }
             }
-
             if ($data2->fcm_token != null) {
                 pushnotifikasito($data2->fcm_token, "Ada Surat Baru Masuk", "Silahkan Klik Untuk Melakukan Persetujuan");
             }
             $this->mainmodel->commit();
             return response(["status" => true, "message" => "Berhasil Menambahkan Data", "data" => []], 200);
-        } catch (Exception $e) {
+        } catch (\Throwable $th) {
             $this->mainmodel->rollBack();
+            return response(["status" => false, "message" => "Gagal", "data" => $th->getMessage()], 400);
         }
     }
 
@@ -296,7 +296,7 @@ class PengajuanSuratApiController
             $data2->where("status", "<>", "pending");
         }
         $data2->where("status", "<>", "dibatalkan");
-        $data2 =  $data2->get();
+        $data2 = $data2->get();
         return response([
             "status" => "success",
             "message" => null,
@@ -340,17 +340,63 @@ class PengajuanSuratApiController
     public function approvalPengajuan($nik, $id_pengajuan)
     {
         header("Access-Control-Allow-Origin: *");
+        pushnotifikasito("dCPD-hbTR9eDLxX8RF2RPg:APA91bFMokLu20fmt8cNgbiQFlukn3DUNitaOLWhZQ4EAGa1ljSj3qXX7Avmyo66GNJQ0awaJBBM76AfILHf-vN2JSKyS2Hx415tQYlEyVbWaFBL_RgKCQA", "Ada Surat Baru Masuk", "Silahkan Klik Untuk Melakukan Persetujuan");
         try {
             $pengajuan = $this->model->psurat->where("id", "=", $id_pengajuan)
                 ->first();
             if (!$pengajuan) {
                 return response(["message" => "Pengajuan tidak ditemukan"], 200);
             }
-            $user = $this->model->users->where("nik", "=", $nik)->first();
+
+            $user = $this->model->users->join("masyarakat", "masyarakat.nik", "users.nik")->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")->where("users.nik", "=", $nik)->first();
             $role = $user->role;
             $status = request("status");
             $keterangan = request("keterangan");
             $nopegantar = request("nopegantarrt");
+
+            $dataMasyarakat = $this->model->users->select("rt,role,fcm_token")
+                ->join("masyarakat", "masyarakat.nik", "users.nik")
+                ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+                ->where("users.nik", "=", $pengajuan->nik)
+                ->first();
+                
+            if (!$dataMasyarakat) {
+                return response(["status" => false, "message" => "Masyarakat Tidak ditemukan", "data" => []], 200);
+            }
+            if ($role == "rt") {
+                $data2 = $this->model->users->select("rt,role,fcm_token")
+                    ->join("masyarakat", "masyarakat.nik", "users.nik")
+                    ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
+                    ->where("kartu_keluarga.rw", "=", $user->rw)
+                    ->where("users.role", "=", "rw")
+                    ->first();
+
+                if (!$data2) {
+                    return response(["status" => false, "message" => "Ketua Rw Tidak ditemukan", "data" => []], 200);
+                }
+                
+                if ($status == "ditolak") {
+                    if ($data2->fcm_token != null) {
+                        pushnotifikasito($dataMasyarakat->fcm_token, "Pemberitahuan", "Surat Anda Ditolak");
+                    }
+
+                } else {
+                    if ($data2->fcm_token != null) {
+                        pushnotifikasito("dCPD-hbTR9eDLxX8RF2RPg:APA91bFMokLu20fmt8cNgbiQFlukn3DUNitaOLWhZQ4EAGa1ljSj3qXX7Avmyo66GNJQ0awaJBBM76AfILHf-vN2JSKyS2Hx415tQYlEyVbWaFBL_RgKCQA", "Ada Surat Baru Masuk", "Silahkan Klik Untuk Melakukan Persetujuan");
+                    }
+                    // if ($dataMasyarakat->fcm_token != null) {
+                    //     pushnotifikasito($dataMasyarakat->fcm_token, "Pemberitahuan", "Surat Anda Telah Disetujui oleh ketua $role ");
+                    // }
+                }
+
+
+            }
+
+
+
+
+
+
             if ($role == "rw") {
                 $randomNumber = str_pad(rand(0, 99999999), 8, '0', STR_PAD_LEFT);
                 $nopegantar = "NPRW-" . $randomNumber;
@@ -371,7 +417,7 @@ class PengajuanSuratApiController
                 ->update($data);
             return response(["message" => "Success", $data, $id_pengajuan, $status, $keterangan], 200);
         } catch (\Throwable $th) {
-            return response(["message" => "Error"], 500);
+            return response(["message" => "Error", "data" => $th->getMessage()], 500);
         }
     }
 }
