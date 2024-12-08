@@ -108,14 +108,14 @@ class PengajuanSuratApiController
                     return response(["status" => false, "message" => "Gagal Menambahkan Data", "data" => $uploadStatus], 200);
                 }
             }
-
             if ($data2->fcm_token != null) {
                 pushnotifikasito($data2->fcm_token, "Ada Surat Baru Masuk", "Silahkan Klik Untuk Melakukan Persetujuan");
             }
             $this->mainmodel->commit();
             return response(["status" => true, "message" => "Berhasil Menambahkan Data", "data" => []], 200);
-        } catch (Exception $e) {
+        } catch (\Throwable $th) {
             $this->mainmodel->rollBack();
+            return response(["status" => false, "message" => "Gagal", "data" => $th->getMessage()], 400);
         }
     }
 
@@ -340,6 +340,7 @@ class PengajuanSuratApiController
     public function approvalPengajuan($nik, $id_pengajuan)
     {
         header("Access-Control-Allow-Origin: *");
+        pushnotifikasito("dCPD-hbTR9eDLxX8RF2RPg:APA91bFMokLu20fmt8cNgbiQFlukn3DUNitaOLWhZQ4EAGa1ljSj3qXX7Avmyo66GNJQ0awaJBBM76AfILHf-vN2JSKyS2Hx415tQYlEyVbWaFBL_RgKCQA", "Ada Surat Baru Masuk", "Silahkan Klik Untuk Melakukan Persetujuan");
         try {
             $pengajuan = $this->model->psurat->where("id", "=", $id_pengajuan)
                 ->first();
@@ -358,6 +359,10 @@ class PengajuanSuratApiController
                 ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
                 ->where("users.nik", "=", $pengajuan->nik)
                 ->first();
+                
+            if (!$dataMasyarakat) {
+                return response(["status" => false, "message" => "Masyarakat Tidak ditemukan", "data" => []], 200);
+            }
             if ($role == "rt") {
                 $data2 = $this->model->users->select("rt,role,fcm_token")
                     ->join("masyarakat", "masyarakat.nik", "users.nik")
@@ -369,6 +374,7 @@ class PengajuanSuratApiController
                 if (!$data2) {
                     return response(["status" => false, "message" => "Ketua Rw Tidak ditemukan", "data" => []], 200);
                 }
+                
                 if ($status == "ditolak") {
                     if ($data2->fcm_token != null) {
                         pushnotifikasito($dataMasyarakat->fcm_token, "Pemberitahuan", "Surat Anda Ditolak");
@@ -376,11 +382,11 @@ class PengajuanSuratApiController
 
                 } else {
                     if ($data2->fcm_token != null) {
-                        pushnotifikasito($data2->fcm_token, "Ada Surat Baru Masuk", "Silahkan Klik Untuk Melakukan Persetujuan");
+                        pushnotifikasito("dCPD-hbTR9eDLxX8RF2RPg:APA91bFMokLu20fmt8cNgbiQFlukn3DUNitaOLWhZQ4EAGa1ljSj3qXX7Avmyo66GNJQ0awaJBBM76AfILHf-vN2JSKyS2Hx415tQYlEyVbWaFBL_RgKCQA", "Ada Surat Baru Masuk", "Silahkan Klik Untuk Melakukan Persetujuan");
                     }
-                    if ($dataMasyarakat->fcm_token != null) {
-                        pushnotifikasito($dataMasyarakat->fcm_token, "Pemberitahuan", "Surat Anda Telah Disetujui oleh ketua $role ");
-                    }
+                    // if ($dataMasyarakat->fcm_token != null) {
+                    //     pushnotifikasito($dataMasyarakat->fcm_token, "Pemberitahuan", "Surat Anda Telah Disetujui oleh ketua $role ");
+                    // }
                 }
 
 
@@ -389,9 +395,6 @@ class PengajuanSuratApiController
 
 
 
-            if (!$dataMasyarakat) {
-                return response(["status" => false, "message" => "Masyarakat Tidak ditemukan", "data" => []], 200);
-            }
 
 
             if ($role == "rw") {
