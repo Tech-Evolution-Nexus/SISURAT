@@ -102,6 +102,7 @@ Router::addRoute("POST", "/admin/master-rw/{rw}/master-rt/{nik}/update-status", 
 // login 
 Router::addRoute("GET", "/login", [AuthController::class, "index"]);
 Router::addRoute("POST", "/login", [AuthController::class, "authentic"]);
+Router::addRoute("GET", "/logout", [AuthController::class, "logout"]);
 Router::addRoute("GET", "/dashbord", [AuthController::class, "authentic"]);
 Router::addRoute("GET", "/lupapassword", [AuthController::class, 'lupaPassword']);
 Router::addRoute("POST", "/lupapassword", [AuthController::class, 'kirimLinkReset']);
@@ -115,7 +116,7 @@ Router::addRoute("POST", "/ganti-password", [AuthController::class, "gantiPasswo
 Router::addRoute("GET", "/admin/profile", [ProfileController::class, "profile"]);
 Router::addRoute("POST", "/admin/profile", [ProfileController::class, "profile"]);
 Router::addRoute("POST", "/upload-profile-picture", [ProfileController::class, "uploadPP"]);
-Router::addRoute("POST", "/upload-profile-picture", [ProfileController::class, "uploadPP"]);
+// Router::addRoute("POST", "/upload-profile-picture", [ProfileController::class, "uploadPP"]);
 
 //tentang
 Router::addRoute("GET", "/admin/tentangAplikasi", [AboutController::class, "index"]);

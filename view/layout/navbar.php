@@ -8,13 +8,13 @@
                 <span class="me-2">
                     <?= auth()->user()->nama_lengkap ?>
                 </span>
-                <img src="<?= assets("assets/" . auth()->user()->foto_profile) ?>" style="width: 40px; height: 40px" class="profil-img-small bg-dark" alt="">
+                <img src="<?= assets("assets/profile/" . auth()->user()->foto_profile) ?>" style="width: 40px; height: 40px" class="profil-img-small bg-dark" alt="">
             </div>
 
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                 <li>
                     <div class="dropdown-item">
-                        <img src="<?= assets("assets/" . auth()->user()->foto_profile) ?>" style="width: 40px; height: 40px" class="profil-img-small bg-dark" alt="">
+                        <img src="<?= assets("assets/profile/" . auth()->user()->foto_profile) ?>" style="width: 40px; height: 40px" class="profil-img-small bg-dark" alt="">
                         <span class="ms-2"> <?= auth()->user()->nama_lengkap ?></span>
                     </div>
                 </li>
@@ -23,7 +23,7 @@
                 </li>
 
                 <li><a class="dropdown-item" href="<?= url("/admin/profile") ?>">Profile</a></li>
-                <li><a class="dropdown-item" href="logout.php">Logout</a></li>
+                <li><a class="dropdown-item" href="<?= url("/logout") ?>">Logout</a></li>
             </ul>
         </div>
     </div>
