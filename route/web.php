@@ -46,6 +46,9 @@ Router::addRoute("GET", "/admin/surat-selesai", [SuratMasukSelesaiController::cl
 Router::addRoute("GET", "/admin/surat-selesai/{id}", [SuratMasukSelesaiController::class, "getdata"]);
 Router::addRoute("GET", "/admin/surat-selesai/export/{id}", [SuratMasukSelesaiController::class, "exportPengajuan"]);
 Router::addRoute("GET", "/admin/surat-selesai/detail/{idPengajuan}", [SuratMasukSelesaiController::class, "detail"]);
+Router::addRoute("GET", "/admin/export-excelsurat-selesai/", [SuratMasukSelesaiController::class, "exportsuratselesai"]);
+
+
 
 //USER
 Router::addRoute("GET", "/admin/users", [UserController::class, "index"]);
@@ -69,7 +72,6 @@ Router::addRoute("POST", "/admin/kartu-keluarga/{id}/delete", [KartuKeluargaCont
 Router::addRoute("GET", "/admin/surat-masuk", [SuratMasukController::class, "index"]);
 Router::addRoute("GET", "/admin/surat-masuk/ajax/{idPengajuan}", [SuratMasukController::class, "ajaxPengajuan"]);
 Router::addRoute("POST", "/admin/surat-masuk/{id}", [SuratMasukController::class, "updateStatus"]);
-
 
 //anggota kk
 Router::addRoute("GET", "/admin/kartu-keluarga/{nokk}/anggota-keluarga", [AnggotaKeluargaController::class, "index"]);

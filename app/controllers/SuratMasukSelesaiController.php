@@ -15,6 +15,8 @@ use app\models\MasyarakatModel;
 use app\models\PengajuanSuratModel;
 use Dompdf\Dompdf;
 use FileUploader;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class SuratMasukSelesaiController extends Controller
 {
@@ -54,6 +56,48 @@ class SuratMasukSelesaiController extends Controller
         ];
         return view('admin/surat_masuk_selesai/surat_selesai', $params);
     }
+    public function exportsuratselesai()
+    {
+        // dd("");
+        $data = $this->model->psurat
+            ->select("pengajuan_surat.id", "nomor_surat", "nama_lengkap", "nama_surat", "pengajuan_surat.created_at")
+            ->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")
+            ->join("surat", "surat.id", "pengajuan_surat.id_surat")
+            ->get();
+ 
+        // Membuat Spreadsheet baru
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Menulis header ke file Excel
+        $header = ['ID', 'No Surat', 'Nama Pengaju', 'Nama Surat', 'Waktu Pengajuan'];
+        $sheet->fromArray($header, NULL, 'A1');
+
+        $startRow = 2;
+    foreach ($data as $row) {
+        // Menggunakan properti objek untuk mengambil nilai
+        $sheet->setCellValue('A' . $startRow, $row->id);
+        $sheet->setCellValue('B' . $startRow, $row->nomor_surat);
+        $sheet->setCellValue('C' . $startRow, $row->nama_lengkap);
+        $sheet->setCellValue('D' . $startRow, $row->nama_surat);
+        $sheet->setCellValue('E' . $startRow, $row->created_at);
+        $startRow++;
+    }
+
+
+        // Mengatur nama file untuk download
+        $filename = 'data_pengajuan.xlsx';
+
+        // Mengunduh file
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        // Tulis dan kirim file ke browser
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        exit;
+    }
     public function  getdata($id)
     {
         $biodata = $this->model->psurat->select(
@@ -90,6 +134,7 @@ class SuratMasukSelesaiController extends Controller
         ];
         return response($params, 200);
     }
+    
 
     public function exportPengajuan($idPengajuan)
     {
