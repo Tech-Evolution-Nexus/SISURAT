@@ -148,3 +148,4 @@ Router::addRoute("POST", "/admin/imageupload", function () {
     return response(["url" => url("/assets/" . $randomName)]);
 });
 Router::addRoute("GET", "/admin/assetsverif/{name}", [KomponenController::class, "getImageverif"]);
+Router::addRoute("GET", "/admin/assetsprofile/{name}", [KomponenController::class, "getImageprofile"]);
