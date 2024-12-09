@@ -36,6 +36,7 @@ class SuratMasukSelesaiController extends Controller
         $this->model->masyarakat  = new MasyarakatModel();
         $this->model->fieldValues  = new FieldValuesModel();
         $this->model->fields  = new FieldsModel();
+        $this->model->fieldsValues = new FieldValuesModel();
     }
     public function  index()
     {
@@ -64,7 +65,7 @@ class SuratMasukSelesaiController extends Controller
             ->join("masyarakat", "masyarakat.nik", "pengajuan_surat.nik")
             ->join("surat", "surat.id", "pengajuan_surat.id_surat")
             ->get();
- 
+
         // Membuat Spreadsheet baru
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -74,15 +75,15 @@ class SuratMasukSelesaiController extends Controller
         $sheet->fromArray($header, NULL, 'A1');
 
         $startRow = 2;
-    foreach ($data as $row) {
-        // Menggunakan properti objek untuk mengambil nilai
-        $sheet->setCellValue('A' . $startRow, $row->id);
-        $sheet->setCellValue('B' . $startRow, $row->nomor_surat);
-        $sheet->setCellValue('C' . $startRow, $row->nama_lengkap);
-        $sheet->setCellValue('D' . $startRow, $row->nama_surat);
-        $sheet->setCellValue('E' . $startRow, $row->created_at);
-        $startRow++;
-    }
+        foreach ($data as $row) {
+            // Menggunakan properti objek untuk mengambil nilai
+            $sheet->setCellValue('A' . $startRow, $row->id);
+            $sheet->setCellValue('B' . $startRow, $row->nomor_surat);
+            $sheet->setCellValue('C' . $startRow, $row->nama_lengkap);
+            $sheet->setCellValue('D' . $startRow, $row->nama_surat);
+            $sheet->setCellValue('E' . $startRow, $row->created_at);
+            $startRow++;
+        }
 
 
         // Mengatur nama file untuk download
@@ -134,7 +135,7 @@ class SuratMasukSelesaiController extends Controller
         ];
         return response($params, 200);
     }
-    
+
 
     public function exportPengajuan($idPengajuan)
     {
@@ -279,10 +280,17 @@ class SuratMasukSelesaiController extends Controller
             ->join("lampiran", "lampiran_pengajuan.id_lampiran", "lampiran.id")
             ->get();
 
+        $fields = $this->model->fieldsValues
+            ->select("nama_field,value")
+            ->join("fields", "field_values.id_field", "fields.id")
+            ->where("id_pengajuan", "=", $id)
+            ->get();
+
         $data->tgl_lahir = formatDate($data->tgl_lahir);
         $data->tanggal_pengajuan = formatDate($data->tanggal_pengajuan);
         $data->status = formatStatusPengajuan($data->status);
         $data->lampiran = $lampiran;
+        $data->fields = $fields;
 
         return response($data, 200);
     }

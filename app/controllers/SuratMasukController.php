@@ -3,6 +3,8 @@
 namespace app\controllers;
 
 use app\abstract\Controller;
+use app\models\FieldsModel;
+use app\models\FieldValuesModel;
 use app\models\LampiranPengajuanModel;
 use app\models\PengajuanSuratModel;
 
@@ -17,6 +19,8 @@ class SuratMasukController extends Controller
         $this->model =  (object)[];
         $this->model->pengajuan_surat = new PengajuanSuratModel();
         $this->model->lampiran = new LampiranPengajuanModel();
+        $this->model->fields = new FieldsModel();
+        $this->model->fieldsValues = new FieldValuesModel();
     }
 
     public function index()
@@ -45,7 +49,7 @@ class SuratMasukController extends Controller
             ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
             ->join("surat", "pengajuan_surat.id_surat", "surat.id")
             ->where("status", "=", "di_terima_rw")
-            ->where("surat.id", "=", $idPengajuan)
+            ->where("pengajuan_surat.id", "=", $idPengajuan)
             ->first();
 
         $lampiran = $this->model->lampiran
@@ -54,10 +58,18 @@ class SuratMasukController extends Controller
             ->join("lampiran", "lampiran_pengajuan.id_lampiran", "lampiran.id")
             ->get();
 
+        $fields = $this->model->fieldsValues
+            ->select("nama_field,value")
+            ->join("fields", "field_values.id_field", "fields.id")
+            ->where("id_pengajuan", "=", $idPengajuan)
+            ->get();
+
+
         $data->tgl_lahir = formatDate($data->tgl_lahir);
         $data->tanggal_pengajuan = formatDate($data->tanggal_pengajuan);
         $data->status = formatStatusPengajuan($data->status);
         $data->lampiran = $lampiran;
+        $data->fields = $fields;
 
         return response($data, 200);
     }
