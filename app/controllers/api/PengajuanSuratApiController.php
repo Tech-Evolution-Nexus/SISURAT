@@ -381,11 +381,11 @@ class PengajuanSuratApiController
                     }
                 } else {
                     if ($data2->fcm_token != null) {
-                        pushnotifikasito("dCPD-hbTR9eDLxX8RF2RPg:APA91bFMokLu20fmt8cNgbiQFlukn3DUNitaOLWhZQ4EAGa1ljSj3qXX7Avmyo66GNJQ0awaJBBM76AfILHf-vN2JSKyS2Hx415tQYlEyVbWaFBL_RgKCQA", "Ada Surat Baru Masuk", "Silahkan Klik Untuk Melakukan Persetujuan");
+                        pushnotifikasito($dataMasyarakat->fcm_token, "Ada Surat Baru Masuk", "Silahkan Klik Untuk Melakukan Persetujuan");
                     }
-                    // if ($dataMasyarakat->fcm_token != null) {
-                    //     pushnotifikasito($dataMasyarakat->fcm_token, "Pemberitahuan", "Surat Anda Telah Disetujui oleh ketua $role ");
-                    // }
+                    if ($dataMasyarakat->fcm_token != null) {
+                        pushnotifikasito($dataMasyarakat->fcm_token, "Pemberitahuan", "Surat Anda Telah Disetujui oleh ketua $role ");
+                    }
                 }
             }
 

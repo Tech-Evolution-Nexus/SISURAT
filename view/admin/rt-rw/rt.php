@@ -168,7 +168,7 @@
                                     <td><?= $index + 1 ?></td>
                                     <td><?= $kk->nik ?></td>
                                     <td><?= $kk->nama_lengkap ?></td>
-                                    <td><?= $kk->rw ?></td>
+                                    <td><?= $kk->rt ?></td>
                                     <td><?= formatDate($kk->masa_jabatan_awal, true) ?> - <?= formatDate($kk->masa_jabatan_akhir, true) ?></td>
                                     <td> <button data-nik="<?= $kk->nik ?>" title="Ubah Status" class="btn statusBtn text-white btn-success btn-sm">
                                             Aktif

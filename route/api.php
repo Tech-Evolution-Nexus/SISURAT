@@ -41,6 +41,8 @@ Router::addRoute("POST", "/reset-password", [AuthApiController::class, "resetpas
 Router::addRoute("POST", "/ganti-password", [AuthApiController::class, "gantipassword"]);
 Router::addRoute("POST", "/ubah-email", [AuthApiController::class, "ubahemail"]);
 Router::addRoute("POST", "/ubah-nohp", [AuthApiController::class, "ubahnohp"]);
+Router::addRoute("POST", "/reset-fcm", [AuthApiController::class, "resetfcmtoken"]);
+
 
 
 
