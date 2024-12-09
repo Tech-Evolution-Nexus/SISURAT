@@ -84,7 +84,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="titleForm">Tambah Berita</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" id="closemodal-btn" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
 
@@ -118,7 +118,7 @@
                                 </div>
                                 <div class="form-group  mt-2">
                                     <label class="mb-2">Konten</label>
-                                    <textarea required name="deskripsi" id="deskripsi" class="editor"></textarea>
+                                    <textarea name="deskripsi" id="deskripsi" class="editor"></textarea>
                                 </div>
                             </div>
 
