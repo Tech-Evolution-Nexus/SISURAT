@@ -167,7 +167,8 @@ class AuthApiController
                         "nik" => $nik,
                         "email"=>$email,
                         "no_hp" => $no_hp,
-                        "password" => $hashedPassword
+                        "password" => $hashedPassword,
+                        "status"=>1
                     ]);
     
                     return response([
@@ -527,5 +528,37 @@ class AuthApiController
                 "data" => []
             ], 200);
         }
+    }
+    public function resetfcmtoken()
+    {
+        $nik = request("nik");
+        $fcm = request("token");
+        $users = $this->model->UserModel->where("users.nik", "=", $nik)->first();
+        if ($users) {
+            if ($fcm != null || !empty($fcm)) {
+                $updateData = ["fcm_token" => $fcm];
+                $this->model->UserModel->where("nik", "=", $nik)->update($updateData);
+                return response([
+                    "message" => "Berhasil Update FCM",
+                    "status" => true,
+                    "data" => []
+                ], 200);
+            }else{
+                return response([
+                    "message" => "FCM Kosong",
+                    "status" => false,
+                    "data" => []
+                ], 200);
+            }
+            
+        }else{
+            return response([
+                "message" => "User Tidak Ditemukan",
+                "status" => false,
+                "data" =>[]
+            ], 200);
+        }
+               
+            
     }
 }

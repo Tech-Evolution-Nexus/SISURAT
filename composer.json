@@ -7,7 +7,7 @@
       "app/"
     ],
     "files": [
-      "app/services/helpers.php"
+      "app/services/Helpers.php"
     ]
   },
   "require-dev": {
