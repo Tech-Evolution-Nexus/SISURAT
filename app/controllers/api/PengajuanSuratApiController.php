@@ -358,6 +358,7 @@ class PengajuanSuratApiController
                 ->join("kartu_keluarga", "masyarakat.no_kk", "kartu_keluarga.no_kk")
                 ->where("users.nik", "=", $pengajuan->nik)
                 ->first();
+
             if ($role == "rt") {
                 $data2 = $this->model->users->select("rt,role,fcm_token")
                     ->join("masyarakat", "masyarakat.nik", "users.nik")
@@ -373,7 +374,6 @@ class PengajuanSuratApiController
                     if ($data2->fcm_token != null) {
                         pushnotifikasito($dataMasyarakat->fcm_token, "Pemberitahuan", "Surat Anda Ditolak");
                     }
-
                 } else {
                     if ($data2->fcm_token != null) {
                         pushnotifikasito($data2->fcm_token, "Ada Surat Baru Masuk", "Silahkan Klik Untuk Melakukan Persetujuan");
@@ -382,8 +382,6 @@ class PengajuanSuratApiController
                         pushnotifikasito($dataMasyarakat->fcm_token, "Pemberitahuan", "Surat Anda Telah Disetujui oleh ketua $role ");
                     }
                 }
-
-
             }
 
 
