@@ -53,4 +53,9 @@ class KomponenController extends Controller
             return;
         }
     }
+    public function getImageprofile($url)
+    {
+        $filePath = __DIR__ . '/../../public/assets/' . $url;
+        $this->proses($filePath);
+    }
 }

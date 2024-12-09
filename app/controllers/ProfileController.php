@@ -26,6 +26,11 @@ class ProfileController extends Controller
 
     public function profile()
     {
+        $params["data"] = (object)[
+            "title" => "Profile",
+            "description" => "Edit informasi admin",
+        ];
+
         return view("admin/setting/profile");
     }
 
@@ -43,7 +48,7 @@ class ProfileController extends Controller
             $nameFile  = uniqid() . "." . $fileExt;
             $uploader = new FileUploader();
             $uploader->setFile($ficon);
-            $uploader->setTarget(storagePath("public", "/assets/" . $nameFile));
+            $uploader->setTarget(storagePath("public", "/assets/profile/" . $nameFile));
             $uploader->setAllowedFileTypes($allowedFileTypes);
             $uploadStatus = $uploader->upload();
 
@@ -78,17 +83,33 @@ class ProfileController extends Controller
     {
         request()->validate([
             "password" => "required|min:8",
+            "newpass" => "required|min:8",
+            "confirmpass" => "required|min:8|same:password",
+        ], [
+            "password.required" => "Password wajib diisi",
+            "newpass.required" => "Masukkan password baru terlebih dahulu",
+            "confirmpass.required" => "Konfirmasi password wajib diisi",
+            "newpass.min" => "Password minimal 8 karakter",
+            "confirmpass.min" => "Konfirmasi password  minimal 8 karakter",
+            "confirmpass.same" => "Konfirmasi password  tidak sama",
         ]);
-        $email = request("email");
         $password = request("password");
+        $newpass = request("newpass");
 
-        $password = request("password");
 
-        $dataKK = [
-            "password" => $password,
+        $userData = [
+            "password" => $newpass,
+
         ];
 
-        $this->model->user->where("id", "=", auth()->user()->id)->update($dataKK);
-        return redirect()->with("success", "Kata Sandi berhasil diubah")->back();
+        $user = $this->model->user->where("id","=",auth()->user()->id)->first();
+
+        if (password_verify($password, hash: $user->password)) {
+            $this->model->user->where("id", "=", auth()->user()->id)->update($userData);
+            return redirect()->with("success", "Kata Sandi berhasil diubah")->back();
+        } else {
+            return redirect()->with("error", "Password salah")->back();
+           
+        }
     }
 }

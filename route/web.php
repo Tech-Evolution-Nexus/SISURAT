@@ -46,6 +46,9 @@ Router::addRoute("GET", "/admin/surat-selesai", [SuratMasukSelesaiController::cl
 Router::addRoute("GET", "/admin/surat-selesai/{id}", [SuratMasukSelesaiController::class, "getdata"]);
 Router::addRoute("GET", "/admin/surat-selesai/export/{id}", [SuratMasukSelesaiController::class, "exportPengajuan"]);
 Router::addRoute("GET", "/admin/surat-selesai/detail/{idPengajuan}", [SuratMasukSelesaiController::class, "detail"]);
+Router::addRoute("GET", "/admin/export-excelsurat-selesai/", [SuratMasukSelesaiController::class, "exportsuratselesai"]);
+
+
 
 //USER
 Router::addRoute("GET", "/admin/users", [UserController::class, "index"]);
@@ -69,7 +72,6 @@ Router::addRoute("POST", "/admin/kartu-keluarga/{id}/delete", [KartuKeluargaCont
 Router::addRoute("GET", "/admin/surat-masuk", [SuratMasukController::class, "index"]);
 Router::addRoute("GET", "/admin/surat-masuk/ajax/{idPengajuan}", [SuratMasukController::class, "ajaxPengajuan"]);
 Router::addRoute("POST", "/admin/surat-masuk/{id}", [SuratMasukController::class, "updateStatus"]);
-
 
 //anggota kk
 Router::addRoute("GET", "/admin/kartu-keluarga/{nokk}/anggota-keluarga", [AnggotaKeluargaController::class, "index"]);
@@ -102,6 +104,7 @@ Router::addRoute("POST", "/admin/master-rw/{rw}/master-rt/{nik}/update-status", 
 // login 
 Router::addRoute("GET", "/login", [AuthController::class, "index"]);
 Router::addRoute("POST", "/login", [AuthController::class, "authentic"]);
+Router::addRoute("GET", "/logout", [AuthController::class, "logout"]);
 Router::addRoute("GET", "/dashbord", [AuthController::class, "authentic"]);
 Router::addRoute("GET", "/lupapassword", [AuthController::class, 'lupaPassword']);
 Router::addRoute("POST", "/lupapassword", [AuthController::class, 'kirimLinkReset']);
@@ -115,7 +118,7 @@ Router::addRoute("POST", "/ganti-password", [AuthController::class, "gantiPasswo
 Router::addRoute("GET", "/admin/profile", [ProfileController::class, "profile"]);
 Router::addRoute("POST", "/admin/profile", [ProfileController::class, "profile"]);
 Router::addRoute("POST", "/upload-profile-picture", [ProfileController::class, "uploadPP"]);
-Router::addRoute("POST", "/upload-profile-picture", [ProfileController::class, "uploadPP"]);
+// Router::addRoute("POST", "/upload-profile-picture", [ProfileController::class, "uploadPP"]);
 
 //tentang
 Router::addRoute("GET", "/admin/tentangAplikasi", [AboutController::class, "index"]);
@@ -148,3 +151,4 @@ Router::addRoute("POST", "/admin/imageupload", function () {
     return response(["url" => url("/assets/" . $randomName)]);
 });
 Router::addRoute("GET", "/admin/assetsverif/{name}", [KomponenController::class, "getImageverif"]);
+Router::addRoute("GET", "/admin/assetsprofile/{name}", [KomponenController::class, "getImageprofile"]);

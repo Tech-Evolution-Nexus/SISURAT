@@ -24,7 +24,7 @@ if (!function_exists("pushnotifikasito")) {
                 'body' => $desk
             ]);
         try {
-            return $messaging->send($message);
+             $messaging->send($message);
         } catch (\Kreait\Firebase\Exception\MessagingException $e) {
             throw new Exception('Error sending message: ' . $e->getMessage());
         }

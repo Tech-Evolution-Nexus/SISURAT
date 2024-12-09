@@ -20,11 +20,11 @@
             <div class="row g-4">
                 <div class="col-12">
                     <div class="card">
-                        <form action="edit_profile.php" method="post" autocomplete="on" id="form2" class="p-2">
+                        <form action="<?= url("admin/profile") ?>" method="post" autocomplete="on" id="form2" class="p-2">
                             <div class="d-flex">
                                 <div style="width: 150px; height: 150px;" class="me-4">
-                                    <img class="rounded-circle bg-dark d-flex" src="<?= assets("assets/" . auth()->user()->foto_profile) ?>" alt="Profile Picture" id="profile-picture" style="width: 100%; height: 100%; object-fit:cover; margin: 10px;">
-                                    <button class=" edit-button btn btn-secondary btn-sm position-absolute" type="button" aria-label="Edit Foto" onclick="document.getElementById('file-input').click();">
+                                    <img class="rounded-circle bg-dark d-flex" src="<?= assets("assets/profile/" . auth()->user()->foto_profile) ?>" alt="Profile Picture" id="profile-picture" style="width: 100%; height: 100%; object-fit:cover; margin: 10px;">
+                                    <button class="edit-button btn btn-secondary btn-sm position-absolute" type="button" aria-label="Edit Foto" onclick="document.getElementById('file-input').click();">
                                         <i class="fas fa-camera"></i>
                                     </button>
                                     <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="uploadProfilePicture()">
