@@ -224,7 +224,7 @@
                     <p>${lampiran.nama_lampiran}</p>
                 </div>
                     <div class="col-md-9 col-12 mb-4">
-                    <img id="${lampiran.nama_lampiran}" src="<?= url("/admin/assets-lampiran") ?>/${lampiran.url}" class="img-thumbnail" alt="${lampiran.nama_lampiran}">
+                    <img id="${lampiran.nama_lampiran}" src="<?= url("/admin/assetsmasyarakat") ?>/${lampiran.url}" class="img-thumbnail" alt="${lampiran.nama_lampiran}">
                 </div>`;
             });
             $("#dokument_pendukung").append(html);

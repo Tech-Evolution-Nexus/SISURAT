@@ -26,12 +26,9 @@ class ProfileController extends Controller
 
     public function profile()
     {
-        $params["data"] = (object)[
-            "title" => "Profile",
-            "description" => "Edit informasi admin",
-        ];
-
-        return view("admin/setting/profile");
+        return view("admin/setting/profile", ["data" => (object)[
+            "title" => "Profile"
+        ]]);
     }
 
     public function uploadPP()
@@ -51,9 +48,6 @@ class ProfileController extends Controller
             $uploader->setTarget(storagePath("public", "/assets/profile/" . $nameFile));
             $uploader->setAllowedFileTypes($allowedFileTypes);
             $uploadStatus = $uploader->upload();
-
-            $uploadStatus = $uploader->upload();
-
             if ($uploadStatus !== true) {
                 $this->model->user->where("id", "=", auth()->user()->id)->update(["foto_profile" => $nameFile]);
                 return response(["message" => "Berhasil Update", "success" => true]);
