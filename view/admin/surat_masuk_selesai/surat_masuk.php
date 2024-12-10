@@ -172,16 +172,14 @@
                                         <div class="col-md-9 col-12">
                                             <h6 class="fw-bold" id="tanggal_pengajuan">: </h6>
                                         </div>
+                                        <div class="row col-12 " id="fields">
 
+                                        </div>
                                         <h5 class="mt-3">Dokumen Pendukung</h5>
 
+
                                         <div class="row col-12 " id="dokument_pendukung">
-                                            <div class="col-md-3 col-12">
-                                                <p class="mb-1">Bukti Pendukung</p>
-                                            </div>
-                                            <div class="col-md-9 col-12">
-                                                <img id="bukti_pendukung" src="" class="img-thumbnail" alt="Bukti Pendukung">
-                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -230,20 +228,19 @@
         }
 
         const setFormData = (data) => {
-            $("#nik").text(`${data.nik ?? "-"}`)
-            $("#nama").text(`${data.nama_lengkap ?? "-"}`)
-            $("#tempat_tanggal_lahir").text(`${data.tempat_lahir ?? "-"} / ${data.tgl_lahir ?? "-"}`)
-            $("#jk").text(`${data.jenis_kelamin ?? "-"}`)
-            $("#kebangsaan_agama").text(`${data.kewarganegaraan ?? "-"} / ${data.agama ?? "-"}`)
-            $("#status").text(`${data.status  ?? "-"}`)
-            $("#pekerjaan").text(`${data.pekerjaan ?? "-"}`)
-            $("#alamat").text(`${data.alamat ?? "-"}`)
-            $("#tanggal_pengajuan").text(`${data.tanggal_pengajuan ?? "-"}`)
+            $("#nik").text(`:${data.nik ?? "-"}`)
+            $("#nama").text(`:${data.nama_lengkap ?? "-"}`)
+            $("#tempat_tanggal_lahir").text(`:${data.tempat_lahir ?? "-"} / ${data.tgl_lahir ?? "-"}`)
+            $("#jk").text(`:${data.jenis_kelamin ?? "-"}`)
+            $("#kebangsaan_agama").text(`:${data.kewarganegaraan ?? "-"} / ${data.agama ?? "-"}`)
+            $("#status").text(`:${data.status  ?? "-"}`)
+            $("#pekerjaan").text(`:${data.pekerjaan ?? "-"}`)
+            $("#alamat").text(`:${data.alamat ?? "-"}`)
+            $("#tanggal_pengajuan").text(`:${data.tanggal_pengajuan ?? "-"}`)
 
             let html = "";
-            console.log(data);
 
-            data.lampiran.forEach(lampiran => {
+            data?.lampiran.forEach(lampiran => {
                 $("#dokument_pendukung").empty();
                 html += `
                 <div class="col-md-3 col-12 ">
@@ -254,6 +251,23 @@
                 </div>`;
             });
             $("#dokument_pendukung").append(html);
+            html = "";
+            data?.fields.forEach(field => {
+                console.log(field);
+
+                $("#fields").empty();
+                html += `
+                <div class="col-md-3 col-12 ">
+                    <p>${field.nama_field}</p>
+                </div>
+                    <div class="col-md-9 col-12 mb-4">
+                                            <h6 class="fw-bold" >:${field.value} </h6>
+                    
+                </div>`;
+            });
+
+
+            $("#fields").append(html);
         }
     </script>
 </body>

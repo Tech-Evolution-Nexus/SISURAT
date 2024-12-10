@@ -387,8 +387,6 @@ class PengajuanSuratApiController
                         pushnotifikasito($dataMasyarakat->fcm_token, "Pemberitahuan", "Surat Anda Telah Disetujui oleh ketua $role ");
                     }
                 }
-
-
             }
 
 
