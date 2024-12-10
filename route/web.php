@@ -118,6 +118,10 @@ Router::addRoute("POST", "/ganti-password", [AuthController::class, "gantiPasswo
 Router::addRoute("GET", "/admin/profile", [ProfileController::class, "profile"]);
 Router::addRoute("POST", "/admin/profile", [ProfileController::class, "profile"]);
 Router::addRoute("POST", "/upload-profile-picture", [ProfileController::class, "uploadPP"]);
+Router::addRoute("POST", "/editprofile", [ProfileController::class, "update_data"]);
+Router::addRoute("POST", "/gantipassprofile", [ProfileController::class, "update_password"]);
+
+
 // Router::addRoute("POST", "/upload-profile-picture", [ProfileController::class, "uploadPP"]);
 
 //tentang
