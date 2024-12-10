@@ -26,12 +26,9 @@ class ProfileController extends Controller
 
     public function profile()
     {
-        $params["data"] = (object)[
-            "title" => "Profile",
-            "description" => "Edit informasi admin",
-        ];
-
-        return view("admin/setting/profile");
+        return view("admin/setting/profile", ["data" => (object)[
+            "title" => "Profile"
+        ]]);
     }
 
     public function uploadPP()
@@ -51,9 +48,6 @@ class ProfileController extends Controller
             $uploader->setTarget(storagePath("public", "/assets/profile/" . $nameFile));
             $uploader->setAllowedFileTypes($allowedFileTypes);
             $uploadStatus = $uploader->upload();
-
-            $uploadStatus = $uploader->upload();
-
             if ($uploadStatus !== true) {
                 $this->model->user->where("id", "=", auth()->user()->id)->update(["foto_profile" => $nameFile]);
                 return response(["message" => "Berhasil Update", "success" => true]);
@@ -68,15 +62,19 @@ class ProfileController extends Controller
     public function update_data()
     {
         $email = request("email");
-        $noHP = request("no_hp");
+        $noHP = request("nohp");
 
         $dataKK = [
             "email" => $email,
             "no_hp" => $noHP,
         ];
+        $data =  $this->model->user->where("id", "=", auth()->user()->id)->update($dataKK);
+        if($data){
+            return redirect()->with("success", "Data berhasil diubah")->back();
+        }else{
+        return redirect()->with("error", "Data Gagal diubah")->back();
 
-        $this->model->user->where("id", "=", auth()->user()->id)->update($dataKK);
-        return redirect()->with("success", "Data berhasil diubah")->back();
+        }
     }
 
     public function update_password()
@@ -84,7 +82,7 @@ class ProfileController extends Controller
         request()->validate([
             "password" => "required|min:8",
             "newpass" => "required|min:8",
-            "confirmpass" => "required|min:8|same:password",
+            "confirmpass" => "required|min:8|same:newpass",
         ], [
             "password.required" => "Password wajib diisi",
             "newpass.required" => "Masukkan password baru terlebih dahulu",
@@ -93,10 +91,10 @@ class ProfileController extends Controller
             "confirmpass.min" => "Konfirmasi password  minimal 8 karakter",
             "confirmpass.same" => "Konfirmasi password  tidak sama",
         ]);
-        $password = request("password");
+         $password = request("password");
         $newpass = request("newpass");
 
-
+    
         $userData = [
             "password" => $newpass,
 
@@ -108,7 +106,7 @@ class ProfileController extends Controller
             $this->model->user->where("id", "=", auth()->user()->id)->update($userData);
             return redirect()->with("success", "Kata Sandi berhasil diubah")->back();
         } else {
-            return redirect()->with("error", "Password salah")->back();
+            return redirect()->with("error", "Kata Sandi Lama Salah")->back();
            
         }
     }

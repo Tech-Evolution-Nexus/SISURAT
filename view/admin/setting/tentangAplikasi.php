@@ -60,9 +60,9 @@
                                                 </button>
                                                 <input type="file" id="file-input-landing" name="image_hero" accept="image/*" style="display: none;" onchange="previewImage(event, 'preview-landing')">
                                                 <img id="preview-landing"
-                                                    src="<?= $data->image_hero ? assets('assets/' . $data->image_hero) : '#' ?>"
+                                                    src="<?= $data->data->image_hero ? assets('assets/' . $data->data->image_hero) : '#' ?>"
                                                     alt="Preview"
-                                                    style="display: <?= $data->image_hero  ? 'block' : 'none' ?>; margin-top: 10px; max-width: 100%; height: auto; border: 1px solid #ddd;">
+                                                    style="display: <?= $data->data->image_hero  ? 'block' : 'none' ?>; margin-top: 10px; max-width: 100%; height: auto; border: 1px solid #ddd;">
                                             </div>
                                         </div>
 
@@ -74,9 +74,9 @@
                                                 </button>
                                                 <input type="file" id="file-input-sidebar" name="image_logo" accept="image/*" style="display: none;" onchange="previewImage(event, 'preview-sidebar')">
                                                 <img id="preview-sidebar"
-                                                    src="<?= $data->img_logo ? assets('assets/' . $data->img_logo) : '#' ?>"
+                                                    src="<?= $data->data->img_logo ? assets('assets/' . $data->data->img_logo) : '#' ?>"
                                                     alt="Preview"
-                                                    style="display: <?= $data->img_logo ? 'block' : 'none' ?>; margin-top: 10px; max-width: 100%; height: auto; border: 1px solid #ddd;">
+                                                    style="display: <?= $data->data->img_logo ? 'block' : 'none' ?>; margin-top: 10px; max-width: 100%; height: auto; border: 1px solid #ddd;">
                                             </div>
                                         </div>
                                     </div>
