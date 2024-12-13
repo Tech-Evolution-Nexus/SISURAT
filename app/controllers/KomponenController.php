@@ -30,7 +30,7 @@ class KomponenController extends Controller
     }
     public function getImageverif($url)
     {
-        $filePath = __DIR__ . '/../../upload/fileverif/' . $url;
+        $filePath = __DIR__ . '/../../upload/kartu_keluarga/' . $url;
         $this->proses($filePath);
     }
     private function proses($filePath = "")
