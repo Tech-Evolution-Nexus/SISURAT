@@ -24,7 +24,8 @@
             filter: brightness(0) invert(1);
         }
 
-        body {
+        body,
+        section {
             overflow-x: hidden;
         }
     </style>
@@ -76,7 +77,7 @@
                 </div>
                 <div class="col-md-6 col-12">
                     <center>
-                        <img class="item-right" style="width: 100%; max-width: 80%;" src="<?= assets("assets/" . $data->data->image_hero) ?>" alt="Responsive mockup">
+                        <img class="item-right" style=" max-width: 80%;" src="<?= assets("assets/" . $data->data->image_hero) ?>" alt="Responsive mockup">
                     </center>
                 </div>
 
@@ -91,7 +92,7 @@
 
                 <div class=" col-md-6 col-12">
                     <center>
-                        <img class="item-left" style="width: 100%; max-width: 50%;" src="<?= assets("assets/mocupweb.jpg") ?>" alt="Responsive mockup">
+                        <img class="item-left" style=" max-width: 50%;" src="<?= assets("assets/mocupweb.jpg") ?>" alt="Responsive mockup">
                     </center>
                 </div>
                 <div class=" col-md-6 col-12 item-right">
@@ -111,7 +112,7 @@
                 </div>
                 <div class=" col-md-6 col-12">
                     <center>
-                        <img class="item-right" style="width: 100%; max-width: 50%;" src="<?= assets("assets/mocupweb.jpg") ?>" alt="Responsive mockup">
+                        <img class="item-right" style=" max-width: 50%;" src="<?= assets("assets/mocupweb.jpg") ?>" alt="Responsive mockup">
                     </center>
                 </div>
             </div>
@@ -194,7 +195,7 @@
             distance: '50%',
             opacity: "0",
             interval: 100,
-            reset: true,
+            reset: false,
             duration: 1000,
             delay: 200,
 
