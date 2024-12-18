@@ -156,3 +156,4 @@ Router::addRoute("POST", "/admin/imageupload", function () {
 });
 Router::addRoute("GET", "/admin/assetsverif/{name}", [KomponenController::class, "getImageverif"]);
 Router::addRoute("GET", "/admin/assetsprofile/{name}", [KomponenController::class, "getImageprofile"]);
+Router::addRoute("GET", "/downloadapk", [KomponenController::class, "downloadapk"]);

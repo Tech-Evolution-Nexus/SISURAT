@@ -58,4 +58,24 @@ class KomponenController extends Controller
         $filePath = __DIR__ . '/../../public/assets/' . $url;
         $this->proses($filePath);
     }
+    public function downloadapk(){   
+        $file_path = __DIR__ . '/../../upload/esurat-badean.apk';
+
+        if (file_exists($file_path)) {
+
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/vnd.android.package-archive');
+            header('Content-Disposition: attachment; filename="' . basename($file_path) . '"');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($file_path));
+
+            readfile($file_path);
+            exit;
+        } else {
+            echo "File tidak ditemukan.";
+        }
+
+    }
 }
