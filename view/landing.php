@@ -72,7 +72,7 @@
                         <i class="fa fa-download"></i>
                     Login
                     </button> -->
-                    <a href="https://github.com/Kholzt" class=" item-bottom btn btn-warning mb-4"><i class="fa fa-envelope"></i> Pengajuan Surat</a>
+                    <a href="<?=url("/downloadapk")?>" class=" item-bottom btn btn-warning mb-4"><i class="fa fa-envelope"></i> Pengajuan Surat</a>
                 </div>
                 <div class="col-md-6 col-12">
                     <center>
@@ -154,7 +154,7 @@
                             <h6 class="item-bottom">BADEAN SURAT APP</h6>
                             <h2 class="item-bottom">Ajukan Surat Sekarang</h2>
                             <p class="item-bottom">Dengan Aplikasi Mobile yang dapat kamu dapatkan dari link berikut</p>
-                            <a href="" class="btn btn-warning item-bottom"><i class="fa-brands fa-google-play"></i> Google Play</a>
+                            <a href="<?=url("/downloadapk")?>" class="btn btn-warning item-bottom"><i class="fa-brands fa-google-play"></i> Google Play</a>
                         </div>
                         <div class="col-md-6 col-12 pb-4">
                             <center>
